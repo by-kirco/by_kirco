@@ -7,12 +7,13 @@
 <title>by_kirco — Cartas escritas a mano para desconocidos</title>
 <meta name="description" content="Cartas escritas a mano dejadas para desconocidos en las calles de Madrid. Para quien las necesite.">
 <link rel="icon" href="assets/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Indie+Flower&display=swap" rel="stylesheet">
+<link href="assets/fonts/fonts-kirco.css" rel="stylesheet">
 <link rel="preload" href="assets/hero/01-tren.webp" as="image">
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<!-- Lottie primero: el loader comprueba window.lottie cuando GSAP/Lenis ya están listos -->
+<script src="assets/vendor/lottie-5.12.2.min.js" defer></script>
+<script src="assets/vendor/gsap-3.12.5.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
+<script src="assets/vendor/lenis-1.1.13.min.js" defer></script>
 <style>
 :root {
   color-scheme: light;
@@ -50,6 +51,10 @@ html.lenis,html.lenis body{height:auto}
 @media (pointer:fine){html.kirco-cursor,html.kirco-cursor *{cursor:none !important}}
 a{color:inherit}
 button{cursor:pointer;border:none;background:none;padding:0}
+/* Secciones ocultas temporalmente (nov 2026). Para reactivar una, quita su atributo data-oculto. */
+[data-oculto]{display:none !important}
+/* Lazo verde de «Cada cartita la escribo yo»: siempre por encima y con contraste sobre el naranja */
+.lazo-kirco{mix-blend-mode:normal !important;filter:saturate(1.25) brightness(1.05) drop-shadow(0 3px 5px rgba(46,43,37,0.35)) drop-shadow(0 0 1px rgba(46,43,37,0.5))}
 </style>
 </head>
 <body>
@@ -154,15 +159,15 @@ button{cursor:pointer;border:none;background:none;padding:0}
         </div>
       </div>
       <!-- Lazo abierto left -->
-      <img id="lazo-open-l" src="assets/lazo-abierto.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;left:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:5;pointer-events:none;mix-blend-mode:multiply;opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 900ms,clip-path 900ms ease-out 900ms">
+      <img id="lazo-open-l" class="lazo-kirco" src="assets/lazo-abierto.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;left:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:6;pointer-events:none;transform:translateZ(2px);opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 900ms,clip-path 900ms ease-out 900ms">
       <!-- Lazo abierto right -->
-      <img id="lazo-open-r" src="assets/lazo-abierto.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:5;pointer-events:none;transform:scaleX(-1);mix-blend-mode:multiply;opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 1000ms,clip-path 900ms ease-out 1000ms">
+      <img id="lazo-open-r" class="lazo-kirco" src="assets/lazo-abierto.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:6;pointer-events:none;transform:translateZ(2px) scaleX(-1);opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 1000ms,clip-path 900ms ease-out 1000ms">
       <!-- Cover (flips) -->
       <div id="cover" style="position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;transform-style:preserve-3d;transform:rotateY(0deg);transition:transform 1100ms cubic-bezier(0.65,0,0.35,1);z-index:3">
         <!-- Cover front -->
         <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--kirco-orange);border-radius:32px;box-shadow:var(--shadow-pop);display:flex;align-items:center;padding:56px 90px 56px 64px;box-sizing:border-box">
           <h2 style="font-family:var(--font-display);font-weight:400;font-size:clamp(48px,5vw,74px);line-height:1.04;margin:0;color:#fff;text-shadow:0 2px 0 rgba(224,126,28,0.45)">Cada cartita la escribo yo, a mano.</h2>
-          <img id="lazo-closed" src="assets/lazo-cerrado.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:-62px;top:50%;width:140px;height:auto;transform:translateY(-38%) rotate(-8deg);transition:opacity 300ms ease-out;pointer-events:none;mix-blend-mode:multiply">
+          <img id="lazo-closed" class="lazo-kirco" src="assets/lazo-cerrado.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:-78px;top:50%;width:170px;height:auto;z-index:6;transform:translateY(-38%) translateZ(2px) rotate(-8deg);transition:opacity 300ms ease-out;pointer-events:none">
         </div>
         <!-- Cover back (photo) -->
         <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);background:var(--kirco-orange);border-radius:32px 0 0 32px;padding:24px 24px 24px 56px;box-sizing:border-box;box-shadow:var(--shadow-pop)">
@@ -178,8 +183,10 @@ button{cursor:pointer;border:none;background:none;padding:0}
 
   <!-- Narrow (mobile) — cover + tap to reveal letter -->
   <div id="sobremi-narrow" style="display:none;max-width:400px;margin:0 auto;cursor:pointer" role="button" tabindex="0" aria-label="Abrir la carta" aria-expanded="false">
-    <div style="background:var(--kirco-orange);border-radius:32px;padding:22px;box-shadow:var(--shadow-pop);transition:border-radius 500ms ease">
+    <div style="position:relative;background:var(--kirco-orange);border-radius:32px;padding:22px;box-shadow:var(--shadow-pop);transition:border-radius 500ms ease">
       <img src="assets/sobre-mi-header.webp" alt="Una chica lee una cartita de by_kirco" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:20px">
+      <!-- Lazo verde (móvil): por encima de la foto para que destaque -->
+      <img class="lazo-kirco" src="assets/lazo-cerrado.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:-16px;top:34%;width:92px;height:auto;z-index:3;transform:rotate(-8deg);pointer-events:none">
       <div style="padding:20px 6px 6px">
         <h2 style="font-family:var(--font-display);font-weight:400;font-size:30px;line-height:1.06;margin:0;color:#fff">Cada cartita la escribo yo, a mano.</h2>
         <p id="sm-hint-narrow" style="font-family:var(--font-hand);font-size:18px;color:var(--kirco-ink);margin:10px 0 0;opacity:0.65">↓ toca para leer la carta</p>
@@ -216,8 +223,8 @@ button{cursor:pointer;border:none;background:none;padding:0}
   </div>
 </section>
 
-<!-- SOBRE: CARTA PERSONALIZADA -->
-<section style="position:relative;z-index:1;padding:clamp(60px,20vw,300px) clamp(20px,5vw,72px) clamp(60px,10vw,120px);display:flex;flex-direction:column;align-items:center">
+<!-- SOBRE: CARTA PERSONALIZADA — OCULTA (nov 2026): por ahora no se ofrecen cartas personalizadas. Para reactivarla, quita data-oculto. -->
+<section data-oculto="carta-personalizada" style="position:relative;z-index:1;padding:clamp(60px,20vw,300px) clamp(20px,5vw,72px) clamp(60px,10vw,120px);display:flex;flex-direction:column;align-items:center">
   <div id="envelope" data-reveal role="button" aria-label="Abrir el sobre" tabindex="0" style="position:relative;width:min(540px,88vw);aspect-ratio:540/330;cursor:pointer">
     <div style="position:absolute;inset:0;background:#C96A12;border-radius:22px;z-index:1"></div>
     <!-- Letter -->
@@ -255,8 +262,9 @@ button{cursor:pointer;border:none;background:none;padding:0}
           <span style="font-family:var(--font-mono);font-size:12px;letter-spacing:var(--track-mono);text-transform:uppercase;color:#fff">Ver en Instagram</span>
         </div>
       </a>
-      <a data-insta-card href="https://www.instagram.com/reel/DdPUprSoZao/" target="_blank" rel="noopener" style="height:600px;background:var(--kirco-ink);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-card);display:block;position:relative;transition:transform 200ms ease-out" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-        <img src="assets/insta-reel-thumb.png" alt="Reel de Instagram de by_kirco" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform 400ms cubic-bezier(0.22,1,0.36,1)" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''">
+      <!-- Reel anterior (por si hay que volver): https://www.instagram.com/reel/DdPUprSoZao/ · assets/insta-reel-thumb.png -->
+      <a data-insta-card href="https://www.instagram.com/by_kirco/reels/" data-reel-pendiente="Sustituir por el enlace exacto del reel Callejero Emocional · Carta 3 de 8 (Del desengaño a la esperanza)" target="_blank" rel="noopener" style="height:600px;background:var(--kirco-ink);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-card);display:block;position:relative;transition:transform 200ms ease-out" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <img src="assets/callejero-carta-3-portada.webp" alt="Reel de by_kirco: Callejero Emocional, Carta 3 de 8" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform 400ms cubic-bezier(0.22,1,0.36,1)" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''">
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(46,43,37,0.55) 100%);pointer-events:none"></div>
         <div style="position:absolute;bottom:22px;left:22px;display:flex;align-items:center;gap:10px;pointer-events:none">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="#fff" stroke="none"/></svg>
@@ -272,8 +280,8 @@ button{cursor:pointer;border:none;background:none;padding:0}
   </div>
 </section>
 
-<!-- COMUNIDAD DE ESCRITORES -->
-<section style="position:relative;z-index:1;padding:110px clamp(20px,5vw,72px) 140px;overflow:hidden">
+<!-- COMUNIDAD DE ESCRITORES — OCULTA (nov 2026). Para reactivarla, quita data-oculto y pon COMUNIDAD_ACTIVA = true en el script. -->
+<section data-oculto="comunidad" style="position:relative;z-index:1;padding:110px clamp(20px,5vw,72px) 140px;overflow:hidden">
   <img src="assets/monograma-naranja.png" alt="" style="position:absolute;width:420px;height:420px;top:40px;left:-130px;transform:rotate(-16deg);opacity:0.08;pointer-events:none">
   <p data-reveal style="position:relative;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase;color:var(--kirco-green-deep);margin:0 0 44px;text-align:center">Para quien quiera escribir</p>
 
@@ -553,7 +561,10 @@ button{cursor:pointer;border:none;background:none;padding:0}
   }
 
   // --- Comunidad form (Kit) ---
+  // Desactivado temporalmente (nov 2026): la sección está oculta y no se envía nada a Kit.
+  var COMUNIDAD_ACTIVA = false;
   function submitComForm(form, successEl) {
+    if (!COMUNIDAD_ACTIVA) return;
     var fd = new FormData(form);
     var payload = new URLSearchParams({
       email_address: fd.get('email_address') || '',
