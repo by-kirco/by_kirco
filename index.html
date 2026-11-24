@@ -109,14 +109,18 @@ button{cursor:pointer;border:none;background:none;padding:0}
 .smn.is-open #smn-lazo-closed{opacity:0}
 @media (prefers-reduced-motion:reduce){.smn-top,.smn-cover,.smn-letter > *,.smn-lazo-open{transition:none !important}}
 /* Callejero Emocional */
-.callejero-card{max-width:1100px;margin:0 auto;background:#24378A;border-radius:32px;box-shadow:var(--shadow-pop);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(28px,4vw,56px);align-items:center;padding:clamp(26px,4vw,56px);color:var(--kirco-paper);position:relative;overflow:hidden}
-.callejero-foto{background:#fff;border-radius:6px;padding:10px 10px 40px;box-shadow:var(--shadow-pop);transform:rotate(-3deg)}
-.callejero-foto img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:2px}
-.callejero-btn{display:inline-block;margin-top:26px;font-family:var(--font-display);font-size:21px;color:#24378A;background:var(--kirco-paper);border-radius:999px;padding:12px 32px;text-decoration:none;box-shadow:var(--shadow-card);transition:transform 180ms ease-out}
+.callejero-card{max-width:1100px;margin:0 auto;background:#1C2659 url('assets/callejero-textura-azul-1200.webp') center/cover no-repeat;border-radius:32px;box-shadow:var(--shadow-pop);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(28px,4vw,56px);align-items:center;padding:clamp(26px,4vw,56px);color:var(--kirco-paper);position:relative;overflow:hidden}
+.callejero-fotos{display:flex;justify-content:center;align-items:flex-start;padding:6px 0 18px}
+.callejero-foto{margin:0;flex:none;width:52%;background:#fff;border-radius:6px;padding:8px 8px 32px;box-shadow:var(--shadow-pop)}
+.callejero-foto img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
+.callejero-foto--a{transform:rotate(-4deg);position:relative;z-index:1}
+.callejero-foto--b{transform:rotate(3.5deg);margin-left:-5%;margin-top:38px;position:relative;z-index:2}
+.callejero-btn{display:inline-block;margin-top:26px;font-family:var(--font-display);font-size:21px;color:#1C2659;background:var(--kirco-paper);border-radius:999px;padding:12px 32px;text-decoration:none;box-shadow:var(--shadow-card);transition:transform 180ms ease-out}
 .callejero-btn:hover{transform:translateY(-2px)}
 @media (max-width:759px){
   .callejero-card{grid-template-columns:1fr;text-align:left}
-  .callejero-foto{max-width:320px;margin:6px auto 0}
+  .callejero-card{background-image:url('assets/callejero-textura-azul-900.webp')}
+  .callejero-fotos{width:100%;max-width:360px;margin:4px auto 0}
 }
 </style>
 </head>
@@ -354,8 +358,13 @@ button{cursor:pointer;border:none;background:none;padding:0}
 <section id="callejero" style="position:relative;z-index:1;padding:40px clamp(20px,5vw,72px) 130px">
   <div class="callejero-card" data-reveal>
     <img src="assets/monograma-naranja.png" alt="" aria-hidden="true" style="position:absolute;width:340px;height:340px;right:-90px;bottom:-110px;transform:rotate(-14deg);opacity:0.12;pointer-events:none">
-    <div class="callejero-foto" data-tilt>
-      <img src="assets/callejero-carta-7-foto.webp" alt="Una carta azul de by_kirco escrita a mano, con su lazo verde" loading="lazy" width="1000" height="750">
+    <div class="callejero-fotos">
+      <figure class="callejero-foto callejero-foto--a" data-tilt>
+        <img src="assets/callejero-placa-dos-amigos-900.webp" srcset="assets/callejero-placa-dos-amigos-600.webp 600w, assets/callejero-placa-dos-amigos-900.webp 900w" sizes="(max-width: 759px) 46vw, 260px" alt="Placa azul de la calle de los Dos Amigos en la fachada de un edificio de Madrid, con balcones de hierro" loading="lazy" width="900" height="1200">
+      </figure>
+      <figure class="callejero-foto callejero-foto--b" data-tilt>
+        <img src="assets/callejero-carta-banco-900.webp" srcset="assets/callejero-carta-banco-600.webp 600w, assets/callejero-carta-banco-900.webp 900w" sizes="(max-width: 759px) 46vw, 260px" alt="Carta azul escrita a mano, «La Indulgencia (también contigo)», sobre un banco de madera con su lazo verde lima" loading="lazy" width="900" height="1200">
+      </figure>
     </div>
     <div style="position:relative">
       <p style="display:inline-block;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase;color:var(--kirco-ink);background:var(--kirco-green);border-radius:999px;padding:6px 14px;margin:0 0 18px">Callejero Emocional</p>
