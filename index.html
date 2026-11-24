@@ -55,6 +55,69 @@ button{cursor:pointer;border:none;background:none;padding:0}
 [data-oculto]{display:none !important}
 /* Lazo verde de «Cada cartita la escribo yo»: siempre por encima y con contraste sobre el naranja */
 .lazo-kirco{mix-blend-mode:normal !important;filter:saturate(1.25) brightness(1.05) drop-shadow(0 3px 5px rgba(46,43,37,0.35)) drop-shadow(0 0 1px rgba(46,43,37,0.5))}
+
+/* ===== Móvil y tablet (< 960 px). El escritorio no cambia. ===== */
+@media (max-width:959px){
+  /* Fotos de la home como en Destinatarios: polaroids flotando alrededor del texto */
+  #phrase-section{min-height:88vh !important;padding:70px 0 90px !important}
+  #polas-wide > div{width:clamp(128px,36vw,180px) !important}
+  #polas-wide > div [data-tilt]{padding:8px 8px 30px !important}
+  #polas-wide > div:nth-child(1){left:3% !important;top:5% !important}
+  #polas-wide > div:nth-child(2){right:4% !important;left:auto !important;top:10% !important}
+  #polas-wide > div:nth-child(3){display:none !important}
+  #polas-wide > div:nth-child(4){left:7% !important;top:63% !important}
+  #polas-wide > div:nth-child(5){right:5% !important;left:auto !important;top:60% !important}
+  #polas-narrow{display:none !important}
+  /* Sobre mí: la pista de escritorio no se muestra en móvil */
+  #card-hint{display:none !important}
+  /* Si la encuentras: sin hueco vacío (las burbujas son solo de escritorio) */
+  #encuentras-section{min-height:0 !important;padding:90px 0 80px !important}
+  /* Tarjetas de Instagram: proporción de la imagen, sin recortar el texto del post */
+  [data-insta-card]{height:auto !important;aspect-ratio:4/5}
+  /* Zonas táctiles cómodas */
+  #hero header nav a{display:inline-block;padding:12px 2px}
+  footer a[href$=".html"]{display:inline-block;padding:12px 0}
+}
+@media (max-width:420px){
+  #hero header{padding:16px 18px !important}
+  #hero header img{height:64px !important}
+  #hero header nav{gap:18px !important}
+}
+/* Cartita «Cada cartita la escribo yo» en móvil: se abre como una carta (tapa hacia arriba) */
+.smn{position:relative;max-width:420px;margin:0 auto;cursor:pointer;perspective:1800px;-webkit-tap-highlight-color:transparent}
+.smn-top{height:0;transition:height 1000ms cubic-bezier(0.65,0,0.35,1)}
+.smn-page{position:relative;background:var(--kirco-orange);border-radius:32px;box-shadow:var(--shadow-pop);transform-style:preserve-3d;transition:border-radius 400ms ease 500ms}
+.smn-letter{padding:46px 26px 40px;min-height:400px;display:flex;flex-direction:column;justify-content:center}
+.smn-letter > *{opacity:0;transform:translateY(8px);transition:opacity 450ms ease-out,transform 450ms ease-out}
+.smn-cover{position:absolute;inset:0;transform-origin:50% 0;transform-style:preserve-3d;transform:rotateX(0deg);transition:transform 1100ms cubic-bezier(0.65,0,0.35,1);z-index:3}
+.smn-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:32px;background:var(--kirco-orange);box-shadow:var(--shadow-pop)}
+.smn-front{display:flex;flex-direction:column;justify-content:center;padding:34px 30px}
+.smn-back{transform:rotateX(180deg);padding:20px 20px 0;border-radius:32px 32px 0 0;box-shadow:0 -8px 30px rgba(46,43,37,0.12)}
+.smn-back img{display:block;width:100%;height:100%;object-fit:cover;object-position:40% 50%;border-radius:20px 20px 0 0}
+.smn-hole{position:absolute;left:50%;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#F7F1E3;box-shadow:inset 0 2px 4px rgba(46,43,37,0.35);z-index:2}
+.smn-lazo-open{position:absolute;width:120px;height:auto;pointer-events:none;opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 900ms,clip-path 900ms ease-out 900ms;z-index:6}
+.smn-spine{position:absolute;left:26px;right:26px;top:-1px;height:2px;background:rgba(255,255,255,0.7);opacity:0;transition:opacity 400ms ease-out 700ms;z-index:4}
+.smn.is-open .smn-cover{transform:rotateX(180deg)}
+.smn.is-open .smn-page{border-radius:0 0 32px 32px}
+.smn.is-open .smn-letter > *{opacity:1;transform:none}
+.smn.is-open .smn-letter > *:nth-child(1){transition-delay:850ms}
+.smn.is-open .smn-letter > *:nth-child(2){transition-delay:1000ms}
+.smn.is-open .smn-letter > *:nth-child(3){transition-delay:1150ms}
+.smn.is-open .smn-letter > *:nth-child(4){transition-delay:1300ms}
+.smn.is-open .smn-lazo-open{opacity:1;clip-path:inset(0 0 0 0)}
+.smn.is-open .smn-spine{opacity:1}
+.smn.is-open #smn-lazo-closed{opacity:0}
+@media (prefers-reduced-motion:reduce){.smn-top,.smn-cover,.smn-letter > *,.smn-lazo-open{transition:none !important}}
+/* Callejero Emocional */
+.callejero-card{max-width:1100px;margin:0 auto;background:#24378A;border-radius:32px;box-shadow:var(--shadow-pop);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(28px,4vw,56px);align-items:center;padding:clamp(26px,4vw,56px);color:var(--kirco-paper);position:relative;overflow:hidden}
+.callejero-foto{background:#fff;border-radius:6px;padding:10px 10px 40px;box-shadow:var(--shadow-pop);transform:rotate(-3deg)}
+.callejero-foto img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:2px}
+.callejero-btn{display:inline-block;margin-top:26px;font-family:var(--font-display);font-size:21px;color:#24378A;background:var(--kirco-paper);border-radius:999px;padding:12px 32px;text-decoration:none;box-shadow:var(--shadow-card);transition:transform 180ms ease-out}
+.callejero-btn:hover{transform:translateY(-2px)}
+@media (max-width:759px){
+  .callejero-card{grid-template-columns:1fr;text-align:left}
+  .callejero-foto{max-width:320px;margin:6px auto 0}
+}
 </style>
 </head>
 <body>
@@ -121,20 +184,20 @@ button{cursor:pointer;border:none;background:none;padding:0}
 
   <!-- Polaroids desktop -->
   <div id="polas-wide">
-    <div data-speed="1.5" style="position:absolute;z-index:3;left:5%;top:8%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(-5deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/01-tren.webp" alt="Cartita en la ventana de un tren" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
-    <div data-speed="0.9" style="position:absolute;z-index:3;right:7%;top:14%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(4deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/02-cafe.webp" alt="Cartita en un café" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
-    <div data-speed="1.8" style="position:absolute;z-index:3;left:40%;top:38%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(3deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/03-arte-simple.webp" alt="Cartita colgada de una planta" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
-    <div data-speed="1.2" style="position:absolute;z-index:3;left:14%;top:60%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(-3deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/04-obra-de-arte.webp" alt="Cartita en un banco" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
-    <div data-speed="0.7" style="position:absolute;z-index:3;right:15%;top:62%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(5deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/05-metro.webp" alt="Cartita en el metro" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
+    <div data-speed="1.5" style="position:absolute;z-index:3;left:5%;top:8%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(-5deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/01-tren.webp" srcset="assets/hero/01-tren-900.webp 900w, assets/hero/01-tren.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita en la ventana de un tren" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
+    <div data-speed="0.9" style="position:absolute;z-index:3;right:7%;top:14%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(4deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/02-cafe.webp" srcset="assets/hero/02-cafe-900.webp 900w, assets/hero/02-cafe.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita en un café" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
+    <div data-speed="1.8" style="position:absolute;z-index:3;left:40%;top:38%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(3deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/03-arte-simple.webp" srcset="assets/hero/03-arte-simple-900.webp 900w, assets/hero/03-arte-simple.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita colgada de una planta" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
+    <div data-speed="1.2" style="position:absolute;z-index:3;left:14%;top:60%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(-3deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/04-obra-de-arte.webp" srcset="assets/hero/04-obra-de-arte-900.webp 900w, assets/hero/04-obra-de-arte.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita en un banco" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
+    <div data-speed="0.7" style="position:absolute;z-index:3;right:15%;top:62%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(5deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/05-metro.webp" srcset="assets/hero/05-metro-900.webp 900w, assets/hero/05-metro.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita en el metro" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
   </div>
 
   <!-- Polaroids mobile grid -->
   <div id="polas-narrow" style="display:none;position:relative;z-index:3;flex-direction:column;align-items:center;gap:20px;max-width:340px;margin:48px auto 0;padding:0 20px">
-    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(-5deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/01-tren.webp" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
-    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(4deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/02-cafe.webp" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
-    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(3deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/03-arte-simple.webp" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
-    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(-3deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/04-obra-de-arte.webp" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
-    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(5deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/05-metro.webp" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
+    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(-5deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/01-tren.webp" srcset="assets/hero/01-tren-900.webp 900w, assets/hero/01-tren.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
+    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(4deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/02-cafe.webp" srcset="assets/hero/02-cafe-900.webp 900w, assets/hero/02-cafe.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
+    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(3deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/03-arte-simple.webp" srcset="assets/hero/03-arte-simple-900.webp 900w, assets/hero/03-arte-simple.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
+    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(-3deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/04-obra-de-arte.webp" srcset="assets/hero/04-obra-de-arte-900.webp 900w, assets/hero/04-obra-de-arte.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
+    <div style="background:#fff;border-radius:6px;padding:10px 10px 36px;box-shadow:var(--shadow-pop);transform:rotate(5deg)"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/05-metro.webp" srcset="assets/hero/05-metro-900.webp 900w, assets/hero/05-metro.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover"></div></div>
   </div>
 </section>
 
@@ -181,33 +244,40 @@ button{cursor:pointer;border:none;background:none;padding:0}
   </div>
   <p id="card-hint" style="font-family:var(--font-hand);font-size:24px;color:var(--kirco-orange-deep);text-align:center;margin:28px 0 0">↑ toca la cartita para abrirla</p>
 
-  <!-- Narrow (mobile) — cover + tap to reveal letter -->
-  <div id="sobremi-narrow" style="display:none;max-width:400px;margin:0 auto;cursor:pointer" role="button" tabindex="0" aria-label="Abrir la carta" aria-expanded="false">
-    <div style="position:relative;background:var(--kirco-orange);border-radius:32px;padding:22px;box-shadow:var(--shadow-pop);transition:border-radius 500ms ease">
-      <img src="assets/sobre-mi-header.webp" alt="Una chica lee una cartita de by_kirco" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:20px">
-      <!-- Lazo verde (móvil): por encima de la foto para que destaque -->
-      <img class="lazo-kirco" src="assets/lazo-cerrado.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:-16px;top:34%;width:92px;height:auto;z-index:3;transform:rotate(-8deg);pointer-events:none">
-      <div style="padding:20px 6px 6px">
-        <h2 style="font-family:var(--font-display);font-weight:400;font-size:30px;line-height:1.06;margin:0;color:#fff">Cada cartita la escribo yo, a mano.</h2>
-        <p id="sm-hint-narrow" style="font-family:var(--font-hand);font-size:18px;color:var(--kirco-ink);margin:10px 0 0;opacity:0.65">↓ toca para leer la carta</p>
-      </div>
-    </div>
-    <div id="sm-letter" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 700ms cubic-bezier(0.22,1,0.36,1),opacity 500ms ease-out 100ms">
-      <div style="background:var(--kirco-orange);border-radius:0 0 32px 32px;padding:0 26px 28px;margin-top:-20px;padding-top:28px">
-        <p style="font-family:var(--font-hand);font-size:24px;line-height:1.2;color:var(--kirco-ink);margin:0 0 14px">Querido desconocido,</p>
-        <p style="font-family:var(--font-hand);font-size:18px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Las dejo por Madrid para quién las necesite.</p>
-        <p style="font-family:var(--font-hand);font-size:18px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Y quién sabe, igual tú eres el próximo en encontrarla.</p>
+  <!-- Narrow (móvil y tablet): la misma cartita que en escritorio, pero se abre hacia arriba.
+       La tapa gira sobre su borde superior; por detrás aparece la foto y debajo queda la carta. -->
+  <div id="sobremi-narrow" class="smn" style="display:none" role="button" tabindex="0" aria-label="Abrir la cartita" aria-expanded="false">
+    <div class="smn-top" aria-hidden="true"></div>
+    <div class="smn-page">
+      <div class="smn-spine" aria-hidden="true"></div>
+      <div class="smn-letter">
+        <p style="font-family:var(--font-hand);font-size:25px;line-height:1.2;color:var(--kirco-ink);margin:0 0 14px">Querido desconocido,</p>
+        <p style="font-family:var(--font-hand);font-size:19px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Las dejo por Madrid para quién las necesite.</p>
+        <p style="font-family:var(--font-hand);font-size:19px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Y quién sabe, igual tú eres el próximo en encontrarla.</p>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px">
           <p style="font-family:var(--font-hand);font-size:22px;color:var(--kirco-ink);margin:0">Att. @by_kirco</p>
-          <a href="/sobre-mi.html" style="font-family:var(--font-display);font-size:20px;color:var(--kirco-orange-deep);background:#fff;border-radius:999px;padding:10px 28px;text-decoration:none;box-shadow:var(--shadow-card)" onclick="event.stopPropagation()">mi historia</a>
+          <a href="/sobre-mi.html" style="font-family:var(--font-display);font-size:20px;color:var(--kirco-orange-deep);background:#fff;border-radius:999px;padding:11px 28px;text-decoration:none;box-shadow:var(--shadow-card)" onclick="event.stopPropagation()">mi historia</a>
+        </div>
+      </div>
+      <div class="smn-hole" aria-hidden="true" style="bottom:18px;left:13%"></div>
+      <img class="smn-lazo-open lazo-kirco" src="assets/lazo-abierto.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="left:calc(13% + 2px);top:calc(100% - 26px);transform:rotate(80deg);transform-origin:0 50%;width:110px">
+      <div class="smn-cover">
+        <div class="smn-face smn-front">
+          <h2 style="font-family:var(--font-display);font-weight:400;font-size:clamp(38px,11vw,52px);line-height:1.04;margin:0;color:#fff;text-shadow:0 2px 0 rgba(224,126,28,0.45);padding-right:72px">Cada cartita la escribo yo, a mano.</h2>
+          <img id="smn-lazo-closed" class="lazo-kirco" src="assets/lazo-cerrado.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:-2px;top:50%;width:88px;height:auto;transform:translateY(-40%) rotate(-8deg);pointer-events:none;transition:opacity 300ms ease-out">
+        </div>
+        <div class="smn-face smn-back">
+          <div class="smn-hole" aria-hidden="true" style="top:8px;left:22%;z-index:3"></div>
+          <img src="assets/sobre-mi-header.webp" alt="Una chica lee una cartita de by_kirco en un banco del parque" loading="lazy">
         </div>
       </div>
     </div>
+    <p id="smn-hint" style="font-family:var(--font-hand);font-size:22px;color:var(--kirco-orange-deep);text-align:center;margin:30px 0 0;padding-left:40px">↑ toca la cartita para abrirla</p>
   </div>
 </section>
 
 <!-- SI LA ENCUENTRAS / ME ALEGRARÁ SABERLO -->
-<section style="position:relative;z-index:1;min-height:90vh;padding:120px 0 140px;overflow:hidden;display:flex;flex-direction:column;justify-content:center">
+<section id="encuentras-section" style="position:relative;z-index:1;min-height:90vh;padding:120px 0 140px;overflow:hidden;display:flex;flex-direction:column;justify-content:center">
   <div data-reveal aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;font-family:var(--font-ocr);font-size:clamp(30px,6.2vw,120px);line-height:1;white-space:nowrap;pointer-events:none">
     <div data-marquee="1" style="color:var(--kirco-green-deep);will-change:transform">SI LA ENCUENTRAS</div>
     <div data-marquee="-1" style="color:var(--kirco-orange-deep);will-change:transform">ME ALEGRARÁ SABERLO</div>
@@ -280,6 +350,22 @@ button{cursor:pointer;border:none;background:none;padding:0}
   </div>
 </section>
 
+<!-- CALLEJERO EMOCIONAL (nov 2026). Texto: Ryan (copy), con la frase «serie original de by_kirco» validada por Oscar. -->
+<section id="callejero" style="position:relative;z-index:1;padding:40px clamp(20px,5vw,72px) 130px">
+  <div class="callejero-card" data-reveal>
+    <img src="assets/monograma-naranja.png" alt="" aria-hidden="true" style="position:absolute;width:340px;height:340px;right:-90px;bottom:-110px;transform:rotate(-14deg);opacity:0.12;pointer-events:none">
+    <div class="callejero-foto" data-tilt>
+      <img src="assets/callejero-carta-7-foto.webp" alt="Una carta azul de by_kirco escrita a mano, con su lazo verde" loading="lazy" width="1000" height="750">
+    </div>
+    <div style="position:relative">
+      <p style="display:inline-block;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase;color:var(--kirco-ink);background:var(--kirco-green);border-radius:999px;padding:6px 14px;margin:0 0 18px">Callejero Emocional</p>
+      <h2 style="font-family:var(--font-display);font-weight:400;font-size:clamp(38px,4.6vw,62px);line-height:1.04;margin:0 0 18px;color:#fff">Una carta en cada calle</h2>
+      <p style="font-family:var(--font-hand);font-size:clamp(20px,1.9vw,25px);line-height:1.45;margin:0;color:var(--kirco-paper)">Es una serie original de by_kirco. Elegí ocho calles de Madrid con nombre de emoción, como Constancia, Refugio o Esperanza, y en cada una dejé una carta escrita a mano. Si encuentras una, es para ti.</p>
+      <a class="callejero-btn" href="https://www.instagram.com/by_kirco/reels/" data-reel-pendiente="Sustituir por el enlace exacto del reel Callejero Emocional · Carta 3 de 8 (Del desengaño a la esperanza)" target="_blank" rel="noopener">Mira dónde dejé una</a>
+    </div>
+  </div>
+</section>
+
 <!-- COMUNIDAD DE ESCRITORES — OCULTA (nov 2026). Para reactivarla, quita data-oculto y pon COMUNIDAD_ACTIVA = true en el script. -->
 <section data-oculto="comunidad" style="position:relative;z-index:1;padding:110px clamp(20px,5vw,72px) 140px;overflow:hidden">
   <img src="assets/monograma-naranja.png" alt="" style="position:absolute;width:420px;height:420px;top:40px;left:-130px;transform:rotate(-16deg);opacity:0.08;pointer-events:none">
@@ -306,15 +392,15 @@ button{cursor:pointer;border:none;background:none;padding:0}
         </form>
       </div>
       <!-- Lazo abierto left -->
-      <img id="com-lazo-l" src="assets/lazo-abierto.png" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;left:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:5;pointer-events:none;filter:hue-rotate(-62deg) saturate(1.7) brightness(1.08);opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 900ms,clip-path 900ms ease-out 900ms">
+      <img id="com-lazo-l" src="assets/lazo-abierto.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;left:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:5;pointer-events:none;filter:hue-rotate(-62deg) saturate(1.7) brightness(1.08);opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 900ms,clip-path 900ms ease-out 900ms">
       <!-- Lazo abierto right -->
-      <img id="com-lazo-r" src="assets/lazo-abierto.png" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:5;pointer-events:none;transform:scaleX(-1);filter:hue-rotate(-62deg) saturate(1.7) brightness(1.08);opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 1000ms,clip-path 900ms ease-out 1000ms">
+      <img id="com-lazo-r" src="assets/lazo-abierto.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:calc(100% - 31px);top:calc(50% - 116px);width:260px;height:auto;z-index:5;pointer-events:none;transform:scaleX(-1);filter:hue-rotate(-62deg) saturate(1.7) brightness(1.08);opacity:0;clip-path:inset(0 100% 0 0);transition:opacity 300ms ease-out 1000ms,clip-path 900ms ease-out 1000ms">
       <!-- Cover -->
       <div id="com-cover" style="position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;transform-style:preserve-3d;transform:rotateY(0deg);transition:transform 1100ms cubic-bezier(0.65,0,0.35,1);z-index:3">
         <!-- Cover front -->
         <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--kirco-green);border-radius:32px;box-shadow:var(--shadow-pop);display:flex;align-items:center;padding:56px 90px 56px 64px;box-sizing:border-box">
           <h2 style="font-family:var(--font-display);font-weight:400;font-size:clamp(46px,4.8vw,70px);line-height:1.04;margin:0;color:#fff;text-shadow:0 2px 0 rgba(92,138,46,0.45)">Únete a la comunidad de cartitas anónimas</h2>
-          <img id="com-lazo-closed" src="assets/lazo-cerrado.png" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:-62px;top:50%;width:140px;height:auto;transform:translateY(-38%) rotate(-8deg);filter:hue-rotate(-62deg) saturate(1.7) brightness(1.08);transition:opacity 300ms ease-out;pointer-events:none">
+          <img id="com-lazo-closed" src="assets/lazo-cerrado.webp" alt="" aria-hidden="true" onerror="this.style.display='none'" style="position:absolute;right:-62px;top:50%;width:140px;height:auto;transform:translateY(-38%) rotate(-8deg);filter:hue-rotate(-62deg) saturate(1.7) brightness(1.08);transition:opacity 300ms ease-out;pointer-events:none">
         </div>
         <!-- Cover back (text) -->
         <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);background:var(--kirco-green);border-radius:32px 0 0 32px;padding:48px 44px 48px 66px;box-sizing:border-box;box-shadow:var(--shadow-pop);display:flex;flex-direction:column;justify-content:center">
@@ -420,8 +506,9 @@ button{cursor:pointer;border:none;background:none;padding:0}
       if (comN) comN.style.display = 'none';
       if (notas2) notas2.style.display = '';
     } else {
-      if (polasW) polasW.style.display = 'none';
-      if (polasN) { polasN.style.display = 'flex'; }
+      // Móvil: mismas polaroids flotantes que en escritorio (como en Destinatarios), recolocadas por CSS
+      if (polasW) polasW.style.display = '';
+      if (polasN) polasN.style.display = 'none';
       if (smW) smW.style.display = 'none';
       if (smN) smN.style.display = 'block';
       if (comW) comW.style.display = 'none';
@@ -434,8 +521,9 @@ button{cursor:pointer;border:none;background:none;padding:0}
   function applyPhraseLayout() {
     var ps = q('#phrase-section');
     if (!ps) return;
-    ps.style.minHeight = wide ? '115vh' : '0px';
-    ps.style.padding = wide ? '70px 0 120px' : '80px 0 100px';
+    // En móvil el alto lo marca el CSS (@media max-width:959px)
+    ps.style.minHeight = wide ? '115vh' : '';
+    ps.style.padding = wide ? '70px 0 120px' : '';
   }
 
   window.addEventListener('resize', function() {
@@ -518,25 +606,29 @@ button{cursor:pointer;border:none;background:none;padding:0}
     book.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCardOpen(!cardOpen); }});
   }
 
-  // --- Sobre mí narrow (móvil): tap to reveal letter ---
+  // --- Sobre mí narrow (móvil): la cartita se abre hacia arriba (misma animación que en escritorio, en vertical) ---
   var smNarrow = q('#sobremi-narrow');
-  var smLetter = q('#sm-letter');
-  var smHintNarrow = q('#sm-hint-narrow');
+  var smTop = smNarrow ? smNarrow.querySelector('.smn-top') : null;
+  var smPage = smNarrow ? smNarrow.querySelector('.smn-page') : null;
+  var smHint = q('#smn-hint');
   var smNarrowOpen = false;
 
   function setSmNarrowOpen(open) {
     smNarrowOpen = open;
-    if (smLetter) {
-      smLetter.style.maxHeight = open ? smLetter.scrollHeight + 'px' : '0';
-      smLetter.style.opacity = open ? '1' : '0';
-    }
-    if (smHintNarrow) smHintNarrow.textContent = open ? '↑ toca para cerrar la carta' : '↓ toca para leer la carta';
-    if (smNarrow) smNarrow.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (!smNarrow) return;
+    smNarrow.classList.toggle('is-open', open);
+    if (smTop && smPage) smTop.style.height = open ? smPage.offsetHeight + 'px' : '0px';
+    if (smHint) smHint.textContent = open ? 'toca otra vez para cerrarla' : '↑ toca la cartita para abrirla';
+    smNarrow.setAttribute('aria-expanded', open ? 'true' : 'false');
+    smNarrow.setAttribute('aria-label', open ? 'Cerrar la cartita' : 'Abrir la cartita');
+    // El alto de la página cambia: recalcular las animaciones de scroll al terminar
+    setTimeout(function() { if (ST) ST.refresh(); }, 1150);
   }
 
   if (smNarrow) {
     smNarrow.addEventListener('click', function() { setSmNarrowOpen(!smNarrowOpen); });
     smNarrow.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSmNarrowOpen(!smNarrowOpen); }});
+    window.addEventListener('resize', function() { if (smNarrowOpen && smTop && smPage) smTop.style.height = smPage.offsetHeight + 'px'; });
   }
 
   // --- Comunidad book flip ---
@@ -755,8 +847,10 @@ button{cursor:pointer;border:none;background:none;padding:0}
 
     qa('[data-speed]').forEach(function(el) {
       var s = parseFloat(el.dataset.speed) || 1;
-      gsap.fromTo(el, { y: 220 * s }, {
-        y: -220 * s, ease: 'none',
+      // En móvil el recorrido es menor para que las polaroids no se salgan de su sección
+      var amp = function() { return window.innerWidth >= 960 ? 220 : 90; };
+      gsap.fromTo(el, { y: function() { return amp() * s; } }, {
+        y: function() { return -amp() * s; }, ease: 'none', invalidateOnRefresh: true,
         scrollTrigger: { trigger: el.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true }
       });
     });

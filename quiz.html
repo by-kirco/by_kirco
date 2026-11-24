@@ -92,6 +92,16 @@
     }
     .btn-round:hover { transform: translateY(-2px); }
     .btn-round:active { transform: scale(0.98); }
+  
+    @media (max-width: 959px) { .nav-link { display: inline-block; padding: 12px 0; } }
+    /* ── Móvil (nov 2026): cabecera sin desbordes y zonas táctiles cómodas. El escritorio no cambia. ── */
+    @media (max-width: 600px) {
+      body > header, #quiz-header-nav { padding: 16px 18px !important; gap: 12px !important; }
+      body > header > a, #quiz-header-nav > a { flex-shrink: 0; }
+      body > header > a img, #quiz-header-nav > a img { height: 60px !important; }
+      body > header nav, #quiz-header-nav nav { gap: 16px !important; flex-wrap: wrap; justify-content: flex-end; }
+      .nav-link { display: inline-block; padding: 12px 0; white-space: nowrap; }
+    }
   </style>
 </head>
 <body>

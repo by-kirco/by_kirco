@@ -360,6 +360,54 @@
       text-transform: uppercase;
     }
 
+
+    /* ── Móvil y tablet (< 960 px). El escritorio no cambia. ── */
+    .carta-more { display: none; }
+    @media (max-width: 959px) {
+      /* Menos texto a la vista: los párrafos .carta-extra se leen con «leer la carta entera» */
+      .carta-paper:not(.is-full) .carta-extra { display: none; }
+      .carta-more {
+        display: inline-block;
+        font-family: var(--font-display);
+        font-size: 19px;
+        color: var(--kirco-orange-deep);
+        background: #fff;
+        border-radius: 999px;
+        padding: 11px 26px;
+        margin: 4px 0 24px;
+        box-shadow: var(--shadow-card);
+      }
+      .carta-paper.is-full .carta-more { display: none; }
+      .carta-extra { animation: carta-fade 600ms ease-out both; }
+      .carta-inner { padding: 60px 26px 40px; }
+      .carta-section { padding: 90px 20px 100px; }
+      .carta-roller { left: -10px; right: -10px; height: 40px; }
+      .carta-roller--top { top: -20px; }
+      .carta-roller--bottom { margin-top: -20px; }
+      /* Dónde las dejo: sin scroll horizontal, cuadrícula de 2 columnas con 4 fotos */
+      .donde__carousel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 14px;
+        overflow: visible;
+        scroll-snap-type: none;
+        padding: 10px 20px 20px;
+        max-width: 560px;
+        margin: 0 auto;
+      }
+      .donde__carousel .polaroid { flex: none; padding: 8px 8px 12px; border-radius: 18px; }
+      .donde__carousel .polaroid:nth-child(5) { display: none; }
+      .polaroid__label { font-size: 12px; letter-spacing: 0.08em; margin-top: 10px; }
+      /* Zonas táctiles */
+      .hero__header nav a { display: inline-block; padding: 12px 2px; }
+    }
+    @media (max-width: 420px) {
+      .hero__header { padding: 16px 18px; }
+      .hero__header img { height: 64px !important; }
+      .hero__header nav { gap: 18px; }
+    }
+    @keyframes carta-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
     /* ── [data-reveal] initial state ── */
     [data-reveal] { opacity: 0; transform: translateY(60px); }
 
@@ -404,9 +452,10 @@
           <p class="carta-p">Un 13 de abril de 2021 abrí una cuenta de Instagram con la idea de publicar frases bonitas. De esas que se guardan en favoritos y se comparten en las historias. Pero algo no encajaba. Las frases estaban bien, pero faltaba algo real, algo que llegara de verdad.</p>
           <p class="carta-highlight">Y entonces empecé a escribir cartitas.</p>
           <p class="carta-p">Sin destinatario. Sin remitente. Solo papel, bolígrafo y la sensación de que alguien, en algún lugar de Madrid, quizás las necesitaba. Las dejé en bancos de parques, en asientos de metro o entre los libros de una biblioteca. Y desde ese día comenzó nuestra historia: <span style="font-family:var(--font-display);color:#ffffff">Queridos Desconocidos</span>.</p>
-          <p class="carta-p">La primavera del 2022 fui un pasito más allá. Si alguien hacía algo por mí —darme una tirita, ayudarme a llegar a algún sitio— le entregaba una cartita de agradecimiento escrita a mano. Porque si un desconocido hacía algo por mí, merecía algo más que un simple "gracias". Algo así como una cadena de favores.</p>
-          <p class="carta-p">Escribir es mi manera de relajarme y de poner en palabras lo que a veces no sé cómo decir de otra forma. Aunque es un proyecto que me apasiona, hay días en que la rutina lo complica todo y no tengo tiempo de dejarte una cartita. Pero entonces releo vuestros mensajes cuando encontráis alguna de las mías, y la ilusión vuelve de golpe.</p>
-          <p class="carta-highlight">Eso es lo que me mantiene aquí.</p>
+          <button type="button" class="carta-more" id="carta-more" aria-expanded="false">leer la carta entera</button>
+          <p class="carta-p carta-extra">La primavera del 2022 fui un pasito más allá. Si alguien hacía algo por mí —darme una tirita, ayudarme a llegar a algún sitio— le entregaba una cartita de agradecimiento escrita a mano. Porque si un desconocido hacía algo por mí, merecía algo más que un simple "gracias". Algo así como una cadena de favores.</p>
+          <p class="carta-p carta-extra">Escribir es mi manera de relajarme y de poner en palabras lo que a veces no sé cómo decir de otra forma. Aunque es un proyecto que me apasiona, hay días en que la rutina lo complica todo y no tengo tiempo de dejarte una cartita. Pero entonces releo vuestros mensajes cuando encontráis alguna de las mías, y la ilusión vuelve de golpe.</p>
+          <p class="carta-highlight carta-extra">Eso es lo que me mantiene aquí.</p>
           <p class="carta-p">Si tú encontraste una de mis cartitas, espero que en ese momento hayas sentido lo mismo que yo imagino: curiosidad primero, y luego esa sensación pequeña y bonita de que alguien pensó en ti sin conocerte.</p>
           <p class="carta-highlight">Porque de eso va todo esto.</p>
           <img src="assets/logo-naranja-negativo.png" alt="by_kirco" style="display:block;height:76px;margin:20px 0 0 auto" />
@@ -574,6 +623,19 @@
   /* ── Parchment unroll ── */
   var paper = document.getElementById('carta-paper');
   var rollerBottom = document.getElementById('carta-roller-bottom');
+  var moreBtn = document.getElementById('carta-more');
+  var isNarrow = function () { return window.innerWidth < 960; };
+  var lastW = window.innerWidth;
+  var mobileUnrolled = false;
+  function syncRoller() { if (rollerBottom) rollerBottom.style.top = paper.offsetHeight + 'px'; }
+  function naturalHeight() {
+    var h = paper.style.height;
+    paper.style.height = 'auto';
+    var full = paper.scrollHeight;
+    paper.style.height = h;
+    return full;
+  }
+
   if (paper && !reduce) {
     var fullH = 0;
     function measurePaper() {
@@ -581,13 +643,8 @@
       fullH = paper.scrollHeight;
       paper.style.height = '60px';
     }
-    measurePaper();
-    window.addEventListener('resize', function () {
-      ScrollTrigger.getAll().forEach(function (t) { if (t.vars._isParchment) t.kill(); });
-      measurePaper();
-      initParchment();
-    });
 
+    /* Escritorio: el pergamino se desenrolla con el scroll (igual que antes) */
     function initParchment() {
       var section = paper.closest('section');
       gsap.to(paper, {
@@ -608,9 +665,65 @@
         }
       });
     }
-    initParchment();
+
+    /* Móvil: se desenrolla hacia abajo de una vez al llegar a él, y el rodillo de abajo
+       baja pegado al borde del papel (antes iba por detrás del scroll y daba saltos) */
+    function unrollTo(h, dur) {
+      gsap.killTweensOf(paper);
+      gsap.to(paper, {
+        height: h, duration: dur, ease: 'power2.inOut',
+        onUpdate: syncRoller,
+        onComplete: function () { paper.style.height = 'auto'; syncRoller(); ScrollTrigger.refresh(); }
+      });
+    }
+    function initParchmentMobile() {
+      if (mobileUnrolled) { paper.style.height = 'auto'; syncRoller(); return; }
+      paper.style.height = '60px';
+      syncRoller();
+      ScrollTrigger.create({
+        _isParchment: true,
+        trigger: paper,
+        start: 'top 78%',
+        once: true,
+        onEnter: function () { mobileUnrolled = true; unrollTo(naturalHeight(), 1.9); }
+      });
+    }
+
+    function setupParchment() {
+      ScrollTrigger.getAll().forEach(function (t) { if (t.vars._isParchment) t.kill(); });
+      if (isNarrow()) { initParchmentMobile(); }
+      else { gsap.killTweensOf(paper); measurePaper(); initParchment(); }
+    }
+    setupParchment();
+    /* En el móvil la barra del navegador cambia el alto de la ventana al hacer scroll:
+       solo se rehace si cambia el ancho */
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      setupParchment();
+    });
   } else if (paper && reduce) {
     paper.style.height = 'auto';
+    syncRoller();
+  }
+
+  /* Si el papel cambia de alto estando desenrollado (fuentes que cargan tarde, giro del móvil), el rodillo lo sigue */
+  if (paper && 'ResizeObserver' in window) {
+    new ResizeObserver(function () { if (paper.style.height === 'auto') syncRoller(); }).observe(paper);
+  }
+
+  /* «Leer la carta entera» (solo móvil): muestra los párrafos .carta-extra y el papel sigue desenrollándose */
+  if (paper && moreBtn) {
+    moreBtn.addEventListener('click', function () {
+      var from = paper.offsetHeight;
+      paper.classList.add('is-full');
+      moreBtn.setAttribute('aria-expanded', 'true');
+      if (reduce || !window.gsap) { paper.style.height = 'auto'; syncRoller(); return; }
+      var to = naturalHeight();
+      mobileUnrolled = true;
+      paper.style.height = from + 'px';
+      unrollTo(to, 1.2);
+    });
   }
 
   /* ── Hero h1 intro (letra a letra) ── */
