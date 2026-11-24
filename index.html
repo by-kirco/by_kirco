@@ -164,6 +164,12 @@ button{cursor:pointer;border:none;background:none;padding:0}
 .callejero-pola img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:1px}
 .callejero-pola figcaption{font-family:var(--font-hand);font-size:clamp(14px,1.2vw,17px);color:var(--kirco-ink);text-align:center;line-height:1;padding:9px 2px 11px}
 .callejero-pola-num{position:absolute;top:-9px;left:-9px;width:24px;height:24px;border-radius:50%;background:var(--kirco-green);color:#1C2659;font-family:'OCR B Libre','Courier New',monospace;font-size:10.5px;line-height:24px;text-align:center;box-shadow:0 2px 6px rgba(8,12,36,.35)}
+/* Sello flotante: fuera mientras se ve Callejero (las polaroids quedan debajo de él en móvil) */
+#sello-flotante{transition:opacity 280ms ease-out,visibility 0s linear 0s}
+#sello-flotante.is-oculto{opacity:0;visibility:hidden;pointer-events:none;transition:opacity 280ms ease-out,visibility 0s linear 280ms}
+@media (prefers-reduced-motion:reduce){#sello-flotante,#sello-flotante.is-oculto{transition:none}}
+/* Sin JS: el hueco bajo la tarjeta (130 px) siempre supera al sello (72 px + hasta 32 px de margen), así ninguna polaroid queda atrapada bajo él */
+#callejero{padding-bottom:max(130px,calc(72px + clamp(16px,3vw,32px) + 24px)) !important}
 @media (max-width:759px){
   .callejero-rotulo{margin-bottom:22px}
   .callejero-rotulo .callejero-marca{font-size:clamp(13px,4vw,17px);letter-spacing:.16em}
@@ -504,6 +510,22 @@ button{cursor:pointer;border:none;background:none;padding:0}
     }, { threshold: 0.35 });
     io.observe(m);
   })();
+  /* Sello flotante: se esconde (fundido) mientras la tarjeta de Callejero pasa por la franja inferior de la
+     pantalla, donde vive el sello (22 % de abajo, más alto que el sello en 360–1440 px), y vuelve al salir.
+     Se mira esa franja y no la sección entera porque Callejero es lo último antes del pie: si no, al llegar
+     al final de la página el sello no volvería. */
+  (function () {
+    var sec = document.querySelector('#callejero .callejero-card');
+    if (!sec || !('IntersectionObserver' in window)) return;
+    var ver = function () {
+      var sello = document.getElementById('sello-flotante');
+      if (!sello) return;
+      new IntersectionObserver(function (en) {
+        sello.classList.toggle('is-oculto', en[0].isIntersecting);
+      }, { threshold: 0, rootMargin: '-78% 0px 0px 0px' }).observe(sec);
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ver); else ver();
+  })();
   </script>
 </section>
 
@@ -600,8 +622,8 @@ button{cursor:pointer;border:none;background:none;padding:0}
   </div>
 </footer>
 
-<!-- SELLO FLOTANTE -->
-<div style="position:fixed;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);z-index:60;display:flex;align-items:center;gap:14px">
+<!-- SELLO FLOTANTE (se esconde con un fundido mientras Callejero Emocional está en pantalla; ver script de la sección) -->
+<div id="sello-flotante" style="position:fixed;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);z-index:60;display:flex;align-items:center;gap:14px">
   <div id="bubble-tip" style="font-family:var(--font-hand);font-size:19px;line-height:1.25;color:var(--kirco-ink);background:var(--kirco-paper);border:2px solid var(--kirco-line);border-radius:20px 20px 6px 20px;padding:10px 16px;box-shadow:var(--shadow-card);max-width:200px;opacity:0;transform:translateX(12px);transition:opacity 220ms ease-out,transform 220ms ease-out;pointer-events:none">¿Qué carta necesitas hoy? Haz el test</div>
   <button id="btn-seal" aria-label="Haz el test ¿Qué flor eres?" style="width:72px;height:72px;border-radius:50%;background:var(--kirco-orange-deep);border:3px dashed rgba(247,241,227,0.7);box-shadow:var(--shadow-pop);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 200ms ease-out" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">
     <span id="seal-inner" style="display:block;width:38px;height:38px;color:var(--kirco-paper)"><svg width="38" height="38" style="display:block;overflow:visible"><use href="#florK" width="38" height="38"></use></svg></span>
