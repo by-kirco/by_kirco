@@ -25,6 +25,7 @@
       --kirco-orange:       #FFAA4D;
       --kirco-orange-deep:  #D07F1F;
       --kirco-paper:        #F7F1E3;
+      --kirco-light-orange: #FFF2ED; /* Brandbook 2026: Kirco Light Orange */
       --kirco-ink:          #2E2B25;
       --kirco-line:         #E8E1D2;
       --font-display:       'Darumadrop One', sans-serif;
@@ -67,7 +68,7 @@
       font-size: clamp(19px, 1.7vw, 22px);
       line-height: 1.3;
       color: var(--kirco-ink);
-      background: #fff;
+      background: var(--kirco-light-orange); /* sin seleccionar: Kirco Light Orange (nov 2026) */
       border: 2px solid transparent;
       border-radius: 18px;
       padding: 13px 22px;
@@ -76,11 +77,16 @@
       transition: transform 160ms ease-out, border-color 160ms ease-out, background 160ms ease-out;
       width: 100%;
     }
-    .quiz-opt:hover {
+    .quiz-opt:focus-visible, .quiz-opt.is-elegida {
       transform: translateX(6px);
       border-color: var(--kirco-green);
       background: var(--kirco-green-tint);
+      outline: none;
     }
+    @media (hover: hover) {
+      .quiz-opt:hover { transform: translateX(6px); border-color: var(--kirco-green); background: var(--kirco-green-tint); }
+    }
+    .quiz-opt.is-elegida { border-color: var(--kirco-green-deep); }
     .btn-round {
       font-family: var(--font-display);
       font-size: 21px;
@@ -103,12 +109,13 @@
       .nav-link { display: inline-block; padding: 12px 0; white-space: nowrap; }
     }
   </style>
+<script src="assets/kirco-cursor.js" defer></script>
 </head>
 <body>
 
   <!-- HEADER (solo si no es embed) -->
   <header id="quiz-header-nav" style="display:flex;align-items:center;justify-content:space-between;gap:24px;max-width:1160px;margin:0 auto;padding:22px clamp(20px,4vw,48px)">
-    <a href="/" style="display:block"><img src="assets/logo-verde.png" alt="by_kirco" style="height:84px;display:block" /></a>
+    <a href="/" style="display:block"><img src="assets/logo-verde-plano-168.webp" srcset="assets/logo-verde-plano-168.webp 168w, assets/logo-verde-plano-336.webp 336w, assets/logo-verde-plano-504.webp 504w" sizes="84px" width="84" height="84" alt="by_kirco" style="height:84px;width:auto;display:block" /></a>
     <nav style="display:flex;gap:28px;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase">
       <a href="/" class="nav-link" style="color:var(--kirco-green-deep)">Inicio</a>
       <a href="/sobre-mi.html" class="nav-link" style="color:var(--kirco-green-deep)">Sobre mí</a>
@@ -139,7 +146,7 @@
         <!-- INTRO -->
         <div id="quiz-intro-content" style="text-align:center">
           <h1 style="font-family:var(--font-display);font-weight:400;font-size:clamp(56px,7vw,88px);line-height:0.98;margin:0;color:#fff;text-wrap:balance">¿Qué flor eres?</h1>
-          <button id="btn-start" class="btn-round" style="margin-top:40px;font-size:24px;color:var(--kirco-orange-deep);background:#fff;box-shadow:var(--shadow-card)">empezar</button>
+          <button id="btn-start" class="btn-round" style="margin-top:40px;font-size:24px;color:var(--kirco-orange-deep);background:var(--kirco-paper);box-shadow:var(--shadow-card)">empezar</button>
         </div>
 
         <!-- PREGUNTA -->
@@ -158,12 +165,12 @@
           <span id="result-flower" style="display:block;width:130px;height:120px;margin:22px auto 10px;-webkit-mask:url(assets/icons/flor.svg) center/contain no-repeat;mask:url(assets/icons/flor.svg) center/contain no-repeat"></span>
           <h2 id="result-name" style="font-family:var(--font-display);font-weight:400;font-size:clamp(56px,8vw,96px);line-height:1;margin:0"></h2>
           <p id="result-phrase" style="font-family:var(--font-hand);font-size:clamp(22px,2.2vw,28px);color:var(--kirco-ink);margin:14px 0 0"></p>
-          <p id="result-desc" style="font-size:16px;line-height:1.75;color:var(--kirco-ink);max-width:480px;margin:18px auto 0;text-wrap:pretty"></p>
+          <p id="result-desc" style="font-family:var(--font-hand);font-size:clamp(24px,2.4vw,32px);line-height:1.35;color:var(--kirco-ink);max-width:560px;margin:18px auto 0;text-wrap:pretty"></p>
           <p style="font-family:var(--font-hand);font-size:22px;color:var(--kirco-ink);margin:22px 0 0">Att. @by_kirco</p>
           <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
             <!-- «quiero mi carta» oculto mientras ENVIO_CORREO_ACTIVO = false -->
             <button id="btn-quiero-carta" class="btn-round" data-envio-correo hidden style="color:#fff;background:var(--kirco-orange-deep)">quiero mi carta</button>
-            <button id="btn-restart" class="btn-round" style="color:var(--kirco-green-deep);background:#fff;box-shadow:var(--shadow-card)">repetir el test</button>
+            <button id="btn-restart" class="btn-round" style="color:var(--kirco-green-deep);background:var(--kirco-paper);box-shadow:var(--shadow-card)">repetir el test</button>
           </div>
         </div>
 
@@ -173,15 +180,15 @@
           <p style="font-family:var(--font-mono);font-size:12px;letter-spacing:var(--track-mono);text-transform:uppercase;color:var(--kirco-ink);opacity:0.6;margin:0 0 24px">Cuéntame un poco</p>
           <form id="carta-form" style="display:flex;flex-direction:column;gap:12px;text-align:left">
             <input type="text" name="first_name" id="carta-nombre" placeholder="Tu nombre" required
-              style="font-family:var(--font-hand);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:#fff;box-shadow:var(--shadow-card);outline:none;color:var(--kirco-ink);width:100%;transition:border-color 160ms ease-out"
+              style="font-family:var(--font-hand);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:var(--kirco-paper);box-shadow:var(--shadow-card);outline:none;color:var(--kirco-ink);width:100%;transition:border-color 160ms ease-out"
               onfocus="this.style.borderColor='var(--kirco-orange-deep)'" onblur="this.style.borderColor='transparent'" />
             <input type="email" name="email_address" placeholder="Tu correo" required
-              style="font-family:var(--font-hand);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:#fff;box-shadow:var(--shadow-card);outline:none;color:var(--kirco-ink);width:100%;transition:border-color 160ms ease-out"
+              style="font-family:var(--font-hand);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:var(--kirco-paper);box-shadow:var(--shadow-card);outline:none;color:var(--kirco-ink);width:100%;transition:border-color 160ms ease-out"
               onfocus="this.style.borderColor='var(--kirco-orange-deep)'" onblur="this.style.borderColor='transparent'" />
             <input type="text" name="fields[flor]" id="carta-flor" placeholder="Tu flor" readonly
-              style="font-family:var(--font-display);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:rgba(255,255,255,0.7);box-shadow:var(--shadow-card);outline:none;color:var(--kirco-orange-deep);width:100%;cursor:default" />
+              style="font-family:var(--font-display);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:rgba(247,241,227,0.8);box-shadow:var(--shadow-card);outline:none;color:var(--kirco-orange-deep);width:100%;cursor:default" />
             <textarea name="fields[mensaje]" placeholder="Cuéntame un poco de ti (si quieres :))" rows="3"
-              style="font-family:var(--font-hand);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:#fff;box-shadow:var(--shadow-card);outline:none;color:var(--kirco-ink);width:100%;resize:none;transition:border-color 160ms ease-out;line-height:1.4"
+              style="font-family:var(--font-hand);font-size:18px;padding:13px 18px;border:2px solid transparent;border-radius:14px;background:var(--kirco-paper);box-shadow:var(--shadow-card);outline:none;color:var(--kirco-ink);width:100%;resize:none;transition:border-color 160ms ease-out;line-height:1.4"
               onfocus="this.style.borderColor='var(--kirco-orange-deep)'" onblur="this.style.borderColor='transparent'"></textarea>
             <button type="submit" id="btn-carta-submit" class="btn-round" style="margin-top:8px;align-self:center;font-size:22px;color:var(--kirco-green-deep);background:var(--kirco-green);box-shadow:var(--shadow-card)">enviar</button>
           </form>
@@ -245,7 +252,7 @@
   var questions = [
     { q: '¿Cómo vives lo que sientes?', opts: [
       { t: 'Todo llega a la vez, como una ola que no avisa.', key: 'amapola' },
-      { t: 'Lo guardo hasta estar con quien de verdad confío.', key: 'jazmin' },
+      { t: 'Lo guardo hasta estar con alguien en quien confío de verdad.', key: 'jazmin' },
       { t: 'Le doy vueltas una y otra vez antes de soltarlo.', key: 'pensamiento' },
       { t: 'Necesito contarlo para que se vuelva real.', key: 'nomeolvides' },
       { t: 'Lo comparo con cómo me sentí antes.', key: 'romero' },
@@ -380,7 +387,7 @@
       for (var i = 0; i < total; i++) {
         var dot = document.createElement('span');
         dot.style.cssText = 'display:block;width:22px;height:22px;transition:background 300ms ease-out;-webkit-mask:url(assets/icons/flor.svg) center/contain no-repeat;mask:url(assets/icons/flor.svg) center/contain no-repeat;';
-        if (i < step) dot.style.background = '#ffffff';
+        if (i < step) dot.style.background = 'var(--kirco-paper)';
         else if (i === step) dot.style.background = 'var(--kirco-green-deep)';
         else dot.style.background = 'rgba(255,255,255,0.4)';
         dotsEl.appendChild(dot);
@@ -395,7 +402,7 @@
         btn.className = 'quiz-opt';
         btn.textContent = opt.t;
         btn.setAttribute('data-opt', '');
-        btn.addEventListener('click', function () { pick(opt.key); });
+        btn.addEventListener('click', function () { if (!state.busy) btn.classList.add('is-elegida'); pick(opt.key); });
         optionsEl.appendChild(btn);
       });
     }

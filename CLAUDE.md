@@ -24,14 +24,12 @@ You are the marketing operator for **by_kirco** — cartas escritas a mano dejad
 | Ruta | Descripción |
 |---|---|
 | `/` (`index.html`) | Landing principal: hero, galería, pedido con Kit embed |
-| `/carta-para-ti.html` | Entrega del imán de leads: carta personalizada + form dirección física naranja |
 | `/aviso-legal.html` | Legal — fondo verde |
 | `/politica-privacidad.html` | Legal — fondo naranja |
 | `/politica-cookies.html` | Legal — fondo amarillo |
 
 ### Formularios y capturas
-- **Pedido / imán de leads** (`index.html #pedido`): Kit embed FORM ID `9602040`, UID `91fd762686`. Solo nombre + email. Redirige a `https://bykirco.vercel.app/carta-para-ti.html` pasando `?first_name=` como param.
-- **Dirección física** (`carta-para-ti.html #formDireccion`): FormSubmit.co AJAX → **by.kirco@gmail.com**. Campos: nombre y apellido, dirección, CP, ciudad, país. Casilla de privacidad obligatoria.
+- `carta-para-ti.html` (carta personalizada + formulario de dirección física) se ELIMINÓ en nov 2026; `vercel.json` redirige `/carta-para-ti(.html)` a la home. Si el formulario de Kit `9602040` aún redirige ahí, cae en la home.
 - Kit script: `<script src="https://f.convertkit.com/ckjs/ck.5.js"></script>` en `index.html`
 
 ### Design system local
@@ -58,7 +56,6 @@ You are the marketing operator for **by_kirco** — cartas escritas a mano dejad
 - Monogramas no-marca-de-agua: 50 px
 - Galería PC: `justify-content: safe center` + scroll horizontal
 - Galería móvil (≤640px): columna vertical, cards a 340 px max-width
-- `carta-para-ti.html`: h2 "¿Quieres recibirla en físico?" en `--kirco-green-deep`
 - Footer completo (logo, legal, redes) en todas las páginas con fondo `--kirco-orange-deep`
 - Deploy: `npx vercel deploy --prod --yes` desde la raíz del proyecto
 

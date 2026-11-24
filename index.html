@@ -48,7 +48,6 @@ body{
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto !important}
 .lenis.lenis-stopped{overflow:hidden}
-@media (pointer:fine){html.kirco-cursor,html.kirco-cursor *{cursor:none !important}}
 a{color:inherit}
 button{cursor:pointer;border:none;background:none;padding:0}
 /* Secciones ocultas temporalmente (nov 2026). Para reactivar una, quita su atributo data-oculto. */
@@ -133,6 +132,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
   .callejero-btn{font-size:16px;padding:.85em 1.3em .8em}
 }
 </style>
+<script src="assets/kirco-cursor.js" defer></script>
 </head>
 <body>
 
@@ -149,12 +149,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
   <div id="loader-curve" style="position:absolute;left:-10%;right:-10%;top:calc(100% - 1px);height:22vh;background:#F7F1E3;border-radius:0 0 50% 50%;transform-origin:top center"></div>
 </div>
 
-<!-- CUSTOM CURSOR -->
-<div id="cursor" style="position:fixed;top:0;left:0;width:27px;height:27px;margin:-13.5px 0 0 -13.5px;pointer-events:none;z-index:10000;display:none;will-change:transform">
-  <div id="cursor-inner" style="width:27px;height:27px;color:var(--kirco-orange);transition:color 250ms ease-out">
-    <svg width="27" height="27" style="display:block;overflow:visible"><use href="#florK" width="27" height="27"></use></svg>
-  </div>
-</div>
+<!-- Cursor personalizado: assets/kirco-cursor.js (compartido por todas las páginas) -->
 
 <!-- HERO -->
 <section id="hero" style="position:relative;z-index:20;height:100vh;min-height:620px">
@@ -163,7 +158,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
     <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/02-cafe.webp" alt="Cartita naranja en la mesa de un café" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
     <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/03-arte-simple.webp" alt="Cartita naranja colgada de una planta" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
     <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/04-obra-de-arte.webp" alt="Cartita naranja en un banco del parque" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
-    <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/05-metro.webp" alt="Cartita naranja en un asiento del metro" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
+    <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/05-metro.webp" alt="Cartita naranja de by_kirco" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
     <div style="position:absolute;inset:0;background:var(--kirco-orange-deep);opacity:0.5;pointer-events:none"></div>
     <div id="hero-shade" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,43,37,0) 0%,rgba(46,43,37,0.7) 100%);opacity:0;pointer-events:none;z-index:6"></div>
 
@@ -202,7 +197,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
     <div data-speed="0.9" style="position:absolute;z-index:3;right:7%;top:14%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(4deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/02-cafe.webp" srcset="assets/hero/02-cafe-900.webp 900w, assets/hero/02-cafe.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita en un café" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
     <div data-speed="1.8" style="position:absolute;z-index:3;left:40%;top:38%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(3deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/03-arte-simple.webp" srcset="assets/hero/03-arte-simple-900.webp 900w, assets/hero/03-arte-simple.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita colgada de una planta" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
     <div data-speed="1.2" style="position:absolute;z-index:3;left:14%;top:60%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(-3deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/04-obra-de-arte.webp" srcset="assets/hero/04-obra-de-arte-900.webp 900w, assets/hero/04-obra-de-arte.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita en un banco" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
-    <div data-speed="0.7" style="position:absolute;z-index:3;right:15%;top:62%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(5deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/05-metro.webp" srcset="assets/hero/05-metro-900.webp 900w, assets/hero/05-metro.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita en el metro" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
+    <div data-speed="0.7" style="position:absolute;z-index:3;right:15%;top:62%;width:clamp(190px,17vw,240px);will-change:transform"><div data-float style="will-change:transform"><div data-tilt style="background:#fff;border-radius:6px;padding:12px 12px 46px;box-shadow:var(--shadow-pop);transform:rotate(5deg);will-change:transform"><div style="overflow:hidden;border-radius:2px"><img src="assets/hero/05-metro.webp" srcset="assets/hero/05-metro-900.webp 900w, assets/hero/05-metro.webp 1672w" sizes="(max-width: 959px) 45vw, 100vw" alt="Cartita de by_kirco" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)"></div></div></div></div>
   </div>
 
   <!-- Polaroids mobile grid -->
@@ -226,13 +221,13 @@ button{cursor:pointer;border:none;background:none;padding:0}
       <div style="position:absolute;top:0;bottom:0;left:50%;width:50%;background:var(--kirco-orange);border-radius:0 32px 32px 0;padding:44px 66px 44px 48px;box-sizing:border-box;box-shadow:var(--shadow-pop);display:flex;flex-direction:column;justify-content:center">
         <div style="position:absolute;right:22px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:#F7F1E3;box-shadow:inset 0 2px 4px rgba(46,43,37,0.35);z-index:2"></div>
         <p style="font-family:var(--font-hand);font-size:clamp(24px,2.2vw,30px);line-height:1.2;color:var(--kirco-ink);margin:0 0 14px">Querido desconocido,</p>
-        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Si has llegado hasta aquí es tu señal para conocerme.</p>
-        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Luego camino por la calle buscando el lugar más especial para dejarla, un banco del parque, un asiento de metro o incluso colgado de una ramita de un árbol...</p>
-        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Todas mis cartitas son 100% humanas, sin IA. Las dejo por Madrid para quién las necesite.</p>
-        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Y quién sabe, igual tú eres el próximo en encontrarla.</p>
+        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Si has llegado hasta aquí, es tu señal para conocerme.</p>
+        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Luego camino por la calle buscando el lugar más especial para dejarlas: un banco del parque, junto a la entrada del metro o incluso colgadas de una ramita de un árbol...</p>
+        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Todas mis cartitas son 100 % humanas, sin IA. Las dejo por Madrid para quien las necesite.</p>
+        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Y quién sabe, igual tú eres el próximo en encontrar una.</p>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:16px">
           <p style="font-family:var(--font-hand);font-size:clamp(19px,1.6vw,22px);line-height:1.2;color:var(--kirco-ink);margin:0">Att. @by_kirco</p>
-          <a href="/sobre-mi.html" style="font-family:var(--font-display);font-size:20px;color:var(--kirco-orange-deep);background:#fff;border-radius:999px;padding:10px 28px;text-decoration:none;box-shadow:var(--shadow-card);transition:transform 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">mi historia</a>
+          <a href="/sobre-mi.html" style="font-family:var(--font-display);font-size:20px;color:var(--kirco-orange-deep);background:var(--kirco-paper);border-radius:999px;padding:10px 28px;text-decoration:none;box-shadow:var(--shadow-card);transition:transform 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">mi historia</a>
         </div>
       </div>
       <!-- Lazo abierto left -->
@@ -266,11 +261,11 @@ button{cursor:pointer;border:none;background:none;padding:0}
       <div class="smn-spine" aria-hidden="true"></div>
       <div class="smn-letter">
         <p style="font-family:var(--font-hand);font-size:25px;line-height:1.2;color:var(--kirco-ink);margin:0 0 14px">Querido desconocido,</p>
-        <p style="font-family:var(--font-hand);font-size:19px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Las dejo por Madrid para quién las necesite.</p>
-        <p style="font-family:var(--font-hand);font-size:19px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Y quién sabe, igual tú eres el próximo en encontrarla.</p>
+        <p style="font-family:var(--font-hand);font-size:19px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Las dejo por Madrid para quien las necesite.</p>
+        <p style="font-family:var(--font-hand);font-size:19px;line-height:1.45;color:var(--kirco-ink);margin:0 0 10px">Y quién sabe, igual tú eres el próximo en encontrar una.</p>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px">
           <p style="font-family:var(--font-hand);font-size:22px;color:var(--kirco-ink);margin:0">Att. @by_kirco</p>
-          <a href="/sobre-mi.html" style="font-family:var(--font-display);font-size:20px;color:var(--kirco-orange-deep);background:#fff;border-radius:999px;padding:11px 28px;text-decoration:none;box-shadow:var(--shadow-card)" onclick="event.stopPropagation()">mi historia</a>
+          <a href="/sobre-mi.html" style="font-family:var(--font-display);font-size:20px;color:var(--kirco-orange-deep);background:var(--kirco-paper);border-radius:999px;padding:11px 28px;text-decoration:none;box-shadow:var(--shadow-card)" onclick="event.stopPropagation()">mi historia</a>
         </div>
       </div>
       <div class="smn-hole" aria-hidden="true" style="bottom:18px;left:13%"></div>
@@ -407,11 +402,11 @@ button{cursor:pointer;border:none;background:none;padding:0}
         </div>
         <!-- Form -->
         <form id="com-form" style="display:flex;flex-direction:column;gap:12px">
-          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Nombre<input type="text" name="first_name" required placeholder="tu nombre" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
-          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Apellido<input type="text" name="last_name" required placeholder="tu apellido" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
-          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Correo<input type="email" name="email_address" required placeholder="tu@correo.com" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
-          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">¿Por qué te gustaría unirte al proyecto?<textarea rows="3" name="fields[motivo]" required placeholder="cuéntame un poco de ti…" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box;resize:none"></textarea></label>
-          <button type="submit" id="com-submit" style="align-self:center;margin-top:8px;font-family:var(--font-display);font-size:22px;color:var(--kirco-green-deep);background:#fff;border:none;border-radius:999px;padding:11px 40px;box-shadow:var(--shadow-card);transition:transform 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">quiero unirme</button>
+          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Nombre<input type="text" name="first_name" required placeholder="tu nombre" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
+          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Apellido<input type="text" name="last_name" required placeholder="tu apellido" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
+          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Correo<input type="email" name="email_address" required placeholder="tu@correo.com" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
+          <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">¿Por qué te gustaría unirte al proyecto?<textarea rows="3" name="fields[motivo]" required placeholder="cuéntame un poco de ti…" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box;resize:none"></textarea></label>
+          <button type="submit" id="com-submit" style="align-self:center;margin-top:8px;font-family:var(--font-display);font-size:22px;color:var(--kirco-green-deep);background:var(--kirco-paper);border:none;border-radius:999px;padding:11px 40px;box-shadow:var(--shadow-card);transition:transform 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">quiero unirme</button>
         </form>
       </div>
       <!-- Lazo abierto left -->
@@ -452,11 +447,11 @@ button{cursor:pointer;border:none;background:none;padding:0}
         <p style="font-family:var(--font-hand);font-size:20px;line-height:1.4;color:var(--kirco-ink);margin:14px 0 0">Te escribiré pronto a tu correo con todo lo que necesitas.</p>
       </div>
       <form id="com-form-narrow" style="display:flex;flex-direction:column;gap:12px">
-        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Nombre<input type="text" name="first_name" required placeholder="tu nombre" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
-        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Apellido<input type="text" name="last_name" required placeholder="tu apellido" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
-        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Correo<input type="email" name="email_address" required placeholder="tu@correo.com" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
-        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">¿Por qué te gustaría unirte?<textarea rows="3" name="fields[motivo]" required placeholder="cuéntame un poco de ti…" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(255,255,255,0.85);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box;resize:none"></textarea></label>
-        <button type="submit" style="align-self:center;margin-top:8px;font-family:var(--font-display);font-size:22px;color:var(--kirco-green-deep);background:#fff;border:none;border-radius:999px;padding:11px 40px;box-shadow:var(--shadow-card)">quiero unirme</button>
+        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Nombre<input type="text" name="first_name" required placeholder="tu nombre" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
+        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Apellido<input type="text" name="last_name" required placeholder="tu apellido" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
+        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">Correo<input type="email" name="email_address" required placeholder="tu@correo.com" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box"></label>
+        <label style="font-family:var(--font-hand);font-size:21px;color:var(--kirco-ink);display:flex;flex-direction:column;gap:4px">¿Por qué te gustaría unirte?<textarea rows="3" name="fields[motivo]" required placeholder="cuéntame un poco de ti…" style="font-family:var(--font-hand);font-size:20px;color:var(--kirco-ink);background:rgba(247,241,227,0.9);border:2px solid rgba(46,43,37,0.12);border-radius:14px;padding:8px 16px;outline:none;width:100%;box-sizing:border-box;resize:none"></textarea></label>
+        <button type="submit" style="align-self:center;margin-top:8px;font-family:var(--font-display);font-size:22px;color:var(--kirco-green-deep);background:var(--kirco-paper);border:none;border-radius:999px;padding:11px 40px;box-shadow:var(--shadow-card)">quiero unirme</button>
       </form>
     </div>
   </div>
@@ -920,37 +915,6 @@ button{cursor:pointer;border:none;background:none;padding:0}
     });
   }
 
-  function initCursor() {
-    if (!matchMedia('(pointer: fine)').matches) return;
-    var c = q('#cursor'), inner = q('#cursor-inner');
-    if (!c || !inner) return;
-    c.style.display = 'block';
-    document.documentElement.classList.add('kirco-cursor');
-    gsap.set(c, { x: window.innerWidth / 2, y: window.innerHeight / 2 });
-    var xTo = gsap.quickTo(c, 'x', { duration: 0.16, ease: 'power2.out' });
-    var yTo = gsap.quickTo(c, 'y', { duration: 0.16, ease: 'power2.out' });
-    var hov = false;
-    var move = function(e) { xTo(e.clientX); yTo(e.clientY); };
-    var over = function(e) {
-      var h = !!(e.target.closest && e.target.closest('a,button,img,iframe,input,textarea,label,[data-tilt]'));
-      if (h === hov) return;
-      hov = h;
-      inner.style.color = h ? 'var(--kirco-green)' : 'var(--kirco-orange)';
-      gsap.to(inner, { scale: h ? 1.35 : 1, rotation: h ? 45 : 0, duration: 0.25, ease: 'power3.out', overwrite: true });
-    };
-    var out = function() { gsap.to(c, { opacity: 0, duration: 0.2 }); };
-    var enter = function() { gsap.to(c, { opacity: 1, duration: 0.2 }); };
-    window.addEventListener('mousemove', move, { passive: true });
-    document.addEventListener('mouseover', over, { passive: true });
-    document.documentElement.addEventListener('mouseleave', out);
-    document.documentElement.addEventListener('mouseenter', enter);
-    cleanups.push(function() {
-      window.removeEventListener('mousemove', move);
-      document.removeEventListener('mouseover', over);
-      document.documentElement.removeEventListener('mouseleave', out);
-      document.documentElement.removeEventListener('mouseenter', enter);
-    });
-  }
 
   // --- Initial state (hide chars until loader exits) ---
   document.addEventListener('DOMContentLoaded', function() {
@@ -972,7 +936,6 @@ button{cursor:pointer;border:none;background:none;padding:0}
     lenis.stop();
     window.scrollTo(0, 0);
 
-    initCursor();
     initSlider(reduce);
 
     Promise.race([document.fonts.load('124px "Darumadrop One"'), new Promise(function(r) { setTimeout(r, 1200); })]).then(function() {
