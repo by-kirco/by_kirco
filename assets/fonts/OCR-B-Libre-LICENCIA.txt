@@ -1,0 +1,17 @@
+OCR B Libre (assets/fonts/ocr-b-libre-400.woff2)
+================================================
+Derivada de «OCR B» (OCRB.ttf) del paquete OCR A and OCR B 0.3.1 de Matthew Skala
+(Tsukurimashou Project): https://tsukurimashou.org/ocr.php.en
+
+Licencia:
+- Aportaciones de Matthew Skala: dominio público («my own contributions are public domain»;
+  disponibles «for free use, including in commercial applications»).
+- Fuentes Metafont originales de Norbert Schwarz: «you may freely use, modify and/or
+  distribute any of these files or the resulting fonts, without limitation»
+  (README de CTAN fonts/ocr-b). Debian la distribuye en main (paquete fonts-ocr-b).
+
+Cambios de by_kirco (nov 2026): añadidas las letras acentuadas del español
+(á é í ó ú Á É Í Ó Ú ñ Ñ) como compuestos de los glifos base + acento/tilde de la propia
+fuente, renombrada «OCR B Libre» y reducida a latín básico en woff2.
+
+NO es la OCR B Std de Adobe/Linotype (licencia comercial aparte).

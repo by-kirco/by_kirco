@@ -108,19 +108,29 @@ button{cursor:pointer;border:none;background:none;padding:0}
 .smn.is-open .smn-spine{opacity:1}
 .smn.is-open #smn-lazo-closed{opacity:0}
 @media (prefers-reduced-motion:reduce){.smn-top,.smn-cover,.smn-letter > *,.smn-lazo-open{transition:none !important}}
+/* OCR B libre (dominio público, Matthew Skala / Norbert Schwarz). Ver assets/fonts/OCR-B-Libre-LICENCIA.txt */
+@font-face{font-family:'OCR B Libre';src:url('assets/fonts/ocr-b-libre-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 /* Callejero Emocional */
-.callejero-card{max-width:1100px;margin:0 auto;background:#1C2659 url('assets/callejero-textura-azul-1200.webp') center/cover no-repeat;border-radius:32px;box-shadow:var(--shadow-pop);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(28px,4vw,56px);align-items:center;padding:clamp(26px,4vw,56px);color:var(--kirco-paper);position:relative;overflow:hidden}
+.callejero-rotulo{text-align:center;margin:0 0 30px}
+.callejero-marca{display:inline-block;font-family:'OCR B Libre','Courier New',monospace;font-weight:400;color:var(--kirco-ink);background:url('assets/callejero-resaltado.svg') center/100% 100% no-repeat;padding:.32em .7em .28em;transform:rotate(-1.2deg);line-height:1.1;letter-spacing:0.02em}
+.callejero-rotulo .callejero-marca{font-size:clamp(18px,2.4vw,30px);white-space:nowrap}
+.callejero-wrap{position:relative;max-width:1100px;margin:0 auto}
+.callejero-cta{position:relative;z-index:2;text-align:center;margin-top:-27px}
+.callejero-btn{display:inline-block;white-space:nowrap;font-size:clamp(16px,1.7vw,21px);text-decoration:none;padding:.62em 1.3em .58em;transform:rotate(1deg);filter:drop-shadow(0 4px 10px rgba(46,43,37,0.22));transition:transform 180ms ease-out}
+.callejero-btn:hover{transform:rotate(1deg) translateY(-2px)}
+.callejero-btn:focus-visible{outline:2px dashed var(--kirco-ink);outline-offset:4px}
+.callejero-card{background:#1C2659 url('assets/callejero-textura-azul-1200.webp') center/cover no-repeat;border-radius:32px;box-shadow:var(--shadow-pop);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(28px,4vw,56px);align-items:center;padding:clamp(26px,4vw,56px) clamp(26px,4vw,56px) clamp(52px,5vw,72px);color:var(--kirco-paper);position:relative;overflow:hidden}
 .callejero-fotos{display:flex;justify-content:center;align-items:flex-start;padding:6px 0 18px}
 .callejero-foto{margin:0;flex:none;width:52%;background:#fff;border-radius:6px;padding:8px 8px 32px;box-shadow:var(--shadow-pop)}
 .callejero-foto img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:2px}
 .callejero-foto--a{transform:rotate(-4deg);position:relative;z-index:1}
 .callejero-foto--b{transform:rotate(3.5deg);margin-left:-5%;margin-top:38px;position:relative;z-index:2}
-.callejero-btn{display:inline-block;margin-top:26px;font-family:var(--font-display);font-size:21px;color:#1C2659;background:var(--kirco-paper);border-radius:999px;padding:12px 32px;text-decoration:none;box-shadow:var(--shadow-card);transition:transform 180ms ease-out}
-.callejero-btn:hover{transform:translateY(-2px)}
 @media (max-width:759px){
   .callejero-card{grid-template-columns:1fr;text-align:left}
   .callejero-card{background-image:url('assets/callejero-textura-azul-900.webp')}
   .callejero-fotos{width:100%;max-width:360px;margin:4px auto 0}
+  .callejero-rotulo .callejero-marca{font-size:clamp(18px,5vw,24px)}
+  .callejero-btn{font-size:16px;padding:.85em 1.3em .8em}
 }
 </style>
 </head>
@@ -356,7 +366,9 @@ button{cursor:pointer;border:none;background:none;padding:0}
 
 <!-- CALLEJERO EMOCIONAL (nov 2026). Texto: Ryan (copy), con la frase «serie original de by_kirco» validada por Oscar. -->
 <section id="callejero" style="position:relative;z-index:1;padding:40px clamp(20px,5vw,72px) 130px">
-  <div class="callejero-card" data-reveal>
+  <p class="callejero-rotulo" data-reveal><span class="callejero-marca">Callejero Emocional</span></p>
+  <div class="callejero-wrap" data-reveal>
+  <div class="callejero-card">
     <img src="assets/monograma-naranja.png" alt="" aria-hidden="true" style="position:absolute;width:340px;height:340px;right:-90px;bottom:-110px;transform:rotate(-14deg);opacity:0.12;pointer-events:none">
     <div class="callejero-fotos">
       <figure class="callejero-foto callejero-foto--a" data-tilt>
@@ -367,11 +379,13 @@ button{cursor:pointer;border:none;background:none;padding:0}
       </figure>
     </div>
     <div style="position:relative">
-      <p style="display:inline-block;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase;color:var(--kirco-ink);background:var(--kirco-green);border-radius:999px;padding:6px 14px;margin:0 0 18px">Callejero Emocional</p>
       <h2 style="font-family:var(--font-display);font-weight:400;font-size:clamp(38px,4.6vw,62px);line-height:1.04;margin:0 0 18px;color:#fff">Una carta en cada calle</h2>
       <p style="font-family:var(--font-hand);font-size:clamp(20px,1.9vw,25px);line-height:1.45;margin:0;color:var(--kirco-paper)">Es una serie original de by_kirco. Elegí ocho calles de Madrid con nombre de emoción, como Constancia, Refugio o Esperanza, y en cada una dejé una carta escrita a mano. Si encuentras una, es para ti.</p>
-      <a class="callejero-btn" href="https://www.instagram.com/by_kirco/reels/" data-reel-pendiente="Sustituir por el enlace exacto del reel Callejero Emocional · Carta 3 de 8 (Del desengaño a la esperanza)" target="_blank" rel="noopener">Mira dónde dejé una</a>
     </div>
+  </div>
+  <div class="callejero-cta">
+    <a class="callejero-btn callejero-marca" href="https://www.instagram.com/by_kirco/reels/" data-reel-pendiente="Sustituir por el enlace exacto del reel Callejero Emocional · Carta 3 de 8 (Del desengaño a la esperanza)" target="_blank" rel="noopener">Mira dónde dejé una</a>
+  </div>
   </div>
 </section>
 
