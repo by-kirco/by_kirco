@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gracias por escribir · by_kirco</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="css/navidad.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body class="k-raiz" style="background:var(--k-verde-deep)">
+<style>
+  .k-cielo { position: relative; background: var(--k-cielo); color: #fff; overflow: hidden; }
+  .k-escena { position: relative; z-index: 1; width: 100%; max-width: 420px; aspect-ratio: 1/1; margin: -8px auto 0; }
+  .k-escena img { position: absolute; }
+  .k-mano { right: -60%; bottom: 8%; width: 46%; transition: none; }
+  .k-buzon { left: 50%; bottom: 0; width: 54%; transform: translateX(-50%); }
+  .cifra { font-family: var(--font-mono); font-size: 56px; line-height: 1; color: #fff; letter-spacing: 0; }
+  .unidad { font-family: var(--font-mono); font-size: 22px; line-height: 1.2; color: #fff; }
+  .k-final { background: #fff; padding: 4px 24px 36px; text-align: center; }
+</style>
+<div id="raiz" style="width:100%;min-height:100vh;box-sizing:border-box;background:var(--k-verde-deep);color:var(--k-tinta);font-family:var(--font-mono);font-size:16px;line-height:1.5;display:flex;flex-direction:column;overflow:hidden">
+
+  <section class="k-cielo">
+    <div class="copos" aria-hidden="true" id="k-copos"></div>
+    <header style="position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:16px 20px;display:flex;justify-content:flex-end">
+      <img src="assets/img/logo_blanco.png" alt="by_kirco" style="height:40px">
+    </header>
+    <p class="linea" style="position:relative;z-index:2;margin:8px auto 0;padding:0 24px;text-align:center;font-family:var(--font-mono);font-size:24px;color:#fff;overflow-wrap:anywhere"><span id="p-nombre">Kirpa,</span></p>
+    <h1 class="daruma" style="position:relative;z-index:2;margin:4px auto 0;padding:0 24px;max-width:560px;text-align:center;font-size:clamp(48px,10vw,80px);line-height:1.02;color:#fff"><span class="linea"><span>Gracias</span></span><span class="linea"><span>por escribir</span></span></h1>
+    <div class="k-escena" aria-hidden="true" id="k-escena">
+      <img class="k-buzon" src="assets/svg/buzon.svg" alt="">
+      <img class="k-mano" src="assets/svg/mano_con_sobre.svg" alt="">
+    </div>
+  </section>
+
+  <section style="position:relative;z-index:3;margin-top:-56px;background:transparent">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%;height:40px"><path d="M0 60 L0 34 Q40 18 90 28 Q140 40 190 24 Q240 8 300 22 Q360 36 420 20 Q470 6 530 18 Q600 32 660 16 Q720 2 790 20 Q850 34 910 22 Q970 10 1030 24 Q1090 38 1150 20 Q1210 4 1270 18 Q1330 32 1390 22 Q1420 16 1440 24 L1440 60 Z" fill="#FFFFFF"></path></svg>
+    <div class="k-final" id="k-final" role="status">
+      <p class="linea" style="margin:0 auto;max-width:30ch;font-size:20px;line-height:1.45"><span>Tu carta ya está en el buzón.</span></p>
+      <p class="linea" style="margin:6px auto 0;max-width:32ch;font-size:20px;line-height:1.45"><span>La que escriban para ti te llegará el 25 de diciembre a las 00:00.</span></p>
+      <p style="margin:16px auto 0;max-width:34ch;font-size:16px;color:var(--k-tinta-suave)">Directamente a tu correo:</p>
+      <p style="margin:4px auto 0;max-width:100%;overflow-wrap:anywhere"><a href="enviar.html" id="p-correo" style="font-size:16px;font-weight:700;color:var(--k-verde-deep);text-decoration:underline;text-underline-offset:4px;display:inline-flex;align-items:center;min-height:44px"></a></p>
+      <p style="margin:0 auto;font-size:14px;color:var(--k-tinta-suave)">¿Está mal? <a href="enviar.html" style="color:var(--k-verde-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px">Cámbialo</a></p>
+    </div>
+  </section>
+
+  <section style="background:var(--k-verde-deep);color:#fff;padding:40px 24px 16px">
+    <div style="max-width:560px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <p style="margin:0;font-size:24px;color:#fff">Quedan</p>
+        <div role="timer" aria-live="off" id="p-timer-label" style="display:flex;justify-content:center;gap:24px">
+          <div><p class="cifra" id="c-d">00</p><p class="unidad" style="margin:6px 0 0">días</p></div>
+          <div><p class="cifra" id="c-h">00</p><p class="unidad" style="margin:6px 0 0">h</p></div>
+          <div><p class="cifra" id="c-m">00</p><p class="unidad" style="margin:6px 0 0">min</p></div>
+          <div><p class="cifra" id="c-s">00</p><p class="unidad" style="margin:6px 0 0">s</p></div>
+        </div>
+        <p style="margin:4px 0 0;font-size:24px;color:#fff">para recibir tu carta</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Llega%20tu%20carta%20de%20un%20desconocido%20%F0%9F%92%9A&amp;dates=20261224T230000Z/20261224T233000Z&amp;details=Abre%20tu%20correo%3A%20te%20ha%20escrito%20alguien.%20bykirco.com" target="_blank" rel="noopener" class="btn btn-claro">Añadir al calendario</a>
+        <a href="data:text/calendar;charset=utf-8,BEGIN%3AVCALENDAR%0D%0AVERSION%3A2.0%0D%0APRODID%3A-//by_kirco//ES%0D%0ABEGIN%3AVEVENT%0D%0AUID%3Acarta-2026%40bykirco.com%0D%0ADTSTAMP%3A20261201T000000Z%0D%0ADTSTART%3A20261224T230000Z%0D%0ADTEND%3A20261224T233000Z%0D%0ASUMMARY%3ALlega%20tu%20carta%20de%20un%20desconocido%20%F0%9F%92%9A%0D%0ADESCRIPTION%3AAbre%20tu%20correo%3A%20te%20ha%20escrito%20alguien.%20bykirco.com%0D%0AEND%3AVEVENT%0D%0AEND%3AVCALENDAR%0D%0A" download="carta-by_kirco.ics" style="display:inline-flex;align-items:center;min-height:44px;font-size:16px;color:var(--k-amarillo);text-decoration:underline;text-underline-offset:3px">Apple u Outlook (.ics)</a>
+      </div>
+    </div>
+  </section>
+
+  <div data-k-pie></div>
+</div>
+
+<script src="js/kirco-anim.js"></script>
+<script>
+(function () {
+  K.pintarCopos(document.getElementById('k-copos'));
+
+  var correo = ''; try { correo = sessionStorage.getItem('kirco-correo') || ''; } catch (e) {}
+  var nombre = ''; try { nombre = sessionStorage.getItem('kirco-seudonimo') || ''; } catch (e) {}
+  document.getElementById('p-correo').textContent = correo || 'tu correo';
+  document.getElementById('p-correo').setAttribute('aria-label', 'Tu correo es ' + (correo || '') + '. Cambiarlo');
+  document.getElementById('p-nombre').textContent = (nombre.trim() || 'Kirpa') + ',';
+
+  var OBJETIVO = Date.UTC(2026, 11, 24, 23, 0, 0);
+  function z(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    var r = Math.max(0, Math.floor((OBJETIVO - Date.now()) / 1000));
+    var d = Math.floor(r / 86400); r -= d * 86400;
+    var h = Math.floor(r / 3600); r -= h * 3600;
+    var m = Math.floor(r / 60); var s = r - m * 60;
+    document.getElementById('c-d').textContent = z(d);
+    document.getElementById('c-h').textContent = z(h);
+    document.getElementById('c-m').textContent = z(m);
+    document.getElementById('c-s').textContent = z(s);
+    document.getElementById('p-timer-label').setAttribute('aria-label', 'Tu carta llega en ' + d + ' días, ' + h + ' horas y ' + m + ' minutos');
+  }
+  tick(); setInterval(tick, 1000);
+
+  K.listo(function () {
+    var g = K.g();
+    K.entrada(document.querySelector('.k-cielo'));
+    K.revela(document.getElementById('k-final'));
+    if (g && !K.rm()) {
+      var mano = document.querySelector('.k-mano');
+      g.set(mano, { x: 0, opacity: 0 });
+      g.timeline()
+        .to(mano, { opacity: 1, duration: .2 })
+        .to(mano, { x: '-46%', duration: 1, ease: 'power2.out' }, '+=.3')
+        .to(mano, { y: 24, duration: .3, ease: 'power1.inOut' })
+        .to(mano, { opacity: 0, duration: .4, ease: 'power2.in' }, '+=.2');
+    }
+  });
+})();
+</script>
+</body>
+</html>

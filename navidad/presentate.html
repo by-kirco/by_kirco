@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preséntate · Regala una carta por Navidad · by_kirco</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="css/navidad.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body class="k-raiz sobre-oscuro k-oscuro">
+<style>
+  #seudonimo::placeholder { color: #a39c8c; opacity: 1; }
+  .punto { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,.35); }
+  .punto.on { background: #fff; }
+</style>
+<div class="k-pagina k-oscuro">
+  <div class="copos" aria-hidden="true" id="k-copos"></div>
+
+  <header class="k-header">
+    <a href="index.html" class="chip-volver">← Volver</a>
+    <img src="assets/img/logo_blanco.png" alt="by_kirco" style="height:40px">
+  </header>
+
+  <main class="k-main">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span class="k-badge k-badge-verde">Paso 1 de 3</span>
+      <h1 class="daruma" style="margin:0;font-size:52px;line-height:1.05;color:#fff"><span class="linea"><span>Preséntate</span></span></h1>
+    </div>
+
+    <div class="con-nieve hoja-entra">
+      <div class="nieve-cap" aria-hidden="true"><span style="height:16px"></span><span style="height:22px"></span><span style="height:14px"></span><span style="height:26px"></span><span style="height:19px"></span><span style="height:15px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:21px"></span><span style="height:14px"></span><span style="height:23px"></span><span style="height:17px"></span></div>
+      <div class="correo-aereo"><form id="f-presentate" class="papel beige" style="padding:24px 20px;display:flex;flex-direction:column;gap:28px" novalidate>
+
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label for="seudonimo">Tu nombre o seudónimo</label>
+          <input id="seudonimo" class="campo" type="text" maxlength="40" autocomplete="nickname" placeholder="Firmarás y te saludarán con él">
+        </div>
+
+        <fieldset style="margin:0;padding:0;border:0;display:flex;flex-direction:column;gap:12px">
+          <legend style="padding:0;margin-bottom:12px">Cuando recibas tu carta, ¿cómo quieres que te saluden?</legend>
+          <div id="g-saludo" style="display:flex;flex-wrap:wrap;gap:8px" role="group">
+            <button type="button" class="op" data-v="querido" aria-pressed="false">Querido</button>
+            <button type="button" class="op" data-v="querida" aria-pressed="false">Querida</button>
+            <button type="button" class="op" data-v="neutro" aria-pressed="false">Otro</button>
+          </div>
+          <p id="p-saludo-vista" style="margin:0;font-size:16px;color:var(--k-verde);display:none">Tu carta empezará: «Hola, <span id="p-saludo-nombre">tu seudónimo</span>:»</p>
+        </fieldset>
+
+        <fieldset style="margin:0;padding:0;border:0;display:flex;flex-direction:column;gap:12px">
+          <legend style="padding:0;margin-bottom:12px">¿A quién se la mandas?</legend>
+          <div id="bloque-con-bolsa" style="display:none;flex-direction:column;gap:12px">
+            <div id="g-destino" style="display:flex;flex-wrap:wrap;gap:8px" role="group"></div>
+            <p style="margin:0;font-size:14px;color:var(--k-tinta-suave)">Son personas cuya carta ya está aprobada y esperan la suya.</p>
+          </div>
+          <p id="p-sin-bolsa" style="margin:0;font-size:15px">A alguien desconocido, al azar. Todavía no hay cartas aprobadas para elegir.</p>
+        </fieldset>
+
+        <fieldset style="margin:0;padding:0;border:0;display:flex;flex-direction:column;gap:12px">
+          <legend style="padding:0;margin-bottom:12px">¿Tienes alguna idea de lo que escribir?</legend>
+          <div id="g-idea" style="display:flex;flex-wrap:wrap;gap:8px" role="group">
+            <button type="button" class="op op-naranja" data-v="si" aria-pressed="false">Sí</button>
+            <button type="button" class="op op-naranja" data-v="no" aria-pressed="false">No</button>
+          </div>
+          <div id="bloque-tema" style="display:none;flex-direction:column;gap:10px;padding:14px 16px;border-radius:13px;background:var(--k-naranja-tint);border:2px solid var(--k-naranja)">
+            <p id="p-tema" role="status" style="margin:0;color:var(--k-naranja-deep)"></p>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <button type="button" id="b-tema-ant" class="op op-naranja flecha" aria-label="Idea anterior">←</button>
+              <span class="etiqueta" id="p-tema-num" style="font-size:13px;color:var(--k-naranja-deep)">1 / 20</span>
+              <button type="button" id="b-tema-sig" class="op op-naranja flecha" aria-label="Idea siguiente">→</button>
+            </div>
+          </div>
+        </fieldset>
+
+      </form></div>
+    </div>
+    <button type="button" id="b-empezar" class="btn btn-carta" style="width:100%">Empezar a escribir</button>
+    <a class="ir" href="carta.html" tabindex="-1" aria-hidden="true" style="display:none">Carta</a>
+  </main>
+
+  <div data-k-pie data-nieve="si"></div>
+</div>
+
+<script src="js/kirco-anim.js"></script>
+<script>
+(function () {
+  var T = ["Una frase que esa persona pueda guardar, si este año se le ha hecho largo.", "Que está bien llegar a estas fechas sin tenerlo todo resuelto.", "Lo que le dirías a alguien que se ha esforzado y nadie se lo ha dicho.", "Un deseo pequeño para quien va a leerte, no un propósito grande.", "Que esta Navidad no tiene que parecerse a ninguna otra para valer.", "Un «te he pensado» para quien sienta que pasa desapercibido.", "Que no hace falta estar alegre para merecer una carta.", "Algo tierno para quien echa de menos a alguien estas fiestas, sin intentar consolar de más.", "Un permiso para no poder con todo en diciembre.", "Lo que te habría gustado recibir tú, escrito ahora para esa persona.", "Lo que le dirías a alguien que necesita un rato de calma en medio de estas fiestas.", "Escríbele como quien le acerca una taza y le dice que puede quedarse un rato.", "Un olor, un sabor o un calor de estas fechas, escrito para que lo sienta quien te lea.", "Lo que le dirías a alguien que este año ha tenido que ser fuerte más veces de las que habría querido.", "Que esa persona no está sola cuando abra esta carta, aunque se lea en silencio.", "Una sola cosa bella que hayas visto estos días, contada para que la reciba esa persona, no para hablar de ti.", "Que merece el mismo cuidado que suele dar.", "Un deseo para el año que entra que no le pida cambiar, solo que le vaya un poco más suave.", "Lo que le dirías a alguien que se siente fuera de sitio en las reuniones de estas fechas.", "Algo que le pueda sacar una sonrisa al abrirla, sin pedirle que esté de fiesta."];
+
+  K.pintarCopos(document.getElementById('k-copos'));
+
+  var st = { saludo: null, destino: 'azar', destinoLabel: 'Desconocido al azar', idea: null, tema: 0 };
+  var bolsa = [];
+
+  function nombre() { return (document.getElementById('seudonimo').value || '').trim() || 'tu seudónimo'; }
+
+  function pintarSaludo() {
+    document.querySelectorAll('#g-saludo .op').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v === st.saludo ? 'true' : 'false'); });
+    var neutro = !!st.saludo && st.saludo !== 'querido' && st.saludo !== 'querida';
+    document.getElementById('p-saludo-vista').style.display = neutro ? 'block' : 'none';
+    document.getElementById('p-saludo-nombre').textContent = nombre();
+  }
+
+  function pintarDestinos() {
+    var g = document.getElementById('g-destino');
+    var opciones = [{ id: 'azar', label: 'Desconocido al azar' }].concat(bolsa.map(function (b) { return { id: b.id, label: b.seudonimo }; }));
+    document.getElementById('bloque-con-bolsa').style.display = bolsa.length ? 'flex' : 'none';
+    document.getElementById('p-sin-bolsa').style.display = bolsa.length ? 'none' : 'block';
+    g.innerHTML = '';
+    opciones.forEach(function (o) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'op'; b.dataset.id = o.id; b.textContent = o.label;
+      b.setAttribute('aria-pressed', st.destino === o.id ? 'true' : 'false');
+      b.addEventListener('click', function () { st.destino = o.id; st.destinoLabel = o.label; pintarDestinos(); });
+      g.appendChild(b);
+    });
+  }
+
+  function pintarIdea() {
+    document.querySelectorAll('#g-idea .op').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v === st.idea ? 'true' : 'false'); });
+    document.getElementById('bloque-tema').style.display = st.idea === 'no' ? 'flex' : 'none';
+    document.getElementById('p-tema').textContent = T[st.tema % T.length];
+    document.getElementById('p-tema-num').textContent = (st.tema % T.length + 1) + ' / ' + T.length;
+  }
+
+  document.getElementById('seudonimo').addEventListener('input', pintarSaludo);
+  document.querySelectorAll('#g-saludo .op').forEach(function (b) { b.addEventListener('click', function () { st.saludo = b.dataset.v; pintarSaludo(); }); });
+  document.querySelectorAll('#g-idea .op').forEach(function (b) { b.addEventListener('click', function () { st.idea = b.dataset.v; pintarIdea(); }); });
+  document.getElementById('b-tema-ant').addEventListener('click', function () { st.tema = (st.tema - 1 + T.length) % T.length; pintarIdea(); });
+  document.getElementById('b-tema-sig').addEventListener('click', function () { st.tema = (st.tema + 1) % T.length; pintarIdea(); });
+
+  pintarSaludo(); pintarDestinos(); pintarIdea();
+
+  fetch('/api/navidad/estado').then(function (r) { return r.json(); }).then(function (d) {
+    bolsa = Array.isArray(d.bolsa) ? d.bolsa : [];
+    pintarDestinos();
+  }).catch(function () { /* sin bolsa si la API no responde: queda "al azar" */ });
+
+  function cae(listo) {
+    var g = K.g(); var c = Array.prototype.slice.call(document.querySelectorAll('.nieve-cap span'));
+    if (!g || !c.length) { listo(); return; }
+    if (K.rm()) { g.to(c, { opacity: 0, duration: .2, onComplete: listo }); return; }
+    var H = window.innerHeight || 800;
+    g.killTweensOf(c);
+    g.to(c, { y: function () { return H * g.utils.random(.9, 1.3); }, x: function () { return g.utils.random(-40, 40); },
+      rotation: function () { return g.utils.random(-120, 120); }, opacity: 0,
+      duration: function () { return g.utils.random(1, 1.6); }, ease: 'power2.in', stagger: { each: .04, from: 'random' },
+      onComplete: function () { setTimeout(listo, 150); } });
+  }
+
+  var cayendo = false;
+  document.getElementById('b-empezar').addEventListener('click', function () {
+    if (cayendo) return; cayendo = true;
+    try {
+      var s = nombre(); if (s && s !== 'tu seudónimo') sessionStorage.setItem('kirco-seudonimo', s);
+      sessionStorage.setItem('kirco-saludo', st.saludo || 'neutro');
+      var dSel = bolsa.find(function (b) { return b.id === st.destino; });
+      sessionStorage.setItem('kirco-destino-id', dSel ? dSel.id : '');
+      var sal = !dSel ? '' : (dSel.saludo === 'querida' ? 'Querida ' + dSel.seudonimo + ':' : dSel.saludo === 'querido' ? 'Querido ' + dSel.seudonimo + ':' : 'Hola, ' + dSel.seudonimo + ':');
+      sessionStorage.setItem('kirco-destino-saludo', sal);
+      sessionStorage.setItem('kirco-tema', st.idea === 'no' ? T[st.tema % T.length] : '');
+    } catch (e) {}
+    cae(function () {});
+    K.voltea(document.querySelector('.con-nieve > .correo-aereo'), function () {
+      var a = document.querySelector('a.ir'); if (a) a.click();
+    });
+  });
+
+  K.listo(function () { K.entrada(document.getElementById('raiz') || document.querySelector('.k-pagina')); });
+  K.listo(function () { K.nieve(document.getElementById('k-copos')); });
+  K.listo(function () { K.acumula(); });
+})();
+</script>
+</body>
+</html>

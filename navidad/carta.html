@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escribe tu carta · Regala una carta por Navidad · by_kirco</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="css/navidad.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body class="k-raiz sobre-oscuro k-oscuro">
+<div class="k-pagina k-oscuro">
+  <div class="copos" aria-hidden="true" id="k-copos"></div>
+
+  <header class="k-header">
+    <a href="presentate.html" class="chip-volver">← Volver</a>
+    <img src="assets/img/logo_blanco.png" alt="by_kirco" style="height:40px">
+  </header>
+
+  <main class="k-main">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span class="k-badge k-badge-verde">Paso 2 de 3</span>
+      <h1 class="daruma" style="margin:0;font-size:52px;line-height:1.05;color:#fff"><span class="linea"><span>Escribe tu carta</span></span></h1>
+      <div id="bloque-tema" style="display:none;flex-wrap:wrap;align-items:baseline;gap:0 14px;margin-top:-4px">
+        <p style="margin:0;font-size:16px;color:#fff">Idea: <span id="p-tema"></span></p>
+        <a href="presentate.html" style="display:inline-flex;align-items:center;min-height:44px;font-size:16px;color:var(--k-amarillo)">Cambiar</a>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="con-nieve hoja-entra">
+        <div class="nieve-cap" aria-hidden="true"><span style="height:16px"></span><span style="height:22px"></span><span style="height:14px"></span><span style="height:26px"></span><span style="height:19px"></span><span style="height:15px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:21px"></span><span style="height:14px"></span><span style="height:23px"></span><span style="height:17px"></span></div>
+        <div class="correo-aereo"><div class="papel beige" style="position:relative;overflow:hidden;padding:0">
+          <div aria-hidden="true" style="position:absolute;right:14px;bottom:12px;z-index:1;width:36px;height:36px;border-radius:50%;background:var(--k-verde-tint);border:2px solid var(--k-verde);pointer-events:none"></div>
+
+          <div id="aviso" role="alert" style="display:none;position:sticky;top:0;z-index:2;gap:10px;align-items:flex-start;padding:12px 16px;border-bottom:2px solid rgba(46,43,37,.12)">
+            <span aria-hidden="true" class="icono-error">!</span>
+            <p style="margin:0;font-size:15px"><strong>Hay una palabra que no puede ir en la carta.</strong> La hemos marcado: <span class="detectado" id="p-detectado">[palabra]</span>. Cámbiala y seguimos.</p>
+          </div>
+
+          <div class="pautado" style="position:relative;padding:22px 20px 76px">
+            <p id="p-saludo-destino" class="manuscrita" style="display:none;margin:0 0 4px;font-size:24px;line-height:34px"></p>
+            <p id="p-saludo-hueco" style="margin:0 0 8px;line-height:34px"><span class="hueco-saludo" title="Lo ponemos nosotros al entregarla">Su saludo y su nombre</span></p>
+            <label for="texto" class="k-visually-hidden">Tu carta</label>
+            <textarea id="texto" rows="5" aria-describedby="contador aviso" placeholder="No sabes quién la va a leer: escribe sin género. Empieza por algo concreto: dónde estás, qué ves, qué te gustaría contarle." class="manuscrita" style="width:100%;box-sizing:border-box;min-height:170px;resize:none;overflow:hidden;border:0;padding:0;background:transparent;font-size:22px;line-height:34px;color:var(--k-tinta)"></textarea>
+            <p class="manuscrita" style="margin:0;font-size:22px;line-height:34px;text-align:right">— <span id="p-firma">Lunes de lluvia</span></p>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="destacado">
+        <p>Alguien va a leer esta carta. Por eso las palabras que pueden herir se quedan fuera. <a href="legal.html" style="color:var(--k-naranja-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px">Consulta la privacidad</a></p>
+      </div>
+
+      <p id="p-corta" role="alert" class="aviso-error" style="display:none;margin:0;background:var(--k-papel)"><span aria-hidden="true" class="icono-error">!</span>Tu carta necesita al menos 80 caracteres. Llevas <span id="p-cuenta">0</span>.</p>
+
+      <button type="button" id="b-cerrar" class="btn btn-carta" style="width:100%">Cerrar el sobre</button>
+      <a class="ir" href="enviar.html" tabindex="-1" aria-hidden="true" style="display:none">Enviar</a>
+    </div>
+  </main>
+
+  <div data-k-pie data-nieve="si"></div>
+</div>
+
+<script src="js/kirco-anim.js"></script>
+<script src="js/filtro.js"></script>
+<script>
+(function () {
+  K.pintarCopos(document.getElementById('k-copos'));
+
+  var tema = ''; try { tema = sessionStorage.getItem('kirco-tema') || ''; } catch (e) {}
+  if (tema) {
+    document.getElementById('bloque-tema').style.display = 'flex';
+    document.getElementById('p-tema').textContent = tema;
+  }
+
+  var saludoDestino = ''; try { saludoDestino = sessionStorage.getItem('kirco-destino-saludo') || ''; } catch (e) {}
+  if (saludoDestino) {
+    document.getElementById('p-saludo-destino').style.display = 'block';
+    document.getElementById('p-saludo-destino').textContent = saludoDestino;
+    document.getElementById('p-saludo-hueco').style.display = 'none';
+  }
+
+  var firma = ''; try { firma = (sessionStorage.getItem('kirco-seudonimo') || '').trim(); } catch (e) {}
+  document.getElementById('p-firma').textContent = firma || 'Lunes de lluvia';
+
+  var ta = document.getElementById('texto');
+  var ofensiva = false, intento = false;
+
+  try { ta.value = sessionStorage.getItem('kirco-texto') || ''; } catch (e) {}
+
+  function pintar() {
+    K.autoalto(ta);
+    var texto = ta.value || '';
+    var cuenta = texto.length;
+    document.getElementById('p-cuenta').textContent = cuenta;
+    document.getElementById('p-corta').style.display = (intento && cuenta < 80) ? 'flex' : 'none';
+
+    var r = KFiltro.revisa(texto);
+    ofensiva = !r.ok;
+    document.getElementById('aviso').style.display = ofensiva ? 'flex' : 'none';
+    document.getElementById('p-detectado').textContent = ofensiva ? (r.coincidencias[0] ? r.coincidencias[0].texto : (r.hallazgos[0] ? r.hallazgos[0].patron : '')) : '[palabra]';
+    document.getElementById('b-cerrar').setAttribute('aria-disabled', ofensiva ? 'true' : 'false');
+    try { sessionStorage.setItem('kirco-texto', texto); } catch (e) {}
+  }
+
+  ta.addEventListener('input', pintar);
+  pintar();
+
+  var cayendo = false;
+  function cae(listo) {
+    var g = K.g(); var c = Array.prototype.slice.call(document.querySelectorAll('.nieve-cap span'));
+    if (!g || !c.length) { listo(); return; }
+    if (K.rm()) { g.to(c, { opacity: 0, duration: .2, onComplete: listo }); return; }
+    var H = window.innerHeight || 800;
+    g.killTweensOf(c);
+    g.to(c, { y: function () { return H * g.utils.random(.9, 1.3); }, x: function () { return g.utils.random(-40, 40); },
+      rotation: function () { return g.utils.random(-120, 120); }, opacity: 0,
+      duration: function () { return g.utils.random(1, 1.6); }, ease: 'power2.in', stagger: { each: .04, from: 'random' },
+      onComplete: function () { setTimeout(listo, 150); } });
+  }
+
+  document.getElementById('b-cerrar').addEventListener('click', function () {
+    if (ofensiva || cayendo) return;
+    var cuenta = (ta.value || '').length;
+    if (cuenta < 80) { intento = true; pintar(); return; }
+    cayendo = true;
+    cae(function () { var a = document.querySelector('a.ir'); if (a) a.click(); });
+  });
+
+  K.listo(function () {
+    if (!K.volteada(document.querySelector('.con-nieve > .correo-aereo'))) K.entrada(document.getElementById('raiz') || document.querySelector('.k-pagina'));
+    K.acumula();
+  });
+  K.listo(function () { K.nieve(document.getElementById('k-copos')); });
+})();
+</script>
+</body>
+</html>
