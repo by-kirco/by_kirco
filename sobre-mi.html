@@ -179,6 +179,14 @@
     }
     html.kc-pergamino .carta-paper { clip-path: inset(0 -60px calc(100% - 60px) -60px); will-change: clip-path; }
     html.kc-pergamino .carta-roller--bottom { will-change: transform; }
+    /* Texto que se va escribiendo con el pergamino: lo crea el JS (palabras aria-hidden + copia solo para
+       lectores de pantalla). Sin JS o con reduced-motion no existe y el texto se ve entero. */
+    .kc-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .kc-w { opacity: 0; transition: opacity 260ms ease-out; }
+    .kc-w.is-escrita { opacity: 1; }
+    .kc-sin-transicion .kc-w { transition: none; }
+    @media (prefers-reduced-motion: reduce) { .kc-w { opacity: 1 !important; transition: none; } }
+    @media print { .kc-w { opacity: 1 !important; } }
     .carta-inner {
       padding: 72px clamp(30px, 6vw, 80px) clamp(48px, 6vw, 72px);
     }
@@ -763,7 +771,60 @@
 
   if (animarPergamino) {
     var CERRADO = 60, altoPapel = 0, cercaPergamino = true, pergaminoForzado = false, rafPergamino = 0;
-    function medirPapel() { altoPapel = paper.offsetHeight; }
+    /* El texto se escribe palabra a palabra un poco por detrás del borde que se desenrolla y, dentro de cada
+       renglón, de izquierda a derecha. Las palabras visibles son aria-hidden; cada párrafo lleva su texto
+       completo en un .kc-sr para lectores de pantalla. Solo opacidad: no cambia el layout. */
+    var RETRASO = 48, palabras = [], umbrales = [], escritas = 0;
+    paper.classList.add('kc-sin-transicion');
+    Array.prototype.forEach.call(paper.querySelectorAll('.carta-inner > p'), function (par) {
+      var sr = document.createElement('span');
+      sr.className = 'kc-sr';
+      var vis = document.createElement('span');
+      vis.setAttribute('aria-hidden', 'true');
+      while (par.firstChild) vis.appendChild(par.firstChild);
+      sr.innerHTML = vis.innerHTML;
+      (function trocear(nodo) {
+        Array.prototype.slice.call(nodo.childNodes).forEach(function (n) {
+          if (n.nodeType === 1) { trocear(n); return; }
+          if (n.nodeType !== 3 || !/\S/.test(n.nodeValue)) return;
+          var frag = document.createDocumentFragment();
+          n.nodeValue.split(/(\s+)/).forEach(function (trozo) {
+            if (!trozo) return;
+            if (/^\s+$/.test(trozo)) { frag.appendChild(document.createTextNode(trozo)); return; }
+            var w = document.createElement('span');
+            w.className = 'kc-w';
+            w.textContent = trozo;
+            frag.appendChild(w);
+            palabras.push(w);
+          });
+          nodo.replaceChild(frag, n);
+        });
+      })(vis);
+      par.appendChild(sr);
+      par.appendChild(vis);
+    });
+    function medirPalabras() {
+      var rp = paper.getBoundingClientRect(), maximo = 0;
+      umbrales = palabras.map(function (w) {
+        var r = w.getBoundingClientRect();
+        if (!r.height) return maximo;              /* párrafo oculto (.carta-extra en móvil) */
+        var par = w.parentNode.closest('p').getBoundingClientRect();
+        var avance = par.width ? (r.right - par.left) / par.width : 1;
+        var u = (r.top - rp.top) + RETRASO + r.height * Math.min(1, Math.max(0, avance));
+        maximo = Math.max(maximo, u);
+        return maximo;                             /* siempre creciente: búsqueda binaria */
+      });
+      escritas = -1;
+    }
+    function escribir(visible) {
+      var lo = 0, hi = umbrales.length;
+      while (lo < hi) { var m = (lo + hi) >> 1; if (umbrales[m] <= visible) lo = m + 1; else hi = m; }
+      if (escritas < 0) { palabras.forEach(function (w, i) { w.classList.toggle('is-escrita', i < lo); }); }
+      else if (lo > escritas) { for (var i = escritas; i < lo; i++) palabras[i].classList.add('is-escrita'); }
+      else { for (var j = lo; j < escritas; j++) palabras[j].classList.remove('is-escrita'); }
+      escritas = lo;
+    }
+    function medirPapel() { altoPapel = paper.offsetHeight; medirPalabras(); }
     function pintarPergamino() {
       rafPergamino = 0;
       if (!altoPapel) medirPapel();
@@ -773,10 +834,12 @@
       var enrollado = Math.max(0, Math.round((altoPapel - visible) * 10) / 10);
       paper.style.clipPath = 'inset(0 -60px ' + enrollado + 'px -60px)';
       rollerBottom.style.transform = 'translate3d(0,' + (-enrollado) + 'px,0)';
+      escribir(pergaminoForzado ? Infinity : visible);
     }
     function pedirPergamino() { if (!rafPergamino) rafPergamino = requestAnimationFrame(pintarPergamino); }
     medirPapel();
     pintarPergamino();
+    requestAnimationFrame(function () { requestAnimationFrame(function () { paper.classList.remove('kc-sin-transicion'); }); });
     new IntersectionObserver(function (entradas) {
       cercaPergamino = entradas[0].isIntersecting;
       pedirPergamino();
