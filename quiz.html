@@ -162,10 +162,10 @@
 
         <!-- RESULTADO -->
         <div id="quiz-result-content" style="display:none;text-align:center">
-          <p style="font-family:var(--font-hand);font-size:clamp(24px,2.4vw,32px);color:var(--kirco-ink);margin:0">Querido desconocido, tu flor es</p>
+          <p style="font-family:var(--font-hand);font-size:clamp(24px,2.4vw,32px);color:var(--kirco-ink);margin:0;text-wrap:balance">Querido desconocido, tu flor&nbsp;es</p>
           <span id="result-flower" style="display:block;width:130px;height:120px;margin:22px auto 10px;-webkit-mask:url(assets/icons/flor.svg) center/contain no-repeat;mask:url(assets/icons/flor.svg) center/contain no-repeat"></span>
           <h2 id="result-name" style="font-family:var(--font-display);font-weight:400;font-size:clamp(56px,8vw,96px);line-height:1;margin:0"></h2>
-          <p id="result-phrase" style="font-family:var(--font-hand);font-size:clamp(22px,2.2vw,28px);color:var(--kirco-ink);margin:14px 0 0"></p>
+          <p id="result-phrase" style="font-family:var(--font-hand);font-size:clamp(22px,2.2vw,28px);color:var(--kirco-ink);margin:14px 0 0;text-wrap:balance"></p>
           <p id="result-desc" style="font-family:var(--font-hand);font-size:clamp(24px,2.4vw,32px);line-height:1.35;color:var(--kirco-ink);max-width:560px;margin:18px auto 0;text-wrap:pretty"></p>
           <p style="font-family:var(--font-hand);font-size:22px;color:var(--kirco-ink);margin:22px 0 0">Atentamente, Kirco</p>
           <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
@@ -414,8 +414,13 @@
       resultName.style.color = res.text;
       resultPhrase.textContent = res.phrase;
       resultDesc.textContent = res.desc;
+      // El cursor-flor (assets/kirco-cursor.js) se quedaba quieto encima de la explicación al aparecer el resultado:
+      // lo escondo hasta que se vuelva a mover el ratón.
+      if (!resultadoVisto) window.dispatchEvent(new Event('kirco-cursor:aparcar'));
     }
+    resultadoVisto = !!(done && res);
   }
+  var resultadoVisto = false;
 
   function animateIn() {
     var g = window.gsap;

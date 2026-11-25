@@ -29,6 +29,9 @@
       raf = (Math.abs(tx - x) > 0.1 || Math.abs(ty - y) > 0.1) ? requestAnimationFrame(loop) : 0;
     }
     function show(v) { c.style.opacity = v ? '1' : '0'; }
+    // Si una página cambia el contenido bajo un ratón quieto (p. ej. el resultado del test), puede pedir que el
+    // cursor se esconda hasta el siguiente movimiento: window.dispatchEvent(new Event('kirco-cursor:aparcar')).
+    window.addEventListener('kirco-cursor:aparcar', function () { show(false); });
     window.addEventListener('mousemove', function (e) {
       tx = e.clientX; ty = e.clientY;
       if (!seen) { seen = true; x = tx; y = ty; }
