@@ -1,0 +1,158 @@
+/* Menú hamburguesa móvil (max-width: 959px), el mismo corte que ya cambia el menú.
+   En escritorio no interviene: el nav se queda como está. */
+.kc-menu-btn,
+.kc-menu-close,
+.kc-menu-overlay { display: none; }
+.kc-menu-portal { position: static; }
+
+/* El cursor-flor (z-index máximo) no debe tapar el panel abierto. */
+html.kc-menu-open #kirco-cursor { opacity: 0 !important; visibility: hidden !important; }
+
+@media (max-width: 959px) {
+  html.kc-menu-ready .kc-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--kirco-green-deep, #6F9C3E);
+    cursor: pointer;
+    flex-shrink: 0;
+    z-index: 2;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Cabeceras sobre foto oscura (portada y Sobre mí) */
+  #hero header .kc-menu-btn,
+  .hero__header .kc-menu-btn { color: var(--kirco-paper, #F7F1E3); }
+
+  .kc-menu-bars {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 22px;
+    height: 16px;
+  }
+  .kc-menu-bars span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+  .kc-menu-btn:focus-visible {
+    outline: 2px dashed currentColor;
+    outline-offset: 4px;
+  }
+
+  html.kc-menu-ready nav.kc-nav-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    width: min(82vw, 320px);
+    height: 100%;
+    max-width: 320px;
+    margin: 0;
+    padding: 28px 28px 40px;
+    display: flex;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    background: #F7F1E3; /* Kirco Paper */
+    box-shadow: -12px 0 32px rgba(46, 43, 37, 0.12);
+    z-index: 7410;
+    transform: translateX(100%);
+    visibility: hidden;
+    pointer-events: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transition: transform 280ms ease-out, visibility 0s linear 280ms;
+  }
+  html.kc-menu-open nav.kc-nav-panel {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 280ms ease-out, visibility 0s linear 0s;
+  }
+
+  html.kc-menu-ready nav.kc-nav-panel a {
+    color: var(--kirco-ink, #2E2B25) !important;
+    font-family: var(--font-mono, 'OCR-B Std', 'Courier New', monospace);
+    font-size: 15px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 14px 0 !important;
+    display: block !important;
+    white-space: normal;
+    line-height: 1.3;
+  }
+  html.kc-menu-ready nav.kc-nav-panel a:hover {
+    color: var(--kirco-orange-deep, #D07F1F) !important;
+  }
+  html.kc-menu-ready nav.kc-nav-panel a:focus-visible {
+    outline: 2px dashed var(--kirco-orange-deep, #D07F1F);
+    outline-offset: 4px;
+  }
+
+  html.kc-menu-ready .kc-menu-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-end;
+    width: 44px;
+    height: 44px;
+    margin: 0 0 18px auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--kirco-ink, #2E2B25);
+    cursor: pointer;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .kc-menu-close svg { width: 22px; height: 22px; display: block; }
+  .kc-menu-close:focus-visible {
+    outline: 2px dashed var(--kirco-orange-deep, #D07F1F);
+    outline-offset: 4px;
+  }
+
+  html.kc-menu-ready .kc-menu-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(46, 43, 37, 0.45);
+    z-index: 7400;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 280ms ease-out, visibility 0s linear 280ms;
+  }
+  html.kc-menu-open .kc-menu-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 280ms ease-out, visibility 0s linear 0s;
+  }
+
+  html.kc-menu-open,
+  html.kc-menu-open body {
+    overflow: hidden !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.kc-menu-ready nav.kc-nav-panel,
+    html.kc-menu-ready .kc-menu-overlay {
+      transition: none !important;
+    }
+  }
+}

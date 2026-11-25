@@ -15,9 +15,11 @@
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="apple-touch-icon" href="/assets/favicon.png" />
   <link href="/assets/fonts/fonts-kirco.css" rel="stylesheet" />
+  <link href="/assets/kirco-menu.css" rel="stylesheet" />
   <script src="/assets/vendor/gsap-3.12.5.min.js" defer></script>
   <script src="/assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
   <script src="/assets/vendor/lenis-1.1.13.min.js" defer></script>
+  <script src="/assets/kirco-menu.js" defer></script>
   <style>
     :root {
       color-scheme: light;
@@ -87,39 +89,54 @@
       letter-spacing: var(--track-mono); text-transform: uppercase;
       color: var(--kirco-orange-deep); margin: 0 0 22px;
       text-decoration: none;
+      grid-column: 1 / -1;
     }
     .blog-volver:hover { color: var(--kirco-ink); }
     .blog-volver:focus-visible { outline: 2px dashed var(--kirco-orange-deep); outline-offset: 4px; }
-    .articulo-wrap {
-      max-width: 760px;
+    /* Sección a dos columnas: foto a un lado, texto al otro; en móvil se apilan. */
+    .articulo-seccion {
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 28px clamp(18px,4vw,24px) 120px;
+      padding: 28px clamp(20px,5vw,72px) 120px;
     }
-    .articulo-carta {
-      background: var(--kirco-paper);
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: var(--shadow-card);
+    .articulo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: clamp(28px, 4vw, 56px);
+      align-items: start;
     }
-    .articulo-portada-wrap { display: block; overflow: hidden; aspect-ratio: 4 / 3; background: #e8e1d2; }
+    .articulo-portada-wrap {
+      display: block; overflow: hidden; aspect-ratio: 4 / 3;
+      background: #e8e1d2; border-radius: 18px;
+    }
     .articulo-portada {
       display: block; width: 100%; height: 100%;
       object-fit: cover; object-position: 28% 100%;
     }
-    .articulo-cuerpo { padding: 36px clamp(22px,5vw,48px) 48px; }
+    .articulo-cuerpo { padding: 0; min-width: 0; }
     .articulo-cuerpo h1 {
       font-family: var(--font-display); font-weight: 400;
-      font-size: clamp(36px,6vw,58px); line-height: 1.06;
-      margin: 0 0 28px; color: var(--kirco-ink); text-wrap: balance;
+      font-size: clamp(36px,5vw,58px); line-height: 1.06;
+      margin: 0 0 22px;
+      /* #FFAA4D sobre #FFF2ED = 1.73:1; se usa el naranja de marca más oscuro. */
+      color: var(--kirco-orange-deep);
+      text-wrap: balance;
     }
     .articulo-cuerpo p {
-      font-family: var(--font-hand);
-      font-size: clamp(19px,1.7vw,22px);
-      line-height: 1.5;
+      font-family: var(--font-mono);
+      font-size: clamp(16px,1.35vw,18px);
+      letter-spacing: 0.02em;
+      line-height: 1.7;
       margin: 0 0 1.15em;
       color: var(--kirco-ink);
     }
-    .blog-cita { color: var(--kirco-orange-deep); }
+    /* Solo citas literales de las cartas (texto v4 de Ryan, entre « »). */
+    .blog-cita {
+      font-family: var(--font-hand);
+      font-size: 1.22em;
+      letter-spacing: 0;
+      color: var(--kirco-orange-deep);
+    }
     .blog-firma {
       margin-top: 2.2em;
       margin-bottom: 0;
@@ -148,8 +165,8 @@
       letter-spacing: .12em; text-transform: uppercase;
       color: var(--kirco-ink-soft);
     }
-    @media (max-width: 600px) {
-      .articulo-cuerpo { padding: 26px 20px 36px; }
+    @media (max-width: 959px) {
+      .articulo-grid { grid-template-columns: 1fr; }
     }
   </style>
   <script src="/assets/kirco-cursor.js" defer></script>
@@ -166,15 +183,15 @@
     </nav>
   </header>
 
-  <article class="articulo-wrap">
+  <article class="articulo-seccion">
     <a class="blog-volver" href="/blog.html">← Blog</a>
-    <div class="articulo-carta" data-reveal>
+    <div class="articulo-grid" data-reveal>
       <div class="articulo-portada-wrap">
       <img
         class="articulo-portada"
         src="/assets/blog/callejero-emocional-900.webp"
         srcset="/assets/blog/callejero-emocional-900.webp 900w, /assets/blog/callejero-emocional.webp 1200w"
-        sizes="(max-width: 760px) 100vw, 760px"
+        sizes="(max-width: 959px) 100vw, 560px"
         alt="Placa azul de la calle de los Dos Amigos en la fachada de un edificio de Madrid, con balcones de hierro"
         width="1200" height="1600"
         decoding="async">

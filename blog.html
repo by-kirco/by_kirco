@@ -15,9 +15,11 @@
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="apple-touch-icon" href="/assets/favicon.png" />
   <link href="/assets/fonts/fonts-kirco.css" rel="stylesheet" />
+  <link href="/assets/kirco-menu.css" rel="stylesheet" />
   <script src="/assets/vendor/gsap-3.12.5.min.js" defer></script>
   <script src="/assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
   <script src="/assets/vendor/lenis-1.1.13.min.js" defer></script>
+  <script src="/assets/kirco-menu.js" defer></script>
   <style>
     :root {
       color-scheme: light;
@@ -95,8 +97,11 @@
       gap: 36px;
       justify-content: center;
     }
+    /* Pie de tarjeta: naranja de marca más claro que aguanta texto blanco.
+       #FFF2ED (1.10:1) y #FFAA4D (1.89:1) no llegan. Se usa --kirco-orange-deep #D07F1F
+       (3.12:1, AA de texto grande). El extracto va a 24px para entrar en ese umbral. */
     .blog-card {
-      background: var(--kirco-paper);
+      background: var(--kirco-orange-deep);
       border-radius: 18px;
       overflow: hidden;
       box-shadow: var(--shadow-card);
@@ -110,29 +115,43 @@
       display: block; width: 100%; height: 100%; object-fit: cover;
       object-position: 28% 100%;
     }
-    .blog-card-body { padding: 28px 26px 32px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+    .blog-card-body {
+      padding: 28px 26px 32px;
+      display: flex; flex-direction: column; gap: 14px; flex: 1;
+      background: var(--kirco-orange-deep);
+      color: var(--kirco-white);
+    }
     .blog-card-body h2 {
       font-family: var(--font-display); font-weight: 400;
       font-size: clamp(32px,4vw,42px); line-height: 1.08; margin: 0;
-      color: var(--kirco-ink); text-wrap: balance;
+      color: var(--kirco-white); text-wrap: balance;
     }
-    .blog-card-body h2 a:hover { color: var(--kirco-orange-deep); }
+    .blog-card-body h2 a { color: var(--kirco-white); }
+    .blog-card-body h2 a:hover { color: var(--kirco-white); }
     .blog-extracto {
-      font-family: var(--font-hand); font-size: clamp(18px,1.7vw,22px);
-      line-height: 1.45; margin: 0; color: var(--kirco-ink);
+      font-family: var(--font-hand); font-size: 24px;
+      line-height: 1.45; margin: 0; color: var(--kirco-white);
     }
     .blog-leer {
       align-self: flex-start;
       margin-top: 8px;
       display: inline-flex; align-items: center;
-      font-family: var(--font-mono); font-size: 13px;
+      font-family: var(--font-mono); font-size: 14px;
       letter-spacing: var(--track-mono); text-transform: uppercase;
-      color: var(--kirco-paper); background: var(--kirco-orange-deep);
-      border-radius: 999px; padding: 12px 26px;
-      transition: transform 180ms ease-out, background 180ms ease-out;
+      color: var(--kirco-white);
+      background: transparent;
+      border: 2px solid var(--kirco-white);
+      border-radius: 999px; padding: 11px 26px;
+      transition: background 180ms ease-out, color 180ms ease-out, transform 180ms ease-out;
     }
-    .blog-leer:hover { transform: translateY(-2px); background: #b86c16; }
-    .blog-leer:focus-visible { outline: 2px dashed var(--kirco-orange-deep); outline-offset: 4px; }
+    .blog-leer:hover,
+    .blog-leer:focus,
+    .blog-leer:active {
+      background: var(--kirco-white);
+      color: var(--kirco-orange-deep);
+      transform: none;
+    }
+    .blog-leer:focus-visible { outline: 2px dashed var(--kirco-white); outline-offset: 4px; }
   </style>
   <script src="/assets/kirco-cursor.js" defer></script>
 </head>
@@ -168,7 +187,7 @@
         <div class="blog-card-body">
           <h2><a href="/blog/callejero-emocional.html">Ocho calles, ocho cartas</a></h2>
           <p class="blog-extracto">Elegí calles de Madrid con nombre de emoción y dejé en ellas cartas escritas a mano. Te cuento cómo nació Callejero Emocional.</p>
-          <a class="blog-leer" href="/blog/callejero-emocional.html">Leer</a>
+          <a class="blog-leer" href="/blog/callejero-emocional.html">Leer más</a>
         </div>
       </article>
     </li>
