@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>by_kirco — Cartas escritas a mano para desconocidos</title>
 <meta name="description" content="Cartas escritas a mano dejadas para desconocidos en las calles de Madrid. Para quien las necesite.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="icon" href="assets/favicon.png">
 <link href="assets/fonts/fonts-kirco.css" rel="stylesheet">
 <link rel="preload" href="assets/hero/01-tren.webp" as="image">
@@ -166,6 +167,26 @@ button{cursor:pointer;border:none;background:none;padding:0}
 .callejero-pola img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:1px}
 .callejero-pola figcaption{font-family:var(--font-hand);font-size:clamp(14px,1.2vw,17px);color:var(--kirco-ink);text-align:center;line-height:1;padding:9px 2px 11px}
 .callejero-pola-num{position:absolute;top:-9px;left:-9px;width:24px;height:24px;border-radius:50%;background:var(--kirco-green);color:#1C2659;font-family:'OCR B Libre','Courier New',monospace;font-size:10.5px;line-height:24px;text-align:center;box-shadow:0 2px 6px rgba(8,12,36,.35)}
+/* Tarjeta + reel (escritorio ≥1180 px): tarjeta azul a la izquierda, reel vertical del Callejero a la derecha.
+   Por debajo (tablet y móvil) el reel no se muestra ni se descarga y la tarjeta queda como estaba. */
+.callejero-duo{max-width:1100px;margin:0 auto}
+.callejero-reel{display:none}
+@media (min-width:1180px){
+  .callejero-duo{--reel-w:clamp(330px,26vw,390px);max-width:1280px;display:grid;grid-template-columns:minmax(0,1fr) var(--reel-w);column-gap:clamp(22px,2.2vw,32px);align-items:stretch}
+  .callejero-duo .callejero-card{max-width:none;margin:0;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);column-gap:clamp(22px,2.4vw,36px);padding:clamp(34px,3.2vw,48px) clamp(26px,2.6vw,40px) clamp(28px,2.6vw,38px) clamp(30px,3vw,48px)}
+  .callejero-duo .callejero-titulo{font-size:clamp(36px,3.3vw,50px)}
+  .callejero-duo .callejero-parrafo{font-size:clamp(19px,1.45vw,21px)}
+  .callejero-reel{display:block;position:relative;min-height:calc(var(--reel-w) * 16 / 9);border-radius:32px;overflow:hidden;background:#1C2659;box-shadow:var(--shadow-pop)}
+  .callejero-reel-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#1C2659}
+  .callejero-reel-sonido{display:none}
+  .callejero-reel.is-auto .callejero-reel-sonido{display:flex;position:absolute;right:16px;bottom:16px;width:44px;height:44px;border-radius:50%;border:0;padding:0;align-items:center;justify-content:center;background:var(--kirco-paper);color:#1C2659;box-shadow:0 4px 14px rgba(10,14,40,.35);transition:transform 180ms ease-out}
+  .callejero-reel-sonido svg{width:22px;height:22px}
+  .callejero-reel-sonido .ico-on{display:none}
+  .callejero-reel-sonido[aria-pressed="true"] .ico-on{display:inline}
+  .callejero-reel-sonido[aria-pressed="true"] .ico-off{display:none}
+  .callejero-reel-sonido:hover{transform:scale(1.06)}
+  .callejero-reel-sonido:focus-visible{outline:2px dashed var(--kirco-paper);outline-offset:3px}
+}
 /* Sello flotante: fuera mientras se ve Callejero (las polaroids quedan debajo de él en móvil) */
 #sello-flotante{transition:opacity 280ms ease-out,visibility 0s linear 0s}
 #sello-flotante.is-oculto{opacity:0;visibility:hidden;pointer-events:none;transition:opacity 280ms ease-out,visibility 0s linear 280ms}
@@ -232,7 +253,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
     <div id="hero-shade" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,43,37,0) 0%,rgba(46,43,37,0.7) 100%);opacity:0;pointer-events:none;z-index:6"></div>
 
     <header style="position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px clamp(20px,4vw,48px)">
-      <img src="assets/logo-naranja-negativo.png" alt="by_kirco" style="height:84px;display:block">
+      <img src="assets/logo-bykirco-contorno.svg" width="84" height="84" alt="by_kirco" style="height:84px;display:block;width:auto">
       <nav style="display:flex;gap:28px;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase">
         <a href="/sobre-mi.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Sobre mí</a>
         <a href="/destinatarios.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Destinatarios</a>
@@ -410,9 +431,9 @@ button{cursor:pointer;border:none;background:none;padding:0}
           <span style="font-family:var(--font-mono);font-size:12px;letter-spacing:var(--track-mono);text-transform:uppercase;color:#fff">Ver en Instagram</span>
         </div>
       </a>
-      <!-- Reel anterior (por si hay que volver): https://www.instagram.com/reel/DdPUprSoZao/ · assets/insta-reel-thumb.png -->
-      <a data-insta-card href="https://www.instagram.com/by_kirco/reels/" data-reel-pendiente="Sustituir por el enlace exacto del reel Callejero Emocional · Carta 3 de 8 (Del desengaño a la esperanza)" target="_blank" rel="noopener" style="height:600px;background:var(--kirco-ink);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-card);display:block;position:relative;transition:transform 200ms ease-out" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-        <img src="assets/callejero-carta-3-portada.webp" alt="Reel de by_kirco: Callejero Emocional, Carta 3 de 8" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform 400ms cubic-bezier(0.22,1,0.36,1)" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''">
+      <!-- Reel del Callejero (Carta 3 de 8) retirado de aquí (nov 2026): ahora hay un reel del Callejero en su sección. Portada: assets/callejero-carta-3-portada.webp -->
+      <a data-insta-card href="https://www.instagram.com/reel/DdPUprSoZao/" target="_blank" rel="noopener" style="height:600px;background:var(--kirco-ink);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-card);display:block;position:relative;transition:transform 200ms ease-out" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <img src="assets/insta-reel-thumb.png" alt="Reel de Instagram de by_kirco" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 400ms cubic-bezier(0.22,1,0.36,1)" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''">
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(46,43,37,0.55) 100%);pointer-events:none"></div>
         <div style="position:absolute;bottom:22px;left:22px;display:flex;align-items:center;gap:10px;pointer-events:none">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="#fff" stroke="none"/></svg>
@@ -420,7 +441,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
         </div>
       </a>
       <a data-insta-card href="https://www.instagram.com/by_kirco/" target="_blank" rel="noopener" style="height:600px;background:var(--kirco-orange-deep);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-decoration:none;padding:32px;box-sizing:border-box;transition:transform 200ms ease-out" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-        <img src="assets/logo-naranja-negativo.png" alt="by_kirco" style="width:180px">
+        <img src="assets/logo-bykirco-contorno.svg" width="180" height="180" alt="by_kirco" style="width:180px;height:auto">
         <span style="font-family:var(--font-display);font-size:30px;color:var(--kirco-paper)">@by_kirco</span>
         <span style="font-family:var(--font-mono);font-size:12px;letter-spacing:var(--track-mono);text-transform:uppercase;color:var(--kirco-paper);border:2px solid var(--kirco-paper);border-radius:999px;padding:10px 22px">Ver perfil</span>
       </a>
@@ -432,6 +453,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
      Mapa: SVG propio (uno horizontal para escritorio y otro vertical para móvil) que se traza al entrar en pantalla. -->
 <section id="callejero" style="position:relative;z-index:1;padding:40px clamp(20px,5vw,72px) 130px">
   <p class="callejero-rotulo" data-reveal><span class="callejero-marca">Callejero Emocional</span></p>
+  <div class="callejero-duo">
   <div class="callejero-card" data-reveal>
     <div class="callejero-texto">
       <h2 class="callejero-titulo">Una carta en cada calle</h2>
@@ -489,6 +511,14 @@ button{cursor:pointer;border:none;background:none;padding:0}
       <a class="callejero-btn" href="https://maps.app.goo.gl/jd7x1yHWSRwSYnhB7" target="_blank" rel="noopener">Mira dónde dejé una<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
   </div>
+  <aside class="callejero-reel" data-reveal data-reel aria-label="Reel del Callejero Emocional">
+    <video class="callejero-reel-video" muted loop playsinline controls preload="none" data-poster="assets/callejero-reel-refugio-poster.webp" width="540" height="960" aria-label="Reel de by_kirco: Callejero Emocional, Carta 4 de 8, Refugio">
+      <source src="assets/callejero-reel-refugio.webm" type="video/webm">
+      <source src="assets/callejero-reel-refugio.mp4" type="video/mp4">
+    </video>
+    <button type="button" class="callejero-reel-sonido" aria-pressed="false" aria-label="Activar sonido del reel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path class="ico-on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path class="ico-off" d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  </aside>
+  </div>
   <script>
   /* Mapa del Callejero: se traza al entrar en pantalla. Sin IntersectionObserver o con reduced-motion se queda dibujado. */
   (function () {
@@ -499,6 +529,32 @@ button{cursor:pointer;border:none;background:none;padding:0}
       if (en[0].isIntersecting) { m.classList.add('is-dibujado'); io.disconnect(); }
     }, { threshold: 0.35 });
     io.observe(m);
+  })();
+  /* Reel del Callejero (solo escritorio ≥1180 px): no descarga el vídeo hasta que se ve (preload=none); con JS y sin
+     reduced-motion arranca en silencio al entrar en pantalla y se pausa al salir. Con reduced-motion o sin JS queda
+     el póster con los controles nativos para darle al play. */
+  (function () {
+    var box = document.querySelector('[data-reel]');
+    if (!box || !('IntersectionObserver' in window)) return;
+    var v = box.querySelector('video'), btn = box.querySelector('.callejero-reel-sonido');
+    var escritorio = matchMedia('(min-width: 1180px)');
+    /* el póster solo se pide en escritorio (en tablet/móvil el reel no se muestra) */
+    var poster = function () { if (escritorio.matches && !v.poster) v.poster = v.getAttribute('data-poster'); };
+    poster(); escritorio.addEventListener && escritorio.addEventListener('change', poster);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    v.removeAttribute('controls'); box.classList.add('is-auto');
+    var visto = false;
+    new IntersectionObserver(function (en) {
+      visto = en[0].isIntersecting;
+      if (visto && escritorio.matches) { var p = v.play(); if (p && p.catch) p.catch(function () { v.setAttribute('controls', ''); box.classList.remove('is-auto'); }); }
+      else if (!v.paused) v.pause();
+    }, { threshold: 0.35 }).observe(box);
+    escritorio.addEventListener && escritorio.addEventListener('change', function () { if (!escritorio.matches) v.pause(); else if (visto) v.play(); });
+    btn.addEventListener('click', function () {
+      v.muted = !v.muted; if (!v.muted && v.paused) v.play();
+      btn.setAttribute('aria-pressed', String(!v.muted));
+      btn.setAttribute('aria-label', v.muted ? 'Activar sonido del reel' : 'Silenciar el reel');
+    });
   })();
   /* Sello flotante: se esconde (fundido) mientras la tarjeta de Callejero pasa por la franja inferior de la
      pantalla, donde vive el sello (22 % de abajo, más alto que el sello en 360–1440 px), y vuelve al salir.
@@ -595,7 +651,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
 <!-- FOOTER -->
 <footer style="position:relative;z-index:1;background:var(--kirco-orange-deep);padding:80px clamp(20px,5vw,72px) 50px;color:var(--kirco-paper)">
   <div data-reveal style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:32px">
-    <img src="assets/logo-naranja-negativo.png" alt="by_kirco" style="height:84px">
+    <img src="assets/logo-bykirco-contorno.svg" width="84" height="84" alt="by_kirco" style="height:84px;width:auto">
     <div style="display:flex;gap:14px;align-items:center">
       <a href="https://www.instagram.com/by_kirco/" target="_blank" rel="noopener" aria-label="Instagram" style="display:block;width:58px;height:58px;transition:transform 180ms ease-out" onmouseover="this.style.transform='translateY(-3px) rotate(-8deg)'" onmouseout="this.style.transform=''"><img src="assets/icons/instagram.svg" alt="Instagram" style="width:100%;height:100%;display:block"></a>
       <a href="https://www.facebook.com/profile.php?id=61567524682650" target="_blank" rel="noopener" aria-label="Facebook" style="display:block;width:58px;height:58px;transition:transform 180ms ease-out" onmouseover="this.style.transform='translateY(-3px) rotate(-8deg)'" onmouseout="this.style.transform=''"><img src="assets/icons/facebook.svg" alt="Facebook" style="width:100%;height:100%;display:block"></a>

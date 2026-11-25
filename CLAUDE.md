@@ -36,9 +36,10 @@ You are the marketing operator for **by_kirco** — cartas escritas a mano dejad
 - `design_extracted/by-kirco-design-system/project/` — tokens, guidelines y componentes HTML del sistema de diseño extraído. Consultar antes de crear nuevas páginas para heredar tokens correctamente (nunca redeclarar `:root`).
 
 ### Assets clave
-- `assets/favicon.png` — favicon activo
-- `assets/logo-verde.png` — header pages internas (54 px alto)
-- `assets/logo-naranja-negativo.png` — footer (84 px alto)
+- `assets/favicon.svg` (+ `favicon.png` de respaldo / apple-touch) — favicon activo (iso-bK_vb)
+- `assets/logo-bykirco-verde.svg` / `logo-bykirco-naranja.svg` — logo SIN contorno blanco, para fondos claros (headers de quiz y destinatarios)
+- `assets/logo-bykirco-contorno.svg` — logo con contorno blanco (pegatina), para fotos y fondos naranja/oscuros (header de home y sobre mí, footers, tarjeta de Instagram, carta)
+- Originales SVG: Drive «Logos SVG» (1XK4tdvw2r1BTvLIeqbr2v_lqNKMoXw-h)
 - `assets/monograma-verde.png` — separadores, firma de carta, pies de polaroid (50 px)
 - `assets/monograma-naranja.png` — marcas de agua de fondo (`?v=2`)
 - `assets/anim-logo.json` — animación Lottie (loader + header en index.html)
