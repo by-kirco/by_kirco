@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <meta name="robots" content="noindex">
+  <title>Ocho calles, ocho cartas — Blog — by_kirco</title>
+  <meta name="description" content="Elegí calles de Madrid con nombre de emoción y dejé en ellas cartas escritas a mano. Te cuento cómo nació Callejero Emocional.">
+  <meta property="og:title" content="Ocho calles, ocho cartas — by_kirco">
+  <meta property="og:description" content="Elegí calles de Madrid con nombre de emoción y dejé en ellas cartas escritas a mano. Te cuento cómo nació Callejero Emocional.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="/assets/blog/callejero-emocional.webp">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon.png" />
+  <link href="/assets/fonts/fonts-kirco.css" rel="stylesheet" />
+  <link href="/assets/kirco-menu.css" rel="stylesheet" />
+  <script src="/assets/vendor/gsap-3.12.5.min.js" defer></script>
+  <script src="/assets/vendor/ScrollTrigger-3.12.5.min.js" defer></script>
+  <script src="/assets/vendor/lenis-1.1.13.min.js" defer></script>
+  <script src="/assets/kirco-menu.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --kirco-green:        #A0D76B;
+      --kirco-green-deep:   #6F9C3E;
+      --kirco-green-tint:   #ECF7DF;
+      --kirco-orange:       #FFAA4D;
+      --kirco-orange-deep:  #D07F1F;
+      --kirco-orange-tint:  #FFF2E2;
+      --kirco-yellow:       #FFFA7D;
+      --kirco-paper:        #F7F1E3;
+      --kirco-light-orange: #FFF2ED;
+      --kirco-white:        #FFFFFF;
+      --kirco-ink:          #2E2B25;
+      --kirco-ink-soft:     #6B6557;
+      --kirco-line:         #E8E1D2;
+      --font-display:       'Darumadrop One', sans-serif;
+      --font-hand:          'Indie Flower', cursive;
+      --font-mono:          'OCR-B Std', 'Courier New', monospace;
+      --font-ocr:           'OCR-A Std', 'Courier New', monospace;
+      --track-mono:         0.16em;
+      --shadow-card:        0 2px 6px rgba(46,43,37,.06), 0 10px 28px rgba(46,43,37,.08);
+      --shadow-pop:         0 4px 12px rgba(46,43,37,.1), 0 18px 44px rgba(46,43,37,.14);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+    body {
+      background-color: var(--kirco-light-orange);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.36 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      color: var(--kirco-ink);
+      overflow-x: clip;
+    }
+    @font-face {
+      font-family: 'OCR-A Std';
+      src: url('/fonts/OCRAStd.otf') format('opentype');
+      font-weight: 400; font-display: swap;
+    }
+    @font-face {
+      font-family: 'OCR-B Std';
+      src: url('/fonts/OCRBStd.otf') format('opentype');
+      font-weight: 400; font-display: swap;
+    }
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .nav-link { transition: color 180ms ease-out; }
+    .nav-link:hover { color: var(--kirco-orange-deep) !important; }
+    .social-icon-link { transition: transform 180ms ease-out; }
+    .social-icon-link:hover { transform: translateY(-3px) rotate(-8deg); }
+    @media (max-width: 959px) { .nav-link { display: inline-block; padding: 12px 0; } }
+    @media (max-width: 600px) {
+      body > header { padding: 16px 18px !important; gap: 12px !important; }
+      body > header > a { flex-shrink: 0; }
+      body > header > a img { height: 60px !important; }
+      body > header nav { gap: 16px !important; flex-wrap: wrap; justify-content: flex-end; }
+      .nav-link { display: inline-block; padding: 12px 0; white-space: nowrap; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nav-link, .social-icon-link, .blog-leer, .blog-notas-btn, .blog-card, .blog-volver { transition: none !important; }
+      .social-icon-link:hover, .blog-leer:hover, .blog-notas-btn:hover, .blog-card:hover { transform: none !important; }
+    }
+
+    .blog-volver {
+      display: inline-block;
+      font-family: var(--font-mono); font-size: 12px;
+      letter-spacing: var(--track-mono); text-transform: uppercase;
+      color: var(--kirco-orange-deep); margin: 0 0 22px;
+      text-decoration: none;
+    }
+    .blog-volver:hover { color: var(--kirco-ink); }
+    .blog-volver:focus-visible { outline: 2px dashed var(--kirco-orange-deep); outline-offset: 4px; }
+    /* Foto arriba a ancho del contenedor; debajo, el texto en tarjeta
+       blanca #FFFFFF (decisión de Sara, solo en esta tarjeta) sobre el
+       fondo de página #FFF2ED. Radio 18px y padding como en blog5. */
+    .articulo-seccion {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 28px clamp(20px,5vw,72px) 120px;
+    }
+    .articulo-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .articulo-portada-wrap {
+      display: block; overflow: hidden; aspect-ratio: 4 / 3;
+      width: 100%;
+      background: #e8e1d2; border-radius: 18px;
+    }
+    .articulo-portada {
+      display: block; width: 100%; height: 100%;
+      object-fit: cover; object-position: 28% 100%;
+    }
+    .articulo-cuerpo {
+      background: var(--kirco-white); /* #FFFFFF, solo esta tarjeta */
+      border-radius: 18px;
+      padding: 46px 48px;
+      min-width: 0;
+    }
+    .articulo-cuerpo h1 {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: clamp(36px,5vw,58px); line-height: 1.06;
+      margin: 0 0 22px;
+      /* #FFAA4D sobre #FFF2ED = 1.73:1; se usa el naranja de marca más oscuro. */
+      color: var(--kirco-orange-deep);
+      text-wrap: balance;
+    }
+    .articulo-cuerpo p {
+      font-family: var(--font-mono);
+      font-size: clamp(16px,1.35vw,18px);
+      letter-spacing: 0.02em;
+      line-height: 1.7;
+      margin: 0 0 1.15em;
+      color: var(--kirco-ink);
+    }
+    /* Solo citas literales de las cartas (texto v4 de Ryan, entre « »). */
+    .blog-cita {
+      font-family: var(--font-hand);
+      font-size: 1.22em;
+      letter-spacing: 0;
+      color: var(--kirco-orange-deep);
+    }
+    .blog-firma {
+      margin-top: 2.2em;
+      margin-bottom: 0;
+    }
+    .blog-firma p { margin: 0; }
+    .blog-firma .blog-firma-nombre { margin-top: .2em; }
+    .blog-notas {
+      margin: 2em 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 16px;
+    }
+    .blog-notas-btn {
+      display: inline-flex; align-items: center;
+      font-family: var(--font-mono); font-size: 13px;
+      letter-spacing: var(--track-mono); text-transform: uppercase;
+      color: var(--kirco-paper); background: var(--kirco-orange-deep);
+      border-radius: 999px; padding: 12px 22px;
+      transition: transform 180ms ease-out, background 180ms ease-out;
+    }
+    .blog-notas-btn:hover { transform: translateY(-2px); background: #b86c16; }
+    .blog-notas-btn:focus-visible { outline: 2px dashed var(--kirco-orange-deep); outline-offset: 4px; }
+    .blog-notas-aviso {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--kirco-ink-soft);
+    }
+    @media (max-width: 959px) {
+      .articulo-seccion { padding: 24px 20px 120px; }
+      .articulo-grid { gap: 28px; }
+      .articulo-cuerpo { padding: 28px 22px 32px; }
+      .articulo-cuerpo h1 {
+        font-size: clamp(44px, 12vw, 62px);
+        line-height: 1.04;
+        margin: 0 0 20px;
+      }
+      .articulo-cuerpo p {
+        font-size: clamp(17px, 4.4vw, 19px);
+        line-height: 1.75;
+      }
+    }
+  </style>
+  <script src="/assets/kirco-cursor.js" defer></script>
+</head>
+<body>
+
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:24px;max-width:1160px;margin:0 auto;padding:22px clamp(20px,4vw,48px)">
+    <a href="/" style="display:block"><img src="/assets/logo-bykirco-naranja.svg" width="84" height="84" alt="by_kirco" style="height:84px;width:auto;display:block" /></a>
+    <nav style="display:flex;gap:28px;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase">
+      <a href="/" class="nav-link" style="color:var(--kirco-green-deep)">Inicio</a>
+      <a href="/sobre-mi.html" class="nav-link" style="color:var(--kirco-green-deep)">Sobre mí</a>
+      <a href="/destinatarios.html" class="nav-link" style="color:var(--kirco-green-deep)">Destinatarios</a>
+      <a href="/blog.html" class="nav-link" style="color:var(--kirco-green-deep)">Blog</a>
+    </nav>
+  </header>
+
+  <article class="articulo-seccion">
+    <a class="blog-volver" href="/blog.html">← Blog</a>
+    <div class="articulo-grid" data-reveal>
+      <div class="articulo-portada-wrap">
+      <img
+        class="articulo-portada"
+        src="/assets/blog/callejero-emocional-900.webp"
+        srcset="/assets/blog/callejero-emocional-900.webp 900w, /assets/blog/callejero-emocional.webp 1200w"
+        sizes="(max-width: 959px) 100vw, min(100vw, 1160px)"
+        alt="Placa azul de la calle de los Dos Amigos en la fachada de un edificio de Madrid, con balcones de hierro"
+        width="1200" height="1600"
+        decoding="async">
+      </div>
+      <div class="articulo-cuerpo">
+        <h1>Ocho calles, ocho cartas</h1>
+        <p>Hay calles en Madrid que se llaman como algo que sentimos. Pasas por ellas con prisa y no te fijas, pero ahí están, en una placa: Constancia, Pensamiento, Refugio.</p>
+        <p>Un día empecé a mirarlas de otra manera. Pensé que alguien, hace mucho, decidió ponerle a una calle el nombre de una emoción, y que eso merecía una carta.</p>
+        <p>Así nació Callejero Emocional, una serie original de by_kirco: ocho calles y ocho cartas escritas a mano. Cada una nace de la palabra de su placa y se quedó en esa calle, para quien pasara por allí.</p>
+        <p>La primera fue la de la Constancia. Habla de que el camino cuesta y de no rendirse, porque <span class="blog-cita">«aunque nadie lo vea, lo estás haciendo»</span>.</p>
+        <p>Después vino la del Pensamiento, la de esa nube que a veces <span class="blog-cita">«nos termina nublando la vista»</span> y con la que, a pesar de todo, aprendemos a vivir.</p>
+        <p>La tercera empieza en la calle del Desengaño y termina en la de la Esperanza. Habla de esa desilusión que duele <span class="blog-cita">«porque nos hicimos expectativas que no se cumplieron»</span>, y de levantar la vista y recordar que aún hay esperanza.</p>
+        <p>Luego, la del Refugio. Solemos pensar que un refugio es un lugar seguro, pero <span class="blog-cita">«en ocasiones ese refugio también puede ser una persona»</span>.</p>
+        <p>En la calle de los Dos Amigos, la carta habla de lo que a veces cargas tú solo, y de esos <span class="blog-cita">«dos amigos que no siempre saben qué decirse y, aun así, se quedan»</span>.</p>
+        <p>En la de las Virtudes, de eso bueno que solemos ser los últimos en ver: <span class="blog-cita">«que hoy no lo veas no significa que no exista»</span>.</p>
+        <p>Y en la de la Indulgencia, de algo que hiciste, o que no hiciste, <span class="blog-cita">«y que todavía te pesa»</span>. La carta te pide que te fijes en cómo te hablas cuando lo recuerdas, porque <span class="blog-cita">«seguro que eso no se lo dirías a alguien a quien quieres»</span>. A esa persona le dirías <span class="blog-cita">«que hizo lo que pudo con lo que sabía entonces, y que equivocarse no la hace peor»</span>. <span class="blog-cita">«Pues hoy, por un momento, háblate así a ti.»</span> Con un poco de indulgencia, <span class="blog-cita">«esa bondad que solemos repartir con todos menos con nosotros»</span>.</p>
+        <p>No sé quién las ha encontrado. Puede que alguien ya se las haya llevado, o que la lluvia haya hecho lo suyo. Me gusta no saberlo. Lo que escribí también es para ti.</p>
+        <p>En mis redes te enseño dónde dejé cada carta y lo que dice, con #CallejeroEmocional y #CallejeroEmocionalByKirco.</p>
+        <p>Y si algún día pasas por una de estas calles, fíjate en la placa. A lo mejor también te dice algo a ti.</p>
+        <p class="blog-notas">
+          <a class="blog-notas-btn" href="https://maps.app.goo.gl/jd7x1yHWSRwSYnhB7" target="_blank" rel="noopener">Lee cada carta completa</a>
+        </p>
+        <div class="blog-firma">
+          <p>Escribo para ti sin conocerte.</p>
+          <p class="blog-firma-nombre">Kirco</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <footer style="background:var(--kirco-orange-deep);padding:70px clamp(20px,5vw,72px) 46px;color:var(--kirco-paper)">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px">
+      <img src="/assets/logo-bykirco-contorno.svg" width="84" height="84" alt="by_kirco" style="height:78px;width:auto" />
+      <div style="display:flex;gap:14px;align-items:center">
+        <a href="https://www.instagram.com/by_kirco/" target="_blank" rel="noopener" aria-label="Instagram" style="display:block;width:54px;height:54px"><img src="/assets/icons/instagram.svg" alt="Instagram" style="width:100%;height:100%;display:block" /></a>
+        <a href="https://www.facebook.com/profile.php?id=61567524682650" target="_blank" rel="noopener" aria-label="Facebook" style="display:block;width:54px;height:54px"><img src="/assets/icons/facebook.svg" alt="Facebook" style="width:100%;height:100%;display:block" /></a>
+        <a href="#" target="_blank" rel="noopener" aria-label="X" style="display:block;width:54px;height:54px"><img src="/assets/icons/x.svg" alt="X" style="width:100%;height:100%;display:block" /></a>
+        <a href="https://www.tiktok.com/@by_kirco" target="_blank" rel="noopener" aria-label="TikTok" style="display:block;width:54px;height:54px"><img src="/assets/icons/tiktok.svg" alt="TikTok" style="width:100%;height:100%;display:block" /></a>
+      </div>
+    </div>
+    <p style="max-width:1100px;margin:44px auto 0;border-top:2px solid rgba(247,241,227,0.35);padding-top:22px;font-family:var(--font-mono);font-size:12px;letter-spacing:var(--track-mono);text-transform:uppercase">© 2026 by_kirco · Cartas con cariño</p>
+  </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (window.Lenis && window.gsap && window.ScrollTrigger) {
+    var gsap = window.gsap;
+    var ST = window.ScrollTrigger;
+    gsap.registerPlugin(ST);
+    var lenis = new window.Lenis({ duration: 1.15, smoothWheel: true });
+    lenis.on('scroll', ST.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    if (!reduce) {
+      document.querySelectorAll('[data-reveal]').forEach(function (el) {
+        gsap.fromTo(el, { y: 60, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%' }
+        });
+      });
+    }
+  }
+});
+</script>
+
+</body>
+</html>
