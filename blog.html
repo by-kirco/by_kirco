@@ -97,11 +97,11 @@
       gap: 36px;
       justify-content: center;
     }
-    /* Pie de tarjeta: naranja de marca más claro que aguanta texto blanco.
-       #FFF2ED (1.10:1) y #FFAA4D (1.89:1) no llegan. Se usa --kirco-orange-deep #D07F1F
-       (3.12:1, AA de texto grande). El extracto va a 24px para entrar en ese umbral. */
+    /* Pie de tarjeta: Orange Kirco --kirco-orange #FFAA4D (decisión de Sara).
+       Contraste de blanco sobre #FFAA4D ≈ 1.89:1 (no llega a AA). Se mantiene
+       el color a petición; no se oscurece. */
     .blog-card {
-      background: var(--kirco-orange-deep);
+      background: var(--kirco-orange);
       border-radius: 18px;
       overflow: hidden;
       box-shadow: var(--shadow-card);
@@ -118,7 +118,7 @@
     .blog-card-body {
       padding: 28px 26px 32px;
       display: flex; flex-direction: column; gap: 14px; flex: 1;
-      background: var(--kirco-orange-deep);
+      background: var(--kirco-orange);
       color: var(--kirco-white);
     }
     .blog-card-body h2 {
@@ -148,10 +148,32 @@
     .blog-leer:focus,
     .blog-leer:active {
       background: var(--kirco-white);
-      color: var(--kirco-orange-deep);
+      color: var(--kirco-orange);
       transform: none;
     }
     .blog-leer:focus-visible { outline: 2px dashed var(--kirco-white); outline-offset: 4px; }
+    /* Móvil: foto arriba a ancho completo, texto centrado a todo el ancho
+       menos márgenes de seguridad (~20px), titular más grande, botón al final. */
+    @media (max-width: 959px) {
+      .blog-lista { padding: 20px 20px 120px; }
+      .blog-card-body {
+        text-align: center;
+        align-items: center;
+        padding: 32px 4px 36px;
+        gap: 18px;
+      }
+      .blog-card-body h2 {
+        font-size: clamp(44px, 12vw, 62px);
+        line-height: 1.04;
+        max-width: 100%;
+      }
+      .blog-extracto {
+        font-size: clamp(22px, 5.8vw, 28px);
+        line-height: 1.4;
+        max-width: 100%;
+      }
+      .blog-leer { align-self: center; margin-top: 10px; }
+    }
   </style>
   <script src="/assets/kirco-cursor.js" defer></script>
 </head>
