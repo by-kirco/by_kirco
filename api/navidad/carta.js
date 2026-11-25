@@ -129,10 +129,7 @@ module.exports = async function handler(req, res) {
       details: e && e.details,
       hint: e && e.hint,
       status: e && e.status,
-      stack: e && e.stack,
-      stringified: (() => { try { return JSON.stringify(e); } catch (x) { return 'no-json'; } })(),
-      toString: (() => { try { return String(e); } catch (x) { return 'no-string'; } })(),
-      keys: (() => { try { return Object.keys(e || {}); } catch (x) { return 'no-keys'; } })()
+      stack: e && e.stack
     });
     return res.status(500).json({ error: 'No hemos podido guardar tu carta. Inténtalo de nuevo en un momento.' });
   }

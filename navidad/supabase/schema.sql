@@ -1,5 +1,5 @@
 -- by_kirco · Navidad — esquema de Supabase
--- Aplicar en el proyecto "By_kirco" (lymmqtwywlqgaajnahjb) una vez esté activo.
+-- Proyecto actual: wpxsrzdlmcywynuftxzr (sustituye al antiguo By_kirco, lymmqtwywlqgaajnahjb, que quedó en pausa).
 -- No contiene secretos: las claves van solo en variables de entorno de Vercel.
 
 create extension if not exists pgcrypto;
@@ -43,3 +43,11 @@ alter table notas enable row level security;
 -- Sin políticas públicas a propósito: todo el acceso pasa por las funciones serverless
 -- (/api/navidad/*) con la service role key, que ignora RLS. El panel de Sara (futuro)
 -- hará lo mismo desde el servidor.
+
+-- Importante: crear las tablas con SQL a mano no da permisos automáticos al rol
+-- service_role (eso solo ocurre si se crean con el editor visual de Supabase).
+-- Sin este GRANT, cualquier llamada desde el servidor falla con
+-- "permission denied for table cartas/notas", aunque la clave y la URL sean correctas.
+grant usage on schema public to service_role;
+grant all on table public.cartas to service_role;
+grant all on table public.notas to service_role;

@@ -27,21 +27,23 @@ Flujo completo de quien participa, conectado a Supabase de verdad:
 El esquema de datos (`supabase/schema.sql`) ya incluye las tablas `cartas` y `notas` completas,
 preparadas para cuando se construya esa segunda fase.
 
-## Puesta en marcha (pendiente, requiere acción de Sara)
+## Puesta en marcha
 
-1. **Activar el proyecto Supabase.** El proyecto `By_kirco` (`lymmqtwywlqgaajnahjb`) está en pausa
-   (plan gratuito). Hay que restaurarlo desde el dashboard de Supabase o pedírmelo de nuevo una
-   vez quieras que lo haga yo — la restauración automática quedó bloqueada por el modo seguro de
-   esta sesión.
-2. **Aplicar el esquema.** Ejecutar `navidad/supabase/schema.sql` en ese proyecto (SQL Editor o
-   `apply_migration`).
-3. **Variables de entorno en Vercel** (Project Settings → Environment Variables, nunca en el repo):
-   - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-4. **Desplegar.** El resto del proyecto sigue desplegándose igual: `npx vercel deploy --prod --yes`.
-   Al ser funciones serverless nuevas bajo `/api`, Vercel las detecta solas.
+Ya hecho y confirmado en producción (`bykirco.vercel.app/navidad`):
 
-## Pruebas ya hechas en esta sesión
+1. Proyecto Supabase activo: `wpxsrzdlmcywynuftxzr`, con `navidad/supabase/schema.sql` aplicado
+   (tablas `cartas`/`notas` + índices únicos + el `GRANT` a `service_role`, imprescindible porque
+   las tablas se crearon con SQL a mano y no con el editor visual de Supabase).
+2. Variables de entorno en Vercel (Project Settings → Environment Variables, nunca en el repo):
+   `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (formato nuevo `sb_secret_...`).
+3. El repositorio conectado a Vercel para producción es `by-kirco/by_kirco` (rama `master`);
+   despliega solo en cada push a esa rama.
+
+Si se recrea el proyecto de Supabase alguna vez, no olvidar el `GRANT` del final de
+`schema.sql` — sin él, el servidor recibe `permission denied for table cartas` aunque la URL
+y la clave sean correctas.
+
+## Pruebas ya hechas
 
 - Sintaxis y lógica de las 4 funciones serverless (`node --check` + pruebas con un cliente
   Supabase simulado): validaciones de plazo, límite de 300, correo inválido, texto corto, filtro
@@ -49,8 +51,7 @@ preparadas para cuando se construya esa segunda fase.
 - Flujo completo en navegador (Playwright) de principio a fin: Preséntate → Carta → Enviar,
   incluido el filtro de contenido bloqueando y desbloqueando el botón "Cerrar el sobre", y la
   validación de correo/casilla en Enviar.
-- Sin pruebas reales contra Supabase todavía (el proyecto está pausado) ni contra Vercel (las
-  funciones `/api` no existen en un servidor estático local): eso hay que probarlo tras el paso 1-3.
+- Flujo real en producción, de principio a fin, con una carta guardada en Supabase.
 
 ## Pendiente de confirmar con Sara (igual que el resto de "Pendiente" del FLUJO.md)
 

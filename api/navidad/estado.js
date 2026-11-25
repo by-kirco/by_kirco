@@ -13,29 +13,6 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    try {
-      const diagUrl = `${process.env.SUPABASE_URL}/rest/v1/cartas?select=id&limit=0`;
-      const diagRes = await fetch(diagUrl, {
-        headers: {
-          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY || ''}`
-        }
-      });
-      const diagText = await diagRes.text();
-      console.error('estado.js DIAGNOSTICO', {
-        urlEnvPresente: !!process.env.SUPABASE_URL,
-        urlEnvValor: process.env.SUPABASE_URL,
-        keyEnvPresente: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-        keyEnvLongitud: (process.env.SUPABASE_SERVICE_ROLE_KEY || '').length,
-        keyEnvPrefijo: (process.env.SUPABASE_SERVICE_ROLE_KEY || '').slice(0, 10),
-        status: diagRes.status,
-        statusText: diagRes.statusText,
-        cuerpo: diagText.slice(0, 500)
-      });
-    } catch (diagErr) {
-      console.error('estado.js DIAGNOSTICO fallo', String(diagErr), diagErr && diagErr.stack);
-    }
-
     const supabase = getSupabase();
 
     const { count: escritas, error: errCount } = await supabase
