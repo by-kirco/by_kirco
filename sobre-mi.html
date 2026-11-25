@@ -43,7 +43,8 @@
     html, body { margin: 0; padding: 0; }
     a { color: inherit; }
     img { max-width: 100%; }
-    font-synthesis: none;
+    /* (nov 2026) Aquí había un «font-synthesis: none;» suelto fuera de cualquier regla: invalidaba la regla body
+       siguiente y la página se veía sobre blanco puro (#FFFFFF) en vez de Kirco Light Orange. */
 
     /* ── Base ── */
     body {
@@ -245,7 +246,7 @@
       gap: calc(2 * var(--margen) + 12px);
       overflow-x: auto;
       overflow-y: hidden;
-      padding: 26px var(--margen) 34px;
+      padding: 26px var(--margen) 40px;
       scroll-snap-type: x mandatory;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
@@ -267,7 +268,8 @@
       opacity: .55;
       transition: transform 300ms ease-out, opacity 400ms ease-out, box-shadow 300ms ease-out;
     }
-    .polaroid.is-activa { opacity: 1; box-shadow: var(--shadow-pop); }
+    /* Sombra más corta que --shadow-pop: el carril recorta lo que sale de sus márgenes y, sobre Light Orange, el corte se veía como un recuadro */
+    .polaroid.is-activa { opacity: 1; box-shadow: 0 2px 6px rgba(46,43,37,.08), 0 8px 16px rgba(46,43,37,.12); }
     .polaroid__img-wrap {
       overflow: hidden;
       border-radius: 14px;
@@ -431,8 +433,8 @@
       .carta-roller--top { top: -20px; }
       .carta-roller--bottom { margin-top: -20px; }
       /* Dónde las dejo en móvil: el mismo carrusel, deslizable con el dedo; una foto casi a ancho completo */
-      .kc-carrusel { --slide: min(calc(100vw - 56px), 640px); --margen: 16px; }
-      .donde__carousel { padding: 18px var(--margen) 26px; }
+      .kc-carrusel { --slide: min(calc(100vw - 64px), 640px); --margen: 20px; }
+      .donde__carousel { padding: 18px var(--margen) 34px; }
       .polaroid { padding: 9px 9px 12px; border-radius: 18px; }
       .polaroid__label { font-size: 12px; letter-spacing: 0.08em; margin-top: 10px; }
       /* Zonas táctiles */
