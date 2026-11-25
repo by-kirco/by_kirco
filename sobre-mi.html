@@ -221,7 +221,9 @@
     }
 
     /* ── Dónde las dejo: carrusel propio (sin librerías) ──
-       Pista con scroll-snap: cada polaroid se centra; avanza sola cada 3 s (js «Carrusel» abajo).
+       Una sola foto visible cada vez, centrada en la página (la pista mide una polaroid + un margen para la
+       rotación, y el hueco entre fotos es mayor que ese margen, así no asoman las vecinas); avanza sola cada 3 s.
+       Fotos en su proporción natural (16:9), sin recorte.
        Se pausa con hover, foco, toque o el botón de pausa; con reduced-motion no avanza solo. */
     .donde {
       padding: 0 0 120px;
@@ -237,13 +239,13 @@
       color: var(--kirco-green-deep);
       padding: 0 20px;
     }
-    .kc-carrusel { --slide: clamp(250px, 27vw, 340px); position: relative; }
+    .kc-carrusel { --slide: clamp(300px, 40vw, 540px); --margen: 26px; position: relative; max-width: calc(var(--slide) + 2 * var(--margen)); margin: 0 auto; }
     .donde__carousel {
       display: flex;
-      gap: clamp(22px, 3vw, 40px);
+      gap: calc(2 * var(--margen) + 12px);
       overflow-x: auto;
       overflow-y: hidden;
-      padding: 26px calc(50% - var(--slide) / 2) 34px;
+      padding: 26px var(--margen) 34px;
       scroll-snap-type: x mandatory;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
@@ -274,7 +276,7 @@
       display: block;
       width: 100%;
       height: auto;
-      aspect-ratio: 4/5;
+      aspect-ratio: 1672/941;
       object-fit: cover;
       transform: scale(1);
       transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -428,9 +430,9 @@
       .carta-roller { left: -10px; right: -10px; height: 40px; }
       .carta-roller--top { top: -20px; }
       .carta-roller--bottom { margin-top: -20px; }
-      /* Dónde las dejo en móvil: el mismo carrusel, deslizable con el dedo; asoman las fotos vecinas */
-      .kc-carrusel { --slide: min(68vw, 290px); }
-      .donde__carousel { gap: 16px; padding: 18px calc(50% - var(--slide) / 2) 26px; }
+      /* Dónde las dejo en móvil: el mismo carrusel, deslizable con el dedo; una foto casi a ancho completo */
+      .kc-carrusel { --slide: min(calc(100vw - 56px), 640px); --margen: 16px; }
+      .donde__carousel { padding: 18px var(--margen) 26px; }
       .polaroid { padding: 9px 9px 12px; border-radius: 18px; }
       .polaroid__label { font-size: 12px; letter-spacing: 0.08em; margin-top: 10px; }
       /* Zonas táctiles */
@@ -525,19 +527,19 @@
     <div class="kc-carrusel" data-carrusel role="region" aria-roledescription="carrusel" aria-label="Fotos de dónde dejo las cartitas">
       <div class="donde__carousel" id="carousel" tabindex="0" aria-label="Fotos; desliza o usa las flechas del teclado">
       <div class="polaroid" role="group" aria-roledescription="foto" aria-label="1 de 4: Banco del parque" style="transform:rotate(-2deg)">
-        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/04-obra-de-arte-900.webp" srcset="assets/hero/04-obra-de-arte-900.webp 900w, assets/hero/04-obra-de-arte.webp 1672w" sizes="(max-width: 959px) 70vw, 340px" alt="Cartita en un banco del parque" width="1672" height="941" /></div>
+        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/04-obra-de-arte-900.webp" srcset="assets/hero/04-obra-de-arte-900.webp 900w, assets/hero/04-obra-de-arte.webp 1672w" sizes="(max-width: 959px) 92vw, 540px" alt="Cartita en un banco del parque" width="1672" height="941" /></div>
         <p class="polaroid__label">Banco del parque</p>
       </div>
       <div class="polaroid" role="group" aria-roledescription="foto" aria-label="2 de 4: Una ramita" style="transform:rotate(-1.4deg)">
-        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/03-arte-simple-900.webp" srcset="assets/hero/03-arte-simple-900.webp 900w, assets/hero/03-arte-simple.webp 1672w" sizes="(max-width: 959px) 70vw, 340px" alt="Cartita colgada de una rama" width="1672" height="941" /></div>
+        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/03-arte-simple-900.webp" srcset="assets/hero/03-arte-simple-900.webp 900w, assets/hero/03-arte-simple.webp 1672w" sizes="(max-width: 959px) 92vw, 540px" alt="Cartita colgada de una rama" width="1672" height="941" /></div>
         <p class="polaroid__label">Una ramita</p>
       </div>
       <div class="polaroid" role="group" aria-roledescription="foto" aria-label="3 de 4: Mesa de café" style="transform:rotate(1.8deg)">
-        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/02-cafe-900.webp" srcset="assets/hero/02-cafe-900.webp 900w, assets/hero/02-cafe.webp 1672w" sizes="(max-width: 959px) 70vw, 340px" alt="Cartita en un café" width="1672" height="941" loading="lazy" /></div>
+        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/02-cafe-900.webp" srcset="assets/hero/02-cafe-900.webp 900w, assets/hero/02-cafe.webp 1672w" sizes="(max-width: 959px) 92vw, 540px" alt="Cartita en un café" width="1672" height="941" loading="lazy" /></div>
         <p class="polaroid__label">Mesa de café</p>
       </div>
       <div class="polaroid" role="group" aria-roledescription="foto" aria-label="4 de 4: Ventana de tren" style="transform:rotate(-1.6deg)">
-        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/01-tren-900.webp" srcset="assets/hero/01-tren-900.webp 900w, assets/hero/01-tren.webp 1672w" sizes="(max-width: 959px) 70vw, 340px" alt="Cartita en un tren" width="1672" height="941" loading="lazy" /></div>
+        <div class="polaroid__img-wrap"><img class="polaroid__img" src="assets/hero/01-tren-900.webp" srcset="assets/hero/01-tren-900.webp 900w, assets/hero/01-tren.webp 1672w" sizes="(max-width: 959px) 92vw, 540px" alt="Cartita en un tren" width="1672" height="941" loading="lazy" /></div>
         <p class="polaroid__label">Ventana de tren</p>
       </div>
       </div>
