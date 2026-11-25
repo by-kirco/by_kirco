@@ -9,6 +9,8 @@
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="apple-touch-icon" href="/assets/favicon.png" />
   <link href="assets/fonts/fonts-kirco.css" rel="stylesheet" />
+  <script>/* Pergamino ligado al scroll: solo con JS y sin reduced-motion; si no, se ve abierto */
+  if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) document.documentElement.classList.add('kc-pergamino');</script>
   <script src="assets/vendor/gsap-3.12.5.min.js"></script>
   <script src="assets/vendor/ScrollTrigger-3.12.5.min.js"></script>
   <script src="assets/vendor/lenis-1.1.13.min.js"></script>
@@ -161,18 +163,22 @@
     .carta-roller--top {
       top: -23px;
     }
+    /* Rodillo de abajo anclado al final del papel; mientras está enrollado, JS lo sube con transform */
     .carta-roller--bottom {
-      top: 0;
-      margin-top: -23px;
+      top: auto;
+      bottom: -23px;
     }
+    /* El papel ocupa siempre su alto natural (no mueve el resto de la página); lo enrollado se recorta con
+       clip-path. Sin JS o con reduced-motion no se recorta nada. */
     .carta-paper {
       position: relative;
       background: var(--kirco-orange);
       border-radius: 0;
       box-shadow: var(--shadow-pop);
       overflow: hidden;
-      height: 60px;
     }
+    html.kc-pergamino .carta-paper { clip-path: inset(0 -60px calc(100% - 60px) -60px); will-change: clip-path; }
+    html.kc-pergamino .carta-roller--bottom { will-change: transform; }
     .carta-inner {
       padding: 72px clamp(30px, 6vw, 80px) clamp(48px, 6vw, 72px);
     }
@@ -431,7 +437,7 @@
       .carta-section { padding: 90px 20px 100px; }
       .carta-roller { left: -10px; right: -10px; height: 40px; }
       .carta-roller--top { top: -20px; }
-      .carta-roller--bottom { margin-top: -20px; }
+      .carta-roller--bottom { bottom: -20px; }
       /* Dónde las dejo en móvil: el mismo carrusel, deslizable con el dedo; una foto casi a ancho completo */
       .kc-carrusel { --slide: min(calc(100vw - 64px), 640px); --margen: 20px; }
       .donde__carousel { padding: 18px var(--margen) 34px; }
@@ -456,7 +462,8 @@
     /* ── Reduced motion ── */
     @media (prefers-reduced-motion: reduce) {
       [data-reveal] { opacity: 1; transform: none; }
-      .carta-paper { height: auto !important; }
+      .carta-paper { height: auto !important; clip-path: none !important; }
+      .carta-roller--bottom { transform: none !important; }
     }
   </style>
 <script src="assets/kirco-cursor.js" defer></script>
@@ -740,109 +747,70 @@
     programar();
   })();
 
-  /* ── Parchment unroll ── */
+  /* ── Pergamino ligado al scroll (nov 2026) ──
+     Se desenrolla al bajar y se enrolla al subir. El papel tiene siempre su alto natural (sin saltos de
+     layout): lo que sigue enrollado se recorta con clip-path y el rodillo de abajo se mueve con transform.
+     El borde del papel va por una línea fija de la ventana (82 % en escritorio, 88 % en móvil) hasta que el
+     papel está entero. El texto está siempre en el DOM (clip-path no lo oculta a lectores de pantalla) y,
+     si se llega con el teclado a algo de dentro, el pergamino se abre del todo. */
   var paper = document.getElementById('carta-paper');
   var rollerBottom = document.getElementById('carta-roller-bottom');
   var moreBtn = document.getElementById('carta-more');
-  var isNarrow = function () { return window.innerWidth < 960; };
-  var lastW = window.innerWidth;
-  var mobileUnrolled = false;
-  function syncRoller() { if (rollerBottom) rollerBottom.style.top = paper.offsetHeight + 'px'; }
-  function naturalHeight() {
-    var h = paper.style.height;
-    paper.style.height = 'auto';
-    var full = paper.scrollHeight;
-    paper.style.height = h;
-    return full;
-  }
+  var raiz = document.documentElement;
+  var animarPergamino = !!(paper && rollerBottom && !reduce && raiz.classList.contains('kc-pergamino') &&
+    'IntersectionObserver' in window && window.CSS && CSS.supports && CSS.supports('clip-path', 'inset(0 0 1px 0)'));
+  if (!animarPergamino) raiz.classList.remove('kc-pergamino');
 
-  if (paper && !reduce) {
-    var fullH = 0;
-    function measurePaper() {
-      paper.style.height = 'auto';
-      fullH = paper.scrollHeight;
-      paper.style.height = '60px';
+  if (animarPergamino) {
+    var CERRADO = 60, altoPapel = 0, cercaPergamino = true, pergaminoForzado = false, rafPergamino = 0;
+    function medirPapel() { altoPapel = paper.offsetHeight; }
+    function pintarPergamino() {
+      rafPergamino = 0;
+      if (!altoPapel) medirPapel();
+      var borde = window.innerHeight * (window.innerWidth < 960 ? 0.88 : 0.82);
+      var visible = pergaminoForzado ? altoPapel
+        : Math.min(altoPapel, Math.max(CERRADO, borde - paper.getBoundingClientRect().top));
+      var enrollado = Math.max(0, Math.round((altoPapel - visible) * 10) / 10);
+      paper.style.clipPath = 'inset(0 -60px ' + enrollado + 'px -60px)';
+      rollerBottom.style.transform = 'translate3d(0,' + (-enrollado) + 'px,0)';
     }
-
-    /* Escritorio: el pergamino se desenrolla con el scroll (igual que antes) */
-    function initParchment() {
-      var section = paper.closest('section');
-      gsap.to(paper, {
-        height: fullH,
-        ease: 'none',
-        scrollTrigger: {
-          _isParchment: true,
-          trigger: section,
-          start: 'top 70%',
-          end: 'bottom 90%',
-          scrub: 0.6,
-          onUpdate: function (self) {
-            var h = 60 + (fullH - 60) * self.progress;
-            if (rollerBottom) {
-              rollerBottom.style.top = h + 'px';
-            }
-          }
-        }
-      });
+    function pedirPergamino() { if (!rafPergamino) rafPergamino = requestAnimationFrame(pintarPergamino); }
+    medirPapel();
+    pintarPergamino();
+    new IntersectionObserver(function (entradas) {
+      cercaPergamino = entradas[0].isIntersecting;
+      pedirPergamino();
+    }, { rootMargin: '300px 0px' }).observe(paper.closest('section'));
+    function alMoverse() { if (cercaPergamino) pedirPergamino(); }
+    window.addEventListener('scroll', alMoverse, { passive: true });
+    lenis.on('scroll', alMoverse);
+    window.addEventListener('resize', function () { medirPapel(); pedirPergamino(); });
+    if ('ResizeObserver' in window) {
+      var refrescoST = 0;
+      new ResizeObserver(function () {
+        medirPapel(); pedirPergamino();
+        clearTimeout(refrescoST); refrescoST = setTimeout(function () { ScrollTrigger.refresh(); }, 150);
+      }).observe(paper);
     }
-
-    /* Móvil: se desenrolla hacia abajo de una vez al llegar a él, y el rodillo de abajo
-       baja pegado al borde del papel (antes iba por detrás del scroll y daba saltos) */
-    function unrollTo(h, dur) {
-      gsap.killTweensOf(paper);
-      gsap.to(paper, {
-        height: h, duration: dur, ease: 'power2.inOut',
-        onUpdate: syncRoller,
-        onComplete: function () { paper.style.height = 'auto'; syncRoller(); ScrollTrigger.refresh(); }
-      });
-    }
-    function initParchmentMobile() {
-      if (mobileUnrolled) { paper.style.height = 'auto'; syncRoller(); return; }
-      paper.style.height = '60px';
-      syncRoller();
-      ScrollTrigger.create({
-        _isParchment: true,
-        trigger: paper,
-        start: 'top 78%',
-        once: true,
-        onEnter: function () { mobileUnrolled = true; unrollTo(naturalHeight(), 1.9); }
-      });
-    }
-
-    function setupParchment() {
-      ScrollTrigger.getAll().forEach(function (t) { if (t.vars._isParchment) t.kill(); });
-      if (isNarrow()) { initParchmentMobile(); }
-      else { gsap.killTweensOf(paper); measurePaper(); initParchment(); }
-    }
-    setupParchment();
-    /* En el móvil la barra del navegador cambia el alto de la ventana al hacer scroll:
-       solo se rehace si cambia el ancho */
-    window.addEventListener('resize', function () {
-      if (window.innerWidth === lastW) return;
-      lastW = window.innerWidth;
-      setupParchment();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { medirPapel(); pedirPergamino(); });
+    paper.addEventListener('focusin', function (e) {
+      var t = e.target;
+      var teclado = true;
+      try { teclado = t.matches(':focus-visible'); } catch (err) {}
+      if (teclado) { pergaminoForzado = true; pintarPergamino(); }
     });
-  } else if (paper && reduce) {
-    paper.style.height = 'auto';
-    syncRoller();
+    paper.addEventListener('focusout', function (e) {
+      if (!paper.contains(e.relatedTarget)) { pergaminoForzado = false; pedirPergamino(); }
+    });
   }
 
-  /* Si el papel cambia de alto estando desenrollado (fuentes que cargan tarde, giro del móvil), el rodillo lo sigue */
-  if (paper && 'ResizeObserver' in window) {
-    new ResizeObserver(function () { if (paper.style.height === 'auto') syncRoller(); }).observe(paper);
-  }
-
-  /* «Leer la carta entera» (solo móvil): muestra los párrafos .carta-extra y el papel sigue desenrollándose */
+  /* «Leer la carta entera» (solo móvil): muestra los párrafos .carta-extra; el papel crece y se sigue
+     desenrollando con el scroll */
   if (paper && moreBtn) {
     moreBtn.addEventListener('click', function () {
-      var from = paper.offsetHeight;
       paper.classList.add('is-full');
       moreBtn.setAttribute('aria-expanded', 'true');
-      if (reduce || !window.gsap) { paper.style.height = 'auto'; syncRoller(); return; }
-      var to = naturalHeight();
-      mobileUnrolled = true;
-      paper.style.height = from + 'px';
-      unrollTo(to, 1.2);
+      ScrollTrigger.refresh();
     });
   }
 
