@@ -142,6 +142,9 @@ button{cursor:pointer;border:none;background:none;padding:0}
 .mapa-parada circle{fill:#1C2659;stroke:var(--kirco-paper);stroke-width:1.4}
 .mapa-parada--foto circle{fill:var(--kirco-green);stroke:var(--kirco-green)}
 .mapa-parada--mini circle{fill:var(--kirco-paper);stroke:none}
+/* Carta 03: recorrido de la placa del Desengaño a la calle de la Esperanza (tramo resaltado con flecha) */
+.mapa-tramo{fill:none;stroke:var(--kirco-paper);stroke-width:3.4;stroke-linecap:round}
+.mapa-flecha{fill:var(--kirco-paper);stroke:none}
 .mapa .mapa-num{font-size:13px;fill:var(--kirco-paper);text-anchor:middle;dominant-baseline:central}
 .mapa .mapa-parada--foto .mapa-num{fill:#1C2659}
 .mapa .mapa-calle{font-size:15px;letter-spacing:.04em;fill:var(--kirco-paper);paint-order:stroke;stroke:rgba(28,38,89,.85);stroke-width:4px;stroke-linejoin:round}
@@ -461,11 +464,11 @@ button{cursor:pointer;border:none;background:none;padding:0}
     <div class="callejero-mapas" data-mapa>
     <p class="mapa-leyenda mapa-aparece-fin">08 · pronto</p>
     <svg class="mapa mapa--escritorio" viewBox="-8 -4 496 478" role="img" aria-labelledby="mapa-esc-tit">
-      <title id="mapa-esc-tit">Mapa dibujado del Callejero Emocional: un recorrido que une las cartas en orden, Constancia (01), Pensamiento (02), Desengaño (03), Esperanza, Refugio (04), Dos Amigos (05), Virtudes (06) e Indulgencia (07). La 08 llegará pronto.</title>
+      <title id="mapa-esc-tit">Mapa dibujado del Callejero Emocional: un recorrido que une las cartas en orden, Constancia (01), Pensamiento (02), de Desengaño a Esperanza (03), Refugio (04), Dos Amigos (05), Virtudes (06) e Indulgencia (07). La 08 llegará pronto.</title>
       <g class="mapa-fondo" transform="scale(1.000 1.000)"><path class="mapa-rio" d="M6 60 C 0 180, 6 300, 40 380 S 150 452, 250 470"/><path class="mapa-via" d="M292 470 C 292 330, 288 180, 294 0"/><path class="mapa-via" d="M70 280 C 140 276, 220 270, 292 276"/><path class="mapa-retiro" d="M330 396 C 352 380, 396 384, 404 410 S 384 452, 350 448 S 316 412, 330 396Z"/></g>
       <g class="mapa-fondo-txt"><text x="436" y="396" text-anchor="middle">RETIRO</text><text x="300" y="20" transform="rotate(90 300 20)">CASTELLANA</text><text x="16" y="330" transform="rotate(-72 16 330)" text-anchor="middle">MANZANARES</text><text x="88" y="270">GRAN VÍA</text></g>
       <path class="mapa-trazo" pathLength="1" d="M338.0 222.0 C296.7 178.7 244.9 84.7 214.0 92.0 C180.0 100.0 141.3 250.2 150.0 300.0 C155.6 332.1 179.2 364.7 204.0 372.0 C232.8 380.5 289.4 360.1 318.0 330.0 C356.1 289.9 394.3 175.0 382.0 124.0 C373.0 86.4 335.2 56.8 300.0 40.0 C260.1 21.0 192.4 12.5 150.0 26.0 C110.8 38.5 67.1 75.0 52.0 110.0 C37.3 144.0 34.4 211.6 58.0 232.0 C87.3 257.4 185.1 203.5 246.0 214.0 C309.2 224.9 368.7 271.3 430.0 300.0"/>
-      <g class="mapa-parada mapa-parada--mini mapa-aparece" style="--d:1015"><circle cx="204" cy="372" r="4.6"/><text class="mapa-calle mapa-calle--peq" x="218" y="382">Esperanza</text></g>
+      <g class="mapa-parada mapa-parada--mini mapa-tramo-03 mapa-aparece" style="--d:1015"><path class="mapa-tramo" d="M150 300 C155.6 332.1 179.2 364.7 198.4 370.3"/><path class="mapa-flecha" d="M192.6 362.6 L205 372.4 L189.8 376.5 Z"/><circle cx="204" cy="372" r="4.6"/><text class="mapa-calle" x="218" y="382">Esperanza</text></g>
       <g class="mapa-parada mapa-aparece" data-n="01" style="--d:0"><circle cx="338" cy="222" r="14"/><text class="mapa-num" x="338" y="222">01</text><text class="mapa-calle" x="316" y="258" text-anchor="end">Constancia</text></g>
       <g class="mapa-parada mapa-parada--foto mapa-aparece" data-n="02" style="--d:371"><circle cx="214" cy="92" r="14"/><text class="mapa-num" x="214" y="92">02</text><text class="mapa-calle" x="192" y="97" text-anchor="end">Pensamiento</text></g>
       <g class="mapa-parada mapa-aparece" data-n="03" style="--d:825"><circle cx="150" cy="300" r="14"/><text class="mapa-num" x="150" y="300">03</text><text class="mapa-calle" x="128" y="305" text-anchor="end">Desengaño</text></g>
@@ -475,11 +478,11 @@ button{cursor:pointer;border:none;background:none;padding:0}
       <g class="mapa-parada mapa-aparece" data-n="07" style="--d:3600"><circle cx="430" cy="300" r="14"/><text class="mapa-num" x="430" y="300">07</text><text class="mapa-calle" x="448" y="338" text-anchor="end">Indulgencia</text></g>
     </svg>
     <svg class="mapa mapa--movil" viewBox="-8 -4 496 648" role="img" aria-labelledby="mapa-mov-tit">
-      <title id="mapa-mov-tit">Mapa dibujado del Callejero Emocional: un recorrido que une las cartas en orden, Constancia (01), Pensamiento (02), Desengaño (03), Esperanza, Refugio (04), Dos Amigos (05), Virtudes (06) e Indulgencia (07). La 08 llegará pronto.</title>
+      <title id="mapa-mov-tit">Mapa dibujado del Callejero Emocional: un recorrido que une las cartas en orden, Constancia (01), Pensamiento (02), de Desengaño a Esperanza (03), Refugio (04), Dos Amigos (05), Virtudes (06) e Indulgencia (07). La 08 llegará pronto.</title>
       <g class="mapa-fondo" transform="scale(1.000 1.362)"><path class="mapa-rio" d="M6 60 C 0 180, 6 300, 40 380 S 150 452, 250 470"/><path class="mapa-via" d="M292 470 C 292 330, 288 180, 294 0"/><path class="mapa-via" d="M70 280 C 140 276, 220 270, 292 276"/><path class="mapa-retiro" d="M330 396 C 352 380, 396 384, 404 410 S 384 452, 350 448 S 316 412, 330 396Z"/></g>
       <g class="mapa-fondo-txt"><text x="367" y="577" text-anchor="middle">RETIRO</text><text x="300" y="27" transform="rotate(90 300 27)">CASTELLANA</text><text x="16" y="449" transform="rotate(-72 16 449)" text-anchor="middle">MANZANARES</text><text x="88" y="368">GRAN VÍA</text></g>
       <path class="mapa-trazo" pathLength="1" d="M360.0 300.0 C327.3 230.0 286.4 86.5 262.0 90.0 C232.3 94.3 203.5 353.5 210.0 430.0 C213.4 470.2 217.4 500.1 240.0 520.0 C267.7 544.5 348.7 571.7 380.0 548.0 C431.8 508.8 433.4 249.8 410.0 160.0 C395.7 105.3 368.3 63.0 330.0 40.0 C289.6 15.7 217.3 7.5 170.0 24.0 C119.8 41.5 60.0 98.9 40.0 150.0 C20.1 201.0 18.3 308.8 50.0 330.0 C85.4 353.7 196.3 244.9 262.0 256.0 C329.9 267.5 387.3 355.3 450.0 405.0"/>
-      <g class="mapa-parada mapa-parada--mini mapa-aparece" style="--d:1027"><circle cx="240" cy="520" r="5.9"/><text class="mapa-calle mapa-calle--peq" x="258" y="534">Esperanza</text></g>
+      <g class="mapa-parada mapa-parada--mini mapa-tramo-03 mapa-aparece" style="--d:1027"><path class="mapa-tramo" d="M210 430 C213.4 470.2 217.4 500.1 234.5 515.2"/><path class="mapa-flecha" d="M231.5 504.6 L241.2 521.1 L223.3 514.4 Z"/><circle cx="240" cy="520" r="5.9"/><text class="mapa-calle" x="258" y="534">Esperanza</text></g>
       <g class="mapa-parada mapa-aparece" data-n="01" style="--d:0"><circle cx="360" cy="300" r="18"/><text class="mapa-num" x="360" y="300">01</text><text class="mapa-calle" x="360" y="346" text-anchor="middle">Constancia</text></g>
       <g class="mapa-parada mapa-parada--foto mapa-aparece" data-n="02" style="--d:354"><circle cx="262" cy="90" r="18"/><text class="mapa-num" x="262" y="90">02</text><text class="mapa-calle" x="238" y="98" text-anchor="end">Pensamiento</text></g>
       <g class="mapa-parada mapa-aparece" data-n="03" style="--d:880"><circle cx="210" cy="430" r="18"/><text class="mapa-num" x="210" y="430">03</text><text class="mapa-calle" x="186" y="438" text-anchor="end">Desengaño</text></g>
