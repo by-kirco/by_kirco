@@ -50,7 +50,15 @@ module.exports = async function handler(req, res) {
       bolsa
     });
   } catch (e) {
-    console.error('estado.js', e);
+    console.error('estado.js', {
+      name: e && e.name,
+      message: e && e.message,
+      code: e && e.code,
+      details: e && e.details,
+      hint: e && e.hint,
+      status: e && e.status,
+      stack: e && e.stack
+    });
     return res.status(200).json({ escritas: 0, total: TOTAL, cerrado: false, bolsa: [] });
   }
 };

@@ -116,7 +116,15 @@ module.exports = async function handler(req, res) {
 
     return res.status(201).json({ ok: true, id: insertada.id, token: insertada.token });
   } catch (e) {
-    console.error('carta.js', e);
+    console.error('carta.js', {
+      name: e && e.name,
+      message: e && e.message,
+      code: e && e.code,
+      details: e && e.details,
+      hint: e && e.hint,
+      status: e && e.status,
+      stack: e && e.stack
+    });
     return res.status(500).json({ error: 'No hemos podido guardar tu carta. Inténtalo de nuevo en un momento.' });
   }
 };
