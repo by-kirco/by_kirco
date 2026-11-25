@@ -93,11 +93,8 @@
     .blog-volver:hover { color: var(--kirco-ink); }
     .blog-volver:focus-visible { outline: 2px dashed var(--kirco-orange-deep); outline-offset: 4px; }
     /* Foto arriba a ancho del contenedor; debajo, el texto en tarjeta
-       Kirco Paper #F7F1E3 (como los correos: fondo #FFF2ED + caja redondeada).
-       Radio 18px (rango 16-24px de la web; las plantillas de correo usan 6-8px).
-       Padding de referencia de plantilla_generica / plantilla-correo-bykirco:
-       46px / 28px. El texto usa el ancho del contenedor (1160px + padding
-       lateral), no una columna lateral. */
+       blanca #FFFFFF (decisión de Sara, solo en esta tarjeta) sobre el
+       fondo de página #FFF2ED. Radio 18px y padding como en blog5. */
     .articulo-seccion {
       max-width: 1160px;
       margin: 0 auto;
@@ -118,7 +115,7 @@
       object-fit: cover; object-position: 28% 100%;
     }
     .articulo-cuerpo {
-      background: var(--kirco-paper);
+      background: var(--kirco-white); /* #FFFFFF, solo esta tarjeta */
       border-radius: 18px;
       padding: 46px 48px;
       min-width: 0;
