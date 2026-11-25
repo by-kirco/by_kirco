@@ -15,12 +15,10 @@ Flujo completo de quien participa, conectado a Supabase de verdad:
 - `enviar.html` — Paso 3: correo + casilla 18+, guarda la carta de verdad (`POST /api/navidad/carta`).
 - `gracias.html` — Confirmación + cuenta atrás al 25/12 00:00 + añadir al calendario.
 - `legal.html` — Política de privacidad completa.
+- `panel.html` — Panel privado de Sara (contraseña), para aprobar/rechazar cartas. Ver más abajo.
 
 **Deliberadamente fuera de esta entrega** (a petición explícita, para después):
 
-- Panel de revisión de Sara (`Panel.dc.html`). Sin él, ninguna carta pasa a `aprobada`, así que
-  la "bolsa" de destinatarios en Preséntate estará vacía hasta que exista — el flujo ya está
-  listo para mostrarla en cuanto haya cartas aprobadas.
 - Reparto automático del 25 de diciembre y la pantalla `/carta/{token}` para abrir la carta recibida.
 - Envío de emails transaccionales (Brevo): aprobación, rechazo, entrega, notas de agradecimiento.
 
@@ -38,6 +36,26 @@ Ya hecho y confirmado en producción (`bykirco.vercel.app/navidad`):
    `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (formato nuevo `sb_secret_...`).
 3. El repositorio conectado a Vercel para producción es `by-kirco/by_kirco` (rama `master`);
    despliega solo en cada push a esa rama.
+
+### Panel de Sara (`/navidad/panel.html`)
+
+Protegido con una contraseña simple (sin Supabase Auth ni magic link, para no depender de
+enviar correos). Hacen falta dos variables de entorno más en Vercel:
+
+- `PANEL_PASSWORD` — la contraseña para entrar. Ponla tú misma, algo que solo tú sepas.
+- `PANEL_SESSION_SECRET` — una cadena larga y aleatoria cualquiera (no es una contraseña que
+  escribas, solo sirve para firmar la sesión). Por ejemplo, genera una en
+  `https://www.uuidgenerator.net/` o similar y pégala tal cual.
+
+La sesión dura 12 horas y se guarda en una cookie firmada (HttpOnly, no se puede leer desde
+JavaScript ni falsificar sin conocer `PANEL_SESSION_SECRET`). No hay límite de intentos de
+contraseña (aceptable para una herramienta interna temporal, pero si se comparte el enlace
+conviene usar una contraseña robusta).
+
+El panel no está enlazado desde ninguna página pública — solo se llega escribiendo la URL
+directamente. "Cerrar las cartas ahora" (cierre manual anticipado) se ve en el diseño pero no
+está construido todavía: requeriría guardar un estado global de "cerrado" en algún sitio
+(hoy el cierre es automático por fecha o por las 300 cartas).
 
 Si se recrea el proyecto de Supabase alguna vez, no olvidar el `GRANT` del final de
 `schema.sql` — sin él, el servidor recibe `permission denied for table cartas` aunque la URL
