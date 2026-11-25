@@ -126,7 +126,7 @@
 
   <!-- HERO TEXT (solo si no es embed) -->
   <section id="quiz-hero" style="position:relative;padding:60px clamp(20px,5vw,72px) 10px;text-align:center">
-    <p style="font-family:var(--font-hand);font-size:clamp(20px,1.8vw,24px);line-height:1.35;color:var(--kirco-orange-deep);margin:0 auto;max-width:560px">Haz el test y te digo qué carta necesitas leer hoy...</p>
+    <p style="font-family:var(--font-hand);font-size:clamp(20px,1.8vw,24px);line-height:1.35;color:var(--kirco-orange-deep);margin:0 auto;max-width:560px">Haz el test y te digo qué carta necesitas leer hoy.</p>
   </section>
 
   <!-- TEST SECTION -->
@@ -167,7 +167,7 @@
           <h2 id="result-name" style="font-family:var(--font-display);font-weight:400;font-size:clamp(56px,8vw,96px);line-height:1;margin:0"></h2>
           <p id="result-phrase" style="font-family:var(--font-hand);font-size:clamp(22px,2.2vw,28px);color:var(--kirco-ink);margin:14px 0 0"></p>
           <p id="result-desc" style="font-family:var(--font-hand);font-size:clamp(24px,2.4vw,32px);line-height:1.35;color:var(--kirco-ink);max-width:560px;margin:18px auto 0;text-wrap:pretty"></p>
-          <p style="font-family:var(--font-hand);font-size:22px;color:var(--kirco-ink);margin:22px 0 0">Att. @by_kirco</p>
+          <p style="font-family:var(--font-hand);font-size:22px;color:var(--kirco-ink);margin:22px 0 0">Atentamente, Kirco</p>
           <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
             <!-- «quiero mi carta» oculto mientras ENVIO_CORREO_ACTIVO = false -->
             <button id="btn-quiero-carta" class="btn-round" data-envio-correo hidden style="color:#fff;background:var(--kirco-orange-deep)">quiero mi carta</button>
@@ -263,10 +263,10 @@
       { t: 'La sensación de que nadie me ve de verdad.', key: 'nomeolvides' },
       { t: 'Un recuerdo que vuelve sin pedir permiso.', key: 'romero' },
       { t: 'Que me conozcan demasiado pronto.', key: 'jazmin' },
-      { t: 'Demasiadas cosas sintiéndose a la vez.', key: 'amapola' },
+      { t: 'Sentir demasiadas cosas a la vez.', key: 'amapola' },
     ]},
-    { q: 'Cuando llegas a un grupo nuevo, tú…', opts: [
-      { t: 'Observo y revelo muy poquito de mí.', key: 'jazmin' },
+    { q: 'Cuando llegas a un grupo nuevo…', opts: [
+      { t: 'Observo y cuento muy poquito de mí.', key: 'jazmin' },
       { t: 'Busco, sin querer, que alguien me note.', key: 'nomeolvides' },
       { t: 'Me enciendo con todo lo que está pasando.', key: 'amapola' },
       { t: 'Analizo cada gesto y cada silencio.', key: 'pensamiento' },
@@ -274,7 +274,7 @@
     ]},
     { q: 'Tu lugar favorito en el mundo es…', opts: [
       { t: 'Uno donde ya he sido feliz antes.', key: 'romero' },
-      { t: 'Donde me siento mirada y querida.', key: 'nomeolvides' },
+      { t: 'Donde alguien se fija en mí de verdad.', key: 'nomeolvides' },
       { t: 'Mi refugio privado, lejos del ruido.', key: 'jazmin' },
       { t: 'Cualquiera, mientras pasen muchas cosas.', key: 'amapola' },
       { t: 'Mi propia cabeza.', key: 'pensamiento' },
@@ -289,10 +289,10 @@
   ];
 
   var flowers = {
-    amapola:     { name: 'Amapola',     phrase: 'Siente demasiado de golpe.',                color: '#FFAA4D', text: '#C96A12', tint: '#FFF2E2', n: '01', rot: -1.6, desc: 'Lo vives todo a flor de piel: sientes en mayúsculas y a veces eso pesa. Pero esa intensidad es justo tu manera de estar viva.' },
+    amapola:     { name: 'Amapola',     phrase: 'Siente demasiado de golpe.',                color: '#FFAA4D', text: '#C96A12', tint: '#FFF2E2', n: '01', rot: -1.6, desc: 'Lo vives todo a flor de piel: sientes en mayúsculas y a veces eso pesa. Pero esa intensidad es justo tu forma de estar en el mundo.' },
     nomeolvides: { name: 'Nomeolvides', phrase: 'Necesita ser vista.',                       color: '#A0D76B', text: '#5C8A2E', tint: '#ECF7DF', n: '02', rot:  1.2, desc: 'No pides mucho: solo que alguien se quede mirando un poco más. Necesitas que te vean de verdad, y mereces que así sea.' },
     pensamiento: { name: 'Pensamiento', phrase: 'No puede apagar la cabeza.',                color: '#F2D83A', text: '#8F7A0E', tint: '#FFFDDA', n: '03', rot: -0.8, desc: 'Tu mente no tiene botón de apagado. Le das vueltas a todo, pero en ese ruido también hay una forma silenciosa de cuidar.' },
-    jazmin:      { name: 'Jazmín',      phrase: 'Guarda su parte real para muy pocos.',      color: '#6F9C3E', text: '#4A6E24', tint: '#D9ECC0', n: '04', rot:  1.5, desc: 'Por fuera, amable con todo el mundo. Por dentro, una habitación a la que dejas entrar a muy pocos. Lo de verdad lo reservas.' },
+    jazmin:      { name: 'Jazmín',      phrase: 'Guarda su parte real para muy pocos.',      color: '#6F9C3E', text: '#4A6E24', tint: '#D9ECC0', n: '04', rot:  1.5, desc: 'Por fuera, amable con todo el mundo. Por dentro, una habitación en la que solo dejas entrar a unos pocos. Lo de verdad lo guardas para ellos.' },
     romero:      { name: 'Romero',      phrase: 'Vive más en el pasado que en el presente.', color: '#D07F1F', text: '#A35E12', tint: '#FFE1BF', n: '05', rot: -1.2, desc: 'Vuelves una y otra vez a lo que ya pasó. Vives entre recuerdos porque, para ti, lo que fue todavía cuenta.' },
   };
 
