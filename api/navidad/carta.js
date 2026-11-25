@@ -52,9 +52,12 @@ module.exports = async function handler(req, res) {
     return res.status(403).json({ error: 'El plazo para escribir ha terminado.' });
   }
 
+  let stage = 'init';
   try {
+    stage = 'getSupabase';
     const supabase = getSupabase();
 
+    stage = 'count';
     const { count: escritas, error: errCount } = await supabase
       .from('cartas')
       .select('id', { count: 'exact', head: true })
@@ -64,6 +67,7 @@ module.exports = async function handler(req, res) {
       return res.status(403).json({ error: 'El buzón está lleno: ya hay 300 cartas.' });
     }
 
+    stage = 'previas';
     const { data: previas, error: errPrevias } = await supabase
       .from('cartas')
       .select('id')
@@ -76,6 +80,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (destinoId) {
+      stage = 'destino';
       const { data: destino, error: errDestino } = await supabase
         .from('cartas')
         .select('id, estado, recibe_carta_id')
@@ -87,6 +92,7 @@ module.exports = async function handler(req, res) {
       }
     }
 
+    stage = 'insert';
     const token = generaToken();
     const { data: insertada, error: errInsert } = await supabase
       .from('cartas')
@@ -116,14 +122,17 @@ module.exports = async function handler(req, res) {
 
     return res.status(201).json({ ok: true, id: insertada.id, token: insertada.token });
   } catch (e) {
-    console.error('carta.js', {
+    console.error('carta.js', stage, {
       name: e && e.name,
       message: e && e.message,
       code: e && e.code,
       details: e && e.details,
       hint: e && e.hint,
       status: e && e.status,
-      stack: e && e.stack
+      stack: e && e.stack,
+      stringified: (() => { try { return JSON.stringify(e); } catch (x) { return 'no-json'; } })(),
+      toString: (() => { try { return String(e); } catch (x) { return 'no-string'; } })(),
+      keys: (() => { try { return Object.keys(e || {}); } catch (x) { return 'no-keys'; } })()
     });
     return res.status(500).json({ error: 'No hemos podido guardar tu carta. Inténtalo de nuevo en un momento.' });
   }
