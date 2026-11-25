@@ -123,7 +123,10 @@ button{cursor:pointer;border:none;background:none;padding:0}
 .callejero-texto{grid-area:texto;align-self:end}
 .callejero-titulo{font-family:var(--font-display);font-weight:400;font-size:clamp(36px,3.9vw,54px);line-height:1.06;margin:0 0 20px;color:#fff;text-wrap:balance}
 .callejero-parrafo{font-family:var(--font-hand);font-size:clamp(19px,1.6vw,22px);line-height:1.5;margin:0;color:var(--kirco-paper)}
-.callejero-cta{grid-area:boton;align-self:start;margin-top:30px}
+.callejero-cta{grid-area:boton;align-self:start;margin-top:30px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px}
+.callejero-vermas{font-family:var(--font-hand);font-size:20px;line-height:1;color:var(--kirco-paper);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;opacity:.9;transition:opacity 180ms ease-out,color 180ms ease-out}
+.callejero-vermas:hover{opacity:1;color:#FFF2ED}
+.callejero-vermas:focus-visible{outline:2px dashed var(--kirco-paper);outline-offset:4px}
 .callejero-btn{display:inline-flex;align-items:center;gap:.9em;white-space:nowrap;font-family:'OCR B Libre','Courier New',monospace;font-size:clamp(14px,1.15vw,16px);letter-spacing:.16em;text-transform:uppercase;color:#1C2659;background:var(--kirco-paper);border-radius:999px;padding:1em 1.6em;text-decoration:none;box-shadow:0 6px 18px rgba(10,14,40,.35);transition:transform 180ms ease-out,background 180ms ease-out}
 .callejero-btn svg{width:1.1em;height:1.1em;flex:none;transition:transform 180ms ease-out}
 .callejero-btn:hover{transform:translateY(-2px);background:#FFF2ED} /* Kirco Light Orange: nada de blanco puro (nov 2026) */
@@ -216,9 +219,10 @@ button{cursor:pointer;border:none;background:none;padding:0}
   .callejero-pola{flex:1 1 0;padding:4px 4px 0}
   .callejero-pola figcaption{font-size:16px;padding:6px 0 8px}
   .callejero-pola-num{width:26px;height:26px;line-height:26px;font-size:12px;top:-9px;left:-7px}
-  .callejero-cta{margin-top:26px}
+  .callejero-cta{margin-top:26px;flex-direction:column;align-items:stretch}
   .callejero-btn{display:flex;justify-content:center;width:100%;font-size:16px;padding:1em .8em;letter-spacing:.08em}
   .callejero-btn svg{display:none}
+  .callejero-vermas{align-self:center;padding:12px 0;text-align:center}
 }
 }
 </style>
@@ -257,6 +261,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
       <nav style="display:flex;gap:28px;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase">
         <a href="/sobre-mi.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Sobre mí</a>
         <a href="/destinatarios.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Destinatarios</a>
+        <a href="/blog.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Blog</a>
       </nav>
     </header>
 
@@ -509,6 +514,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
     </div>
     <div class="callejero-cta">
       <a class="callejero-btn" href="https://maps.app.goo.gl/jd7x1yHWSRwSYnhB7" target="_blank" rel="noopener">Mira dónde dejé una<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="callejero-vermas" href="/blog/callejero-emocional.html">ver más</a>
     </div>
   </div>
   <aside class="callejero-reel" data-reveal data-reel aria-label="Reel del Callejero Emocional">
