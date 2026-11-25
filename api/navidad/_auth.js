@@ -1,65 +1,73 @@
-/* by_kirco · Navidad — sesión del panel privado (solo Sara).
-   Contraseña simple en PANEL_PASSWORD + cookie firmada con PANEL_SESSION_SECRET.
-   Sin librerías de sesión: todo con crypto nativo de Node. */
-const crypto = require('crypto');
+/* by_kirco · Navidad — sesión del panel privado (solo Sara), con Supabase Auth.
+   El usuario (correo + contraseña) se crea a mano en el panel de Supabase
+   (Authentication → Users), con el correo ya confirmado. Aquí solo se valida el
+   login y se guarda la sesión en cookies HttpOnly (access + refresh token). */
+const { getSupabaseAnon } = require('./_supabase');
 
-const COOKIE_NAME = 'kirco_panel';
-const DURACION_MS = 12 * 60 * 60 * 1000; // 12 horas
+const COOKIE_AT = 'kirco_sb_at';
+const COOKIE_RT = 'kirco_sb_rt';
+const RT_MAX_AGE = 60 * 60 * 24 * 30; // 30 días (la caducidad real la controla Supabase)
 
-function firma(payload) {
-  const secret = process.env.PANEL_SESSION_SECRET || '';
-  return crypto.createHmac('sha256', secret).update(payload).digest('base64url');
-}
-
-function creaToken() {
-  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + DURACION_MS })).toString('base64url');
-  return `${payload}.${firma(payload)}`;
-}
-
-function tokenValido(token) {
-  if (!token || typeof token !== 'string' || !token.includes('.')) return false;
-  const [payload, sello] = token.split('.');
-  const esperado = firma(payload);
-  const a = Buffer.from(sello || '');
-  const b = Buffer.from(esperado);
-  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return false;
-  try {
-    const datos = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-    return typeof datos.exp === 'number' && Date.now() < datos.exp;
-  } catch (e) {
-    return false;
-  }
-}
-
-function leeCookie(req) {
+function leeCookie(req, nombre) {
   const cabecera = req.headers.cookie || '';
   const partes = cabecera.split(';').map((s) => s.trim());
   for (const p of partes) {
-    if (p.startsWith(COOKIE_NAME + '=')) return decodeURIComponent(p.slice(COOKIE_NAME.length + 1));
+    if (p.startsWith(nombre + '=')) return decodeURIComponent(p.slice(nombre.length + 1));
   }
   return null;
 }
 
-function sesionValida(req) {
-  return tokenValido(leeCookie(req));
+function establecerCookiesSesion(res, session) {
+  const atMaxAge = Math.max(60, (session.expires_in || 3600));
+  const cookies = [
+    `${COOKIE_AT}=${encodeURIComponent(session.access_token)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${atMaxAge}`,
+    `${COOKIE_RT}=${encodeURIComponent(session.refresh_token)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${RT_MAX_AGE}`
+  ];
+  res.setHeader('Set-Cookie', cookies);
 }
 
-function contrasenaCorrecta(intento) {
-  const esperado = process.env.PANEL_PASSWORD || '';
-  if (!esperado) return false;
-  const a = Buffer.from(String(intento || ''));
-  const b = Buffer.from(esperado);
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(a, b);
+function limpiarCookiesSesion(res) {
+  res.setHeader('Set-Cookie', [
+    `${COOKIE_AT}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`,
+    `${COOKIE_RT}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`
+  ]);
 }
 
-function cookieInicio(res) {
-  const token = creaToken();
-  res.setHeader('Set-Cookie', `${COOKIE_NAME}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${Math.floor(DURACION_MS / 1000)}`);
+/* Devuelve { user } si la sesión es válida (renovándola sola si hacía falta, en cuyo caso
+   escribe las cookies nuevas en res), o null si no hay sesión válida. */
+async function usuarioDeSesion(req, res) {
+  const accessToken = leeCookie(req, COOKIE_AT);
+  const refreshToken = leeCookie(req, COOKIE_RT);
+  const supabase = getSupabaseAnon();
+
+  if (accessToken) {
+    const { data, error } = await supabase.auth.getUser(accessToken);
+    if (!error && data && data.user) return { user: data.user };
+  }
+
+  if (refreshToken) {
+    const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
+    if (!error && data && data.session && data.user) {
+      if (res) establecerCookiesSesion(res, data.session);
+      return { user: data.user };
+    }
+  }
+
+  return null;
 }
 
-function cookieCierre(res) {
-  res.setHeader('Set-Cookie', `${COOKIE_NAME}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`);
+async function requiereSesion(req, res) {
+  const sesion = await usuarioDeSesion(req, res);
+  if (!sesion) {
+    res.status(401).json({ error: 'No autorizada.' });
+    return null;
+  }
+  return sesion.user;
 }
 
-module.exports = { sesionValida, contrasenaCorrecta, cookieInicio, cookieCierre };
+async function iniciarSesion(email, password) {
+  const supabase = getSupabaseAnon();
+  return supabase.auth.signInWithPassword({ email, password });
+}
+
+module.exports = { usuarioDeSesion, requiereSesion, iniciarSesion, establecerCookiesSesion, limpiarCookiesSesion };

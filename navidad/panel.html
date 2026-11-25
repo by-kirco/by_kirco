@@ -34,6 +34,8 @@
 <div id="p-login" class="p-login">
   <h1 class="daruma" style="margin:0;font-size:32px">Panel de la campaña</h1>
   <p style="margin:0;color:var(--k-tinta-suave)">Solo para Sara.</p>
+  <label for="p-email" style="font-size:14px">Correo</label>
+  <input id="p-email" type="email" class="campo" autocomplete="username">
   <label for="p-pass" style="font-size:14px">Contraseña</label>
   <input id="p-pass" type="password" class="campo" autocomplete="current-password">
   <p id="p-login-error" role="alert" class="aviso-error" style="display:none;margin:0"></p>
@@ -172,10 +174,12 @@
 
   document.getElementById('p-entrar').addEventListener('click', intentarEntrar);
   document.getElementById('p-pass').addEventListener('keydown', function (e) { if (e.key === 'Enter') intentarEntrar(); });
+  document.getElementById('p-email').addEventListener('keydown', function (e) { if (e.key === 'Enter') intentarEntrar(); });
   function intentarEntrar() {
+    var email = document.getElementById('p-email').value;
     var pass = document.getElementById('p-pass').value;
     var err = document.getElementById('p-login-error');
-    api('panel-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pass }) })
+    api('panel-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, password: pass }) })
       .then(function (res) {
         if (res.status === 200) { err.style.display = 'none'; mostrarDashboard(); }
         else { err.textContent = (res.body && res.body.error) || 'No se pudo entrar.'; err.style.display = 'flex'; }

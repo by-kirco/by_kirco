@@ -39,18 +39,22 @@ Ya hecho y confirmado en producción (`bykirco.vercel.app/navidad`):
 
 ### Panel de Sara (`/navidad/panel.html`)
 
-Protegido con una contraseña simple (sin Supabase Auth ni magic link, para no depender de
-enviar correos). Hacen falta dos variables de entorno más en Vercel:
+Protegido con Supabase Auth (correo + contraseña reales, con la contraseña guardada cifrada
+por Supabase, no por nosotros). Para activarlo:
 
-- `PANEL_PASSWORD` — la contraseña para entrar. Ponla tú misma, algo que solo tú sepas.
-- `PANEL_SESSION_SECRET` — una cadena larga y aleatoria cualquiera (no es una contraseña que
-  escribas, solo sirve para firmar la sesión). Por ejemplo, genera una en
-  `https://www.uuidgenerator.net/` o similar y pégala tal cual.
+1. En Supabase → **Authentication → Users** → **Add user**, crea tu usuario con tu correo y una
+   contraseña. Marca la opción de confirmarlo automáticamente (según la versión del panel se
+   llama "Auto Confirm User" o ya viene confirmado al crearlo desde ahí) — así no hace falta
+   mandar ningún email de verificación.
+2. En Vercel, añade la variable `SUPABASE_ANON_KEY` con la **Publishable key** del proyecto
+   (la misma pantalla "Data API"/"API Keys" donde sacaste `SUPABASE_URL`; es la que empieza por
+   `sb_publishable_...`, no la `sb_secret_...` que ya tienes).
+3. Entra en `/navidad/panel.html` con ese correo y contraseña.
 
-La sesión dura 12 horas y se guarda en una cookie firmada (HttpOnly, no se puede leer desde
-JavaScript ni falsificar sin conocer `PANEL_SESSION_SECRET`). No hay límite de intentos de
-contraseña (aceptable para una herramienta interna temporal, pero si se comparte el enlace
-conviene usar una contraseña robusta).
+La sesión usa el access token + refresh token reales de Supabase, guardados en cookies
+HttpOnly; se renueva sola mientras el refresh token siga siendo válido (hasta 30 días sin
+volver a entrar). El límite de intentos de contraseña y el cifrado de la contraseña los
+gestiona Supabase, no este código.
 
 El panel no está enlazado desde ninguna página pública — solo se llega escribiendo la URL
 directamente. "Cerrar las cartas ahora" (cierre manual anticipado) se ve en el diseño pero no

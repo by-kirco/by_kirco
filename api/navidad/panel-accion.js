@@ -2,7 +2,7 @@
    body: { id, accion: 'aprobar' | 'rechazar' }
    Aprobar: estado -> aprobada (entra en la bolsa).
    Rechazar: estado -> rechazada y se borra el texto de la carta. */
-const { sesionValida } = require('./_auth');
+const { requiereSesion } = require('./_auth');
 const { getSupabase } = require('./_supabase');
 
 module.exports = async function handler(req, res) {
@@ -10,7 +10,8 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Método no permitido.' });
   }
-  if (!sesionValida(req)) return res.status(401).json({ error: 'No autorizada.' });
+  const usuario = await requiereSesion(req, res);
+  if (!usuario) return;
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }

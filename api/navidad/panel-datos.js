@@ -1,6 +1,6 @@
 /* GET /api/navidad/panel-datos — solo con sesión de Sara.
    Devuelve KPIs, la cola de revisión, la tabla de últimas cartas y (de momento vacías) las notas. */
-const { sesionValida } = require('./_auth');
+const { requiereSesion } = require('./_auth');
 const { getSupabase } = require('./_supabase');
 const filtro = require('./_filtro');
 
@@ -15,7 +15,8 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Método no permitido.' });
   }
-  if (!sesionValida(req)) return res.status(401).json({ error: 'No autorizada.' });
+  const usuario = await requiereSesion(req, res);
+  if (!usuario) return;
 
   try {
     const supabase = getSupabase();
