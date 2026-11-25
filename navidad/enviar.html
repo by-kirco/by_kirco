@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Envía tu carta · Regala una carta por Navidad · by_kirco</title>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="css/navidad.css">
+<link rel="stylesheet" href="/navidad/css/navidad.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 </head>
@@ -31,8 +31,8 @@
   <div class="copos" aria-hidden="true" id="k-copos"></div>
 
   <header class="k-header">
-    <a href="carta.html" class="chip-volver">← Volver</a>
-    <img src="assets/img/logo_blanco.png" alt="by_kirco" style="height:40px">
+    <a href="/navidad/carta.html" class="chip-volver">← Volver</a>
+    <img src="/navidad/assets/img/logo_blanco.png" alt="by_kirco" style="height:40px">
   </header>
 
   <main class="k-main">
@@ -50,7 +50,7 @@
             <div id="previa" class="previa-carta" aria-hidden="true">
               <div>
                 <div style="display:flex;justify-content:space-between;gap:12px;margin:-10px -4px 2px">
-                  <a href="carta.html" style="display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--k-tinta)">Editar</a>
+                  <a href="/navidad/carta.html" style="display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--k-tinta)">Editar</a>
                   <button type="button" id="b-cerrar-previa" style="min-height:44px;padding:0;border:0;background:none;font:inherit;font-size:14px;color:var(--k-tinta);text-decoration:underline;cursor:pointer">Cerrar ✕</button>
                 </div>
                 <div class="previa-texto">
@@ -88,7 +88,7 @@
     <div style="display:flex;flex-direction:column;gap:4px;color:#fff">
       <label style="display:flex;gap:12px;align-items:flex-start;min-height:44px;padding:6px 0;cursor:pointer;font-size:15px">
         <input type="checkbox" id="acepto" style="flex:0 0 24px;width:24px;height:24px;margin:0;accent-color:var(--k-verde-deep)">
-        <span>Tengo 18 años o más y acepto la <a href="legal.html" style="color:var(--k-amarillo)">política de privacidad</a>.</span>
+        <span>Tengo 18 años o más y acepto la <a href="/navidad/legal.html" style="color:var(--k-amarillo)">política de privacidad</a>.</span>
       </label>
       <p id="acepto-error" role="alert" class="aviso-error" style="display:none;margin:0"><span aria-hidden="true" class="icono-error">!</span>Marca esta casilla para participar.</p>
     </div>
@@ -97,13 +97,13 @@
 
     <button type="button" id="b-enviar" class="btn btn-carta" style="width:100%">Enviar mi carta</button>
     <p id="p-bloqueado" style="margin:-8px 0 0;font-size:13px;color:#fff;text-align:center">Escribe tu correo y marca la casilla para poder enviarla.</p>
-    <a class="ir" href="gracias.html" tabindex="-1" aria-hidden="true" style="display:none">Gracias</a>
+    <a class="ir" href="/navidad/gracias.html" tabindex="-1" aria-hidden="true" style="display:none">Gracias</a>
   </main>
 
   <div data-k-pie data-nieve="si"></div>
 </div>
 
-<script src="js/kirco-anim.js"></script>
+<script src="/navidad/js/kirco-anim.js"></script>
 <script>
 (function () {
   K.pintarCopos(document.getElementById('k-copos'));

@@ -2,7 +2,7 @@
    Respeta prefers-reduced-motion en cada función. */
 var K = {
   copos: function () {
-    var s = ['assets/svg/copo_1.svg', 'assets/svg/copo_2.svg', 'assets/svg/copo_3.svg', 'assets/svg/copo_4.svg', 'assets/svg/copo_5.svg'];
+    var s = ['/navidad/assets/svg/copo_1.svg', '/navidad/assets/svg/copo_2.svg', '/navidad/assets/svg/copo_3.svg', '/navidad/assets/svg/copo_4.svg', '/navidad/assets/svg/copo_5.svg'];
     var o = [];
     for (var i = 0; i < 34; i++) { o.push({ src: s[i % 5], s: 8 + ((i * 7) % 15), o: (0.55 + ((i * 13) % 41) / 100).toFixed(2) }); }
     return o;
@@ -131,10 +131,10 @@ K.pintarPie = function () {
     (nieve ? '<div style="position:relative;z-index:4;margin-top:-2px"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%;height:36px"><path d="M0 50 L0 24 C240 4 480 4 720 22 C960 40 1200 36 1440 14 L1440 50 Z" fill="#FFFFFF"></path><path d="M0 50 L0 40 C240 22 480 22 720 36 C960 50 1200 48 1440 30 L1440 50 Z" fill="#6F9C3E"></path></svg></div>' : '') +
     '<footer class="k-pie"><div class="k-pie-inner">' +
       '<div style="flex:1 1 260px;display:flex;flex-direction:column;gap:4px">' +
-        '<nav aria-label="Enlaces legales"><a href="legal.html" style="display:inline-flex;align-items:center;min-height:44px">Política de privacidad</a></nav>' +
+        '<nav aria-label="Enlaces legales"><a href="/navidad/legal.html" style="display:inline-flex;align-items:center;min-height:44px">Política de privacidad</a></nav>' +
         '<p class="etiqueta" style="margin:0;font-size:13px;color:#fff">by_kirco · Escribo para ti sin conocerte</p>' +
       '</div>' +
-      '<img src="assets/svg/logo_bk-neg2c_naranja.svg" alt="by_kirco">' +
+      '<img src="/navidad/assets/svg/logo_bk-neg2c_naranja.svg" alt="by_kirco">' +
     '</div></footer>';
 };
 document.addEventListener('DOMContentLoaded', K.pintarPie);
