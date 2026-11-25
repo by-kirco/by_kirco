@@ -414,6 +414,7 @@
       resultName.style.color = res.text;
       resultPhrase.textContent = res.phrase;
       resultDesc.textContent = res.desc;
+      ajustarNombre();
       // El cursor-flor (assets/kirco-cursor.js) se quedaba quieto encima de la explicación al aparecer el resultado:
       // lo escondo hasta que se vuelva a mover el ratón.
       if (!resultadoVisto) window.dispatchEvent(new Event('kirco-cursor:aparcar'));
@@ -421,6 +422,27 @@
     resultadoVisto = !!(done && res);
   }
   var resultadoVisto = false;
+
+  // Nombre de la flor ajustado al ancho de la tarjeta (nov 2026): con el tamaño de siempre (clamp del estilo en línea)
+  // «Nomeolvides» y «Pensamiento» se salían. Si el nombre cabe, se queda con el tamaño de siempre; si no cabe,
+  // se reduce en proporción, con un mínimo de 32px. Se recalcula al cargar las fuentes y al redimensionar.
+  var nombreTamOriginal = resultName.style.fontSize; // clamp(56px,8vw,96px)
+  function ajustarNombre() {
+    resultName.style.fontSize = nombreTamOriginal;
+    if (!resultName.textContent || !resultName.clientWidth) return;
+    var disponible = resultName.clientWidth, necesario = resultName.scrollWidth;
+    if (necesario <= disponible) return;
+    var base = parseFloat(getComputedStyle(resultName).fontSize);
+    var tam = Math.max(32, Math.floor(base * disponible / necesario * 2) / 2);
+    resultName.style.fontSize = tam + 'px';
+    while (resultName.scrollWidth > resultName.clientWidth && tam > 32) { tam -= 0.5; resultName.style.fontSize = tam + 'px'; }
+  }
+  var ajusteRaf = 0;
+  window.addEventListener('resize', function () {
+    if (ajusteRaf) cancelAnimationFrame(ajusteRaf);
+    ajusteRaf = requestAnimationFrame(function () { ajusteRaf = 0; ajustarNombre(); });
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustarNombre);
 
   function animateIn() {
     var g = window.gsap;
