@@ -47,6 +47,8 @@ module.exports = async function handler(req, res) {
       escritas: escritas || 0,
       total: TOTAL,
       cerrado: cerradoPorPlazo || cerradoPorLimite,
+      cerradoPorLimite,
+      cerradoPorPlazo,
       bolsa
     });
   } catch (e) {
@@ -59,6 +61,6 @@ module.exports = async function handler(req, res) {
       status: e && e.status,
       stack: e && e.stack
     });
-    return res.status(200).json({ escritas: 0, total: TOTAL, cerrado: false, bolsa: [] });
+    return res.status(200).json({ escritas: 0, total: TOTAL, cerrado: false, cerradoPorLimite: false, cerradoPorPlazo: false, bolsa: [] });
   }
 };

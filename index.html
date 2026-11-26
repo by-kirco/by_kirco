@@ -293,7 +293,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
   var el = document.getElementById('navidad-contador');
   if (el) {
     fetch('/api/navidad/estado').then(function (r) { return r.json(); }).then(function (d) {
-      el.textContent = (d.cerrado ? 'El buzón de Navidad está cerrado.' : (d.escritas || 0) + ' de 300 cartas ya escritas');
+      el.textContent = (d.cerrado ? 'El buzón de Navidad está cerrado.' : (d.escritas || 0) + ' de 300 cartas en el buzón');
     }).catch(function () {});
   }
 
@@ -367,7 +367,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
         <div style="position:absolute;right:22px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:#F7F1E3;box-shadow:inset 0 2px 4px rgba(46,43,37,0.35);z-index:2"></div>
         <p style="font-family:var(--font-hand);font-size:clamp(24px,2.2vw,30px);line-height:1.2;color:var(--kirco-ink);margin:0 0 14px">Querido desconocido,</p>
         <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Si has llegado hasta aquí, es tu señal para conocerme.</p>
-        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Luego camino por la calle buscando el lugar más especial para dejarlas: un banco del parque, junto a la entrada del metro o incluso colgadas de una ramita de un árbol...</p>
+        <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Soy Kirco y llevo escribiendo cartitas a desconocidos desde 2021. Luego camino por la calle buscando el lugar más especial para dejarlas: un banco del parque o incluso colgadas de una ramita de un árbol...</p>
         <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Todas mis cartitas son 100 % humanas, sin IA. Las dejo por Madrid para quien las necesite.</p>
         <p style="font-family:var(--font-hand);font-size:clamp(17px,1.45vw,20px);line-height:1.42;color:var(--kirco-ink);margin:0 0 10px">Y quién sabe, igual tú eres el próximo en encontrar una.</p>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:16px">
