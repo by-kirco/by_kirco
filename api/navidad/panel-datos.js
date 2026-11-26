@@ -1,8 +1,21 @@
 /* GET /api/navidad/panel-datos — solo con sesión de Sara.
-   Devuelve KPIs, la cola de revisión, la tabla de últimas cartas y (de momento vacías) las notas. */
+   Devuelve KPIs, la cola de revisión, la tabla de últimas cartas, las notas de agradecimiento
+   pendientes, el contador de reservas (necesarias vs cargadas), el sorteo y el estado de los correos.
+   Las partes nuevas (migración 02) son tolerantes: si la migración no está aplicada, salen a null
+   y el resto del panel sigue funcionando. */
 const { requiereSesion } = require('./_auth');
 const { getSupabase } = require('./_supabase');
 const filtro = require('./_filtro');
+const core = require('./_sorteo_core');
+const correo = require('./_correo');
+const { EDICION } = require('./_config');
+
+async function intenta(fn) {
+  try { return await fn(); } catch (e) {
+    console.error('panel-datos.js (parte opcional)', { message: e && e.message, code: e && e.code });
+    return null;
+  }
+}
 
 function fechaCorta(iso) {
   try {
@@ -74,29 +87,47 @@ module.exports = async function handler(req, res) {
         fecha: fechaCorta(c.creada_at)
       }));
 
-    const { data: notasPendientes, error: errNotas } = await supabase
-      .from('notas')
-      .select('id, carta_id, texto, estado, creada_at')
-      .eq('estado', 'pendiente')
-      .order('creada_at', { ascending: true });
-    if (errNotas) throw errNotas;
+    const reservas = await intenta(async () => {
+      const { data: rs, error: e } = await supabase.from('cartas_reserva').select('id, usos');
+      if (e) throw e;
+      const est = core.estimarReservas(core.prepararEntrada(cartas || [], rs || [], EDICION));
+      return { necesarias: est.necesarias, cargadas: est.cargadas, faltan: Math.max(0, est.necesarias - est.cargadas) };
+    });
 
-    const notas = (notasPendientes || []).map((n) => {
-      const cartaDe = porId.get(n.carta_id); // la carta que se agradece (a quien le llega el email)
-      const cartaFirma = cartaDe && cartaDe.recibe_carta_id ? porId.get(cartaDe.recibe_carta_id) : null; // quien la escribe (firma la nota)
-      return {
-        id: n.id,
-        de: cartaFirma ? cartaFirma.seudonimo : '—',
-        para: cartaDe ? cartaDe.seudonimo : '—',
-        fecha: fechaCorta(n.creada_at),
-        texto: n.texto,
-        tono: 'yellow',
-        estado: 'pendiente'
-      };
+    const sorteo = await intenta(async () => {
+      const { data: s, error: e } = await supabase.from('sorteos')
+        .select('ejecutado_at, participantes, cartas_persona, reservas_usadas, semilla, huella_sha256').eq('edicion', EDICION).maybeSingle();
+      if (e) throw e;
+      return s || null;
+    });
+
+    const notas = await intenta(async () => {
+      const { data: ns, error: e } = await supabase.from('notas').select('id, carta_id, texto, estado, creada_at').eq('estado', 'pendiente').order('creada_at', { ascending: true });
+      if (e) throw e;
+      return (ns || []).map((n) => {
+        const receptor = porId.get(n.carta_id);
+        const escritor = receptor && receptor.recibe_carta_id ? porId.get(receptor.recibe_carta_id) : null;
+        return {
+          id: n.id,
+          texto: n.texto,
+          de: receptor ? receptor.seudonimo : '¿?',
+          para: escritor ? escritor.seudonimo : 'Kirco',
+          reserva: !escritor,
+          fecha: fechaCorta(n.creada_at)
+        };
+      });
+    });
+
+    const correos = await intenta(async () => {
+      const { data: cs, error: e } = await supabase.from('correos').select('estado');
+      if (e) throw e;
+      const cuenta = {};
+      (cs || []).forEach((c) => { cuenta[c.estado] = (cuenta[c.estado] || 0) + 1; });
+      return { simulacion: correo.modoSimulacion(), cuenta };
     });
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json({ kpis, cola, notas, ultimas, vacio: cola.length === 0 });
+    return res.status(200).json({ kpis, cola, notas: notas || [], ultimas, vacio: cola.length === 0, reservas, sorteo, correos });
   } catch (e) {
     console.error('panel-datos.js', { name: e && e.name, message: e && e.message, code: e && e.code, details: e && e.details, hint: e && e.hint });
     return res.status(500).json({ error: 'No hemos podido cargar los datos del panel.' });

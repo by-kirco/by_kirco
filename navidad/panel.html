@@ -60,13 +60,13 @@
       <section aria-labelledby="rev-t" style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px">
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
           <h2 id="rev-t" class="daruma" style="margin:0;font-size:30px;line-height:1.1;color:#fff">Por revisar</h2>
-          <p style="margin:0;color:#fff;max-width:50ch">Al aprobar, la carta entra en la bolsa. Al rechazar, se borra el texto y se marca como rechazada.</p>
+          <p style="margin:0;color:#fff;max-width:50ch">Al aprobar, la carta entra en la bolsa y le llega el correo «Tu carta ya está lista». Al rechazar, eliges el motivo (va en el correo), se borra el texto y su autor recibirá igualmente una carta el 25.</p>
         </div>
         <div id="p-cola"></div>
 
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px">
           <h2 class="daruma" style="margin:0;font-size:30px;line-height:1.1;color:#fff">Notas de agradecimiento</h2>
-          <p style="margin:0;color:#fff;max-width:50ch">Al reenviar, le llega a quien escribió la carta, firmada por quien la recibió.</p>
+          <p style="margin:0;color:#fff;max-width:50ch">Llegan desde la página de abrir la carta (a partir del 25). «Reenviar» manda el correo a quien escribió la carta. Las notas para Kirco (cartas de reserva) solo se leen aquí.</p>
         </div>
         <div id="p-notas"></div>
 
@@ -86,9 +86,24 @@
         <dl class="etiqueta" style="margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;font-size:13px">
           <dt>Cierre</dt><dd style="margin:0">23/12 · 23:59</dd>
           <dt>Revisión</dt><dd style="margin:0">Hasta el 24/12</dd>
-          <dt>Sorteo</dt><dd style="margin:0">25/12 · 00:00</dd>
-          <dt>Envío</dt><dd style="margin:0">Automático</dd>
+          <dt>Sorteo</dt><dd style="margin:0">Tras el cierre (botón)</dd>
+          <dt>Entrega</dt><dd style="margin:0">25/12 · 00:00 (programada)</dd>
         </dl>
+        <div id="p-reservas" style="padding:12px 14px;border-radius:14px;background:var(--k-verde-tint);display:flex;flex-direction:column;gap:4px">
+          <p class="etiqueta" style="margin:0;font-size:13px">Cartas de reserva</p>
+          <p style="margin:0;font-size:15px"><strong id="p-res-nec">…</strong> necesarias · <strong id="p-res-carg">…</strong> cargadas (previstas: 20)</p>
+          <p id="p-res-aviso" style="margin:0;font-size:13px;display:none;color:var(--k-naranja-deep)"></p>
+        </div>
+        <div id="p-sorteo" style="padding:12px 14px;border-radius:14px;background:var(--k-amarillo);display:flex;flex-direction:column;gap:8px">
+          <p class="etiqueta" style="margin:0;font-size:13px">Sorteo del 25</p>
+          <p id="p-sorteo-estado" style="margin:0;font-size:14px">Todavía no se ha hecho. Se puede hacer cuando se cierre el buzón (23/12 a las 23:59).</p>
+          <button type="button" id="p-sortear" class="p-pill p-verde">Hacer el sorteo</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <p class="etiqueta" style="margin:0;font-size:13px">Correos</p>
+          <p id="p-correos" style="margin:0;font-size:13px;color:var(--k-tinta-suave)">…</p>
+          <button type="button" id="p-reintentar" class="p-pill p-naranja">Reintentar correos pendientes</button>
+        </div>
         <button type="button" id="p-exportar" class="p-pill p-amarillo">Exportar recuento (.csv)</button>
         <button type="button" class="p-pill p-gris" disabled title="Todavía no está construido">Cerrar las cartas ahora</button>
         <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">El cierre manual anticipado aún no está disponible — por ahora el buzón se cierra solo al llegar a 300 cartas o al pasar el plazo.</p>
@@ -127,45 +142,39 @@
         '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(c.nombre) + ' → ' + escapa(c.para) + ' · ' + escapa(c.fecha) + '</p>' +
         '<span class="p-badge ' + badgeClase(c.tono) + '">' + escapa(c.aviso) + '</span></div>' +
         '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(c.texto) + '</p>' +
+        '<div class="p-motivo" style="display:none;flex-direction:column;gap:8px;padding:12px;border-radius:12px;background:var(--k-naranja-tint)">' +
+        '<label class="etiqueta" style="font-size:12px">Motivo (va en el correo)</label>' +
+        '<select class="campo p-motivo-sel"><option value="">Elige un motivo…</option>' +
+        '<option value="M1">M1 · Datos de contacto, enlaces o redes</option>' +
+        '<option value="M2">M2 · Contenido que puede herir</option>' +
+        '<option value="M3">M3 · Publicidad o promoción</option>' +
+        '<option value="M4">M4 · Otro motivo (lo escribo yo)</option></select>' +
+        '<input class="campo p-motivo-txt" maxlength="300" placeholder="Una frase, en «nosotros», sin juicio" style="display:none">' +
+        '<button type="button" class="p-pill p-naranja" data-accion="confirmar-rechazo">Rechazar y avisar</button></div>' +
         '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
         '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button>' +
         '<button type="button" class="p-pill p-verde" data-accion="aprobar">Aprobar · a la bolsa</button></div></article>';
     }).join('');
+    host.querySelectorAll('.p-motivo-sel').forEach(function (sel) {
+      sel.addEventListener('change', function () { sel.closest('article').querySelector('.p-motivo-txt').style.display = sel.value === 'M4' ? 'block' : 'none'; });
+    });
     host.querySelectorAll('button[data-accion]').forEach(function (b) {
       b.addEventListener('click', function () {
         var art = b.closest('article'); var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
-        if (accion === 'rechazar' && !confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto.')) return;
+        var caja = art.querySelector('.p-motivo');
+        if (accion === 'rechazar') { caja.style.display = caja.style.display === 'flex' ? 'none' : 'flex'; return; }
+        var motivo = null;
+        if (accion === 'confirmar-rechazo') {
+          var sel = art.querySelector('.p-motivo-sel').value;
+          motivo = sel === 'M4' ? art.querySelector('.p-motivo-txt').value.trim() : sel;
+          if (!motivo) { alert('Elige el motivo (o escríbelo si es «otro»).'); return; }
+          if (!confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto y le llegará el correo con el motivo.')) return;
+          accion = 'rechazar';
+        }
         art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
-        api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion }) })
+        api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion, motivo: motivo }) })
           .then(function (res) {
             if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
-          })
-          .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
-      });
-    });
-  }
-
-  function pintarNotas(notas) {
-    var host = document.getElementById('p-notas');
-    if (!notas || !notas.length) { host.innerHTML = '<div style="padding:28px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0;font-weight:700">No hay notas pendientes.</p></div>'; return; }
-    host.innerHTML = notas.map(function (n) {
-      return '<article class="p-carta" data-id="' + escapa(n.id) + '">' +
-        '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center">' +
-        '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(n.de) + ' → ' + escapa(n.para) + ' · ' + escapa(n.fecha) + '</p>' +
-        '<span class="p-badge p-badge-yellow">Pendiente</span></div>' +
-        '<p class="manuscrita" style="margin:0;padding:12px 16px;border-radius:13px;background:#fff;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(n.texto) + '</p>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
-        '<button type="button" class="p-pill p-naranja" data-accion="descartar">Descartar</button>' +
-        '<button type="button" class="p-pill p-verde" data-accion="reenviar">Reenviar nota</button></div></article>';
-    }).join('');
-    host.querySelectorAll('button[data-accion]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var art = b.closest('article'); var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
-        if (accion === 'descartar' && !confirm('¿Seguro que quieres descartar esta nota? No se enviará.')) return;
-        art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
-        api('panel-notas-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion }) })
-          .then(function (res) {
-            if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo completar la acción.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
           })
           .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
       });
@@ -179,6 +188,83 @@
     }).join('');
   }
 
+  function pintarNotas(notas) {
+    var host = document.getElementById('p-notas');
+    if (!notas || !notas.length) { host.innerHTML = '<div style="padding:20px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0">No hay notas por revisar.</p></div>'; return; }
+    host.innerHTML = notas.map(function (n) {
+      var botones = n.reserva
+        ? '<button type="button" class="p-pill p-verde" data-nota="leida">Marcar como leída</button>'
+        : '<button type="button" class="p-pill p-naranja" data-nota="descartar">Descartar</button><button type="button" class="p-pill p-verde" data-nota="reenviar">Reenviar</button>';
+      return '<article class="p-carta" data-id="' + escapa(n.id) + '">' +
+        '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(n.de) + ' → ' + escapa(n.para) + (n.reserva ? ' (carta de reserva: no sale correo)' : '') + ' · ' + escapa(n.fecha) + '</p>' +
+        '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(n.texto) + '</p>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' + botones + '</div></article>';
+    }).join('');
+    host.querySelectorAll('button[data-nota]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var art = b.closest('article');
+        art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+        api('panel-nota', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: art.getAttribute('data-id'), accion: b.getAttribute('data-nota') }) })
+          .then(function (res) { if (res.status === 200) cargarDatos(); else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); } })
+          .catch(function () { alert('No se pudo conectar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
+      });
+    });
+  }
+
+  function pintarReservas(r) {
+    if (!r) { document.getElementById('p-res-nec').textContent = '—'; document.getElementById('p-res-carg').textContent = '—'; return; }
+    document.getElementById('p-res-nec').textContent = r.necesarias;
+    document.getElementById('p-res-carg').textContent = r.cargadas;
+    var aviso = document.getElementById('p-res-aviso');
+    if (r.cargadas === 0 && r.necesarias > 0) { aviso.textContent = 'No hay ninguna reserva cargada: el sorteo no se podrá hacer hasta cargarlas.'; aviso.style.display = 'block'; }
+    else if (r.necesarias > r.cargadas) { aviso.textContent = 'Hacen falta más reservas de las cargadas: se reutilizará la menos usada (nunca la misma a la misma persona).'; aviso.style.display = 'block'; }
+    else aviso.style.display = 'none';
+  }
+
+  function pintarSorteo(s) {
+    var p = document.getElementById('p-sorteo-estado'); var b = document.getElementById('p-sortear');
+    if (!s) { b.style.display = ''; return; }
+    b.style.display = 'none';
+    p.innerHTML = 'Hecho el ' + escapa(new Date(s.ejecutado_at).toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })) + ' (Madrid) · ' +
+      escapa(s.participantes) + ' personas · ' + escapa(s.cartas_persona) + ' cartas de personas · ' + escapa(s.reservas_usadas) + ' de reserva.<br>' +
+      '<span class="etiqueta" style="font-size:11px;word-break:break-all">Huella: ' + escapa(s.huella_sha256) + '<br>Semilla: ' + escapa(s.semilla) + '</span>';
+  }
+
+  function pintarCorreos(c) {
+    var p = document.getElementById('p-correos');
+    if (!c) { p.textContent = 'Sin datos (¿falta aplicar la migración 02?).'; return; }
+    var partes = Object.keys(c.cuenta).map(function (k) { return k + ': ' + c.cuenta[k]; });
+    p.textContent = (c.simulacion ? 'MODO SIMULACIÓN (sin RESEND_API_KEY) · ' : '') + (partes.join(' · ') || 'Ninguno todavía');
+  }
+
+  document.getElementById('p-sortear').addEventListener('click', function () {
+    if (!confirm('El sorteo se hace UNA sola vez y no se puede deshacer. ¿Hacerlo ahora?')) return;
+    var b = this; b.disabled = true;
+    function lanzar(aceptarPendientes) {
+      api('sorteo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirmar: true, aceptar_pendientes: aceptarPendientes }) })
+        .then(function (res) {
+          if (res.status === 409 && res.body && res.body.pendientes && !aceptarPendientes) {
+            if (confirm(res.body.error + ' ¿Sortear igualmente?')) return lanzar(true);
+            b.disabled = false; return;
+          }
+          if (res.status !== 200) { alert((res.body && res.body.error) || 'No se pudo hacer el sorteo.'); b.disabled = false; return; }
+          cargarDatos();
+        })
+        .catch(function () { alert('No se pudo conectar.'); b.disabled = false; });
+    }
+    lanzar(false);
+  });
+
+  document.getElementById('p-reintentar').addEventListener('click', function () {
+    var b = this; b.disabled = true;
+    api('correos-pendientes', { method: 'POST' }).then(function (res) {
+      b.disabled = false;
+      if (res.status !== 200) { alert((res.body && res.body.error) || 'No se pudo.'); return; }
+      var r = res.body.resumen; alert('Enviados: ' + r.enviado + ' · programados: ' + r.programado + ' · simulados: ' + r.simulado + ' · siguen pendientes: ' + r.pendiente + (r.cuota ? ' (cuota de Resend agotada: ' + r.cuota + ')' : ''));
+      cargarDatos();
+    }).catch(function () { b.disabled = false; alert('No se pudo conectar.'); });
+  });
+
   var ultimoDatos = null;
   function cargarDatos() {
     api('panel-datos').then(function (res) {
@@ -186,8 +272,11 @@
       ultimoDatos = res.body;
       pintarKpis(res.body.kpis);
       pintarCola(res.body.cola, res.body.vacio);
-      pintarNotas(res.body.notas);
       pintarUltimas(res.body.ultimas);
+      pintarNotas(res.body.notas);
+      pintarReservas(res.body.reservas);
+      pintarSorteo(res.body.sorteo);
+      pintarCorreos(res.body.correos);
     }).catch(function () { console.error('No se pudo cargar el panel.'); });
   }
 

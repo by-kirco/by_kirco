@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu carta · Regala una carta por Navidad · by_kirco</title>
+<!-- QUITAR AL LANZAR en las páginas públicas. En abrir.html conviene dejar el noindex SIEMPRE: son cartas privadas. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="/navidad/css/navidad.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+</head>
+<body class="k-raiz sobre-oscuro k-oscuro">
+<style>
+  .a-estado { display: none; flex-direction: column; gap: 16px; }
+  .a-estado.activo { display: flex; }
+  .a-texto { margin: 0; font-size: 18px; line-height: 1.5; color: #fff; max-width: 40ch; }
+  .cifra { font-family: var(--font-mono); font-size: 44px; line-height: 1; color: #fff; letter-spacing: 0; margin: 0; }
+  .unidad { font-family: var(--font-mono); font-size: 16px; line-height: 1.2; color: #fff; margin: 6px 0 0; }
+  .a-sobre { position: relative; width: min(320px, 80vw); aspect-ratio: 1 / 1; border: 0; background: transparent; cursor: pointer; padding: 0; align-self: center; }
+  .a-sobre img { width: 100%; height: 100%; object-fit: contain; transition: transform .3s ease; }
+  .a-sobre:hover img { transform: translateY(-6px) rotate(-2deg); }
+  .a-carta { padding: 26px 22px 30px; }
+  .a-carta .manuscrita { font-size: 24px; line-height: 34px; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .a-enlace { color: var(--k-amarillo); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; }
+  .a-nota textarea { width: 100%; box-sizing: border-box; min-height: 110px; resize: vertical; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--k-tinta-suave); font-family: var(--font-hand); font-size: 20px; }
+  .a-lema { margin: 8px 0 0; font-family: var(--font-mono); font-size: 14px; color: #fff; }
+  @media print {
+    body, .k-pagina { background: #fff !important; color: #000 !important; }
+    .k-header, .copos, [data-k-pie], .no-imprimir, .k-pie { display: none !important; }
+    .a-estado { display: none !important; }
+    #estado-abierta { display: flex !important; }
+    .a-carta { border: 0 !important; box-shadow: none !important; background: #fff !important; }
+    .pautado { background-image: none !important; }
+  }
+</style>
+<div class="k-pagina k-oscuro">
+  <div class="copos" aria-hidden="true" id="k-copos"></div>
+
+  <header class="k-header">
+    <a href="/navidad/" class="chip-volver no-imprimir">by_kirco</a>
+    <img src="/navidad/assets/img/logo_blanco.png" alt="by_kirco" style="height:40px">
+  </header>
+
+  <main class="k-main" style="padding-top:12px">
+    <p id="cargando" class="a-texto" role="status">…</p>
+
+    <!-- Estado 1 · Antes del 25 -->
+    <section id="estado-antes" class="a-estado" aria-live="polite">
+      <span class="k-badge k-badge-verde" style="align-self:flex-start">25/12/2026 · 00:00</span>
+      <h1 class="daruma" style="margin:0;font-size:48px;line-height:1.05;color:#fff">Tu carta está en camino</h1>
+      <p class="a-texto">Llega el 25 de diciembre, a las 00:00. Hasta entonces, el sobre se queda cerrado.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-size:20px;color:#fff">Quedan</p>
+        <div role="timer" aria-live="off" id="a-timer" style="display:flex;gap:20px">
+          <div><p class="cifra" id="c-d">00</p><p class="unidad">días</p></div>
+          <div><p class="cifra" id="c-h">00</p><p class="unidad">h</p></div>
+          <div><p class="cifra" id="c-m">00</p><p class="unidad">min</p></div>
+          <div><p class="cifra" id="c-s">00</p><p class="unidad">s</p></div>
+        </div>
+        <p style="margin:0;font-size:20px;color:#fff">para abrir tu carta</p>
+      </div>
+      <span class="btn btn-carta" aria-disabled="true" style="align-self:flex-start">Todavía no se puede abrir</span>
+    </section>
+
+    <!-- Estado 2 · Desde el 25, sobre cerrado -->
+    <section id="estado-lista" class="a-estado">
+      <span class="k-badge k-badge-verde" style="align-self:flex-start">25/12/2026 · 00:00</span>
+      <h1 class="daruma" style="margin:0;font-size:48px;line-height:1.05;color:#fff">Te ha llegado una carta</h1>
+      <p class="a-texto">Alguien ha pensado en ti. Ábrela con calma.</p>
+      <button type="button" class="a-sobre" id="a-sobre" aria-label="Abrir tu carta"><img src="/navidad/assets/svg/mano_con_sobre.svg" alt=""></button>
+      <button type="button" class="btn btn-carta" id="a-abrir" style="align-self:center">Abrir mi sobre</button>
+    </section>
+
+    <!-- Estado 3 · Carta abierta -->
+    <section id="estado-abierta" class="a-estado">
+      <p class="etiqueta" style="margin:0;font-size:13px;color:#fff">Para ti, esta Navidad.</p>
+      <div class="correo-aereo"><div class="papel beige a-carta pautado">
+        <p class="manuscrita" id="a-saludo"></p>
+        <p class="manuscrita" id="a-cuerpo"></p>
+        <p class="manuscrita" style="text-align:right">— <span id="a-firma"></span></p>
+      </div></div>
+      <p class="a-texto" style="font-size:16px">Esta carta es solo tuya. Puedes volver a leerla desde el enlace del correo hasta el 24 de enero de 2027.</p>
+      <p class="a-texto no-imprimir" id="a-aprobada" style="font-size:14px;display:none">Esta noche, la tuya también ha llegado a alguien.</p>
+      <div class="no-imprimir" style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+        <button type="button" class="btn btn-claro" id="a-guardar">Guardar mi carta</button>
+        <p style="margin:0;font-size:14px;color:#fff">¿Hay algo en esta carta que no está bien? Avísanos en <a class="a-enlace" href="mailto:by.kirco@gmail.com">by.kirco@gmail.com</a></p>
+      </div>
+
+      <div class="no-imprimir a-nota" style="display:flex;flex-direction:column;gap:10px">
+        <a href="#" class="a-enlace" id="a-gracias-abrir">Dar las gracias a quien te escribió</a>
+        <div id="a-nota-caja" class="hoja-papel" style="display:none;padding:18px;flex-direction:column;gap:10px">
+          <label for="a-nota-texto" style="margin:0;font-size:15px">Si te apetece, deja unas líneas para quien te escribió. Le llegarán firmadas con tu seudónimo, <span id="a-nota-seud"></span>.</label>
+          <textarea id="a-nota-texto" maxlength="300" placeholder="Gracias por…"></textarea>
+          <p class="etiqueta" style="margin:0;font-size:12px"><span id="a-nota-n">0</span> de 300</p>
+          <p id="a-nota-error" role="alert" class="aviso-error" style="display:none;margin:0"></p>
+          <button type="button" class="btn btn-carta" id="a-nota-enviar" style="align-self:flex-start">Enviar mis gracias</button>
+        </div>
+        <p id="a-nota-ok" role="status" style="display:none;margin:0;color:#fff">Guardada. Si sale, le llegará a quien te escribió.</p>
+      </div>
+      <p class="a-lema">Escribo para ti sin conocerte.</p>
+    </section>
+
+    <!-- Estado 4 · Enlace no válido -->
+    <section id="estado-no-valido" class="a-estado">
+      <h1 class="daruma" style="margin:0;font-size:44px;line-height:1.05;color:#fff">No encuentro esta carta</h1>
+      <p class="a-texto">Puede que el enlace se haya cortado al copiarlo. Ábrelo otra vez desde el correo del 25 de diciembre. Si sigue sin abrirse, escríbeme a <a class="a-enlace" href="mailto:by.kirco@gmail.com">by.kirco@gmail.com</a> y lo miro.</p>
+      <a href="/navidad/" class="btn btn-claro" style="align-self:flex-start">Ir a by_kirco</a>
+    </section>
+
+    <!-- Estado 5 · Error -->
+    <section id="estado-error" class="a-estado">
+      <p class="a-texto">No he podido abrir tu carta ahora. Inténtalo de nuevo en un momento.</p>
+      <button type="button" class="btn btn-claro" id="a-reintentar" style="align-self:flex-start">Reintentar</button>
+    </section>
+  </main>
+
+  <div data-k-pie data-nieve="si"></div>
+</div>
+
+<script src="/navidad/js/kirco-anim.js"></script>
+<script>
+(function () {
+  K.pintarCopos(document.getElementById('k-copos'));
+  K.listo(function () { K.nieve(document.getElementById('k-copos')); });
+
+  var token = ''; try { token = new URLSearchParams(location.search).get('t') || ''; } catch (e) {}
+  var datos = null;
+
+  function muestra(id) {
+    document.getElementById('cargando').style.display = 'none';
+    ['estado-antes', 'estado-lista', 'estado-abierta', 'estado-no-valido', 'estado-error'].forEach(function (x) {
+      document.getElementById(x).classList.toggle('activo', x === id);
+    });
+    if (id === 'estado-no-valido') document.title = 'No encuentro esta carta · by_kirco';
+  }
+
+  var OBJETIVO = Date.UTC(2026, 11, 24, 23, 0, 0);
+  var reloj = null;
+  function z(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    var r = Math.max(0, Math.floor((OBJETIVO - Date.now()) / 1000));
+    var d = Math.floor(r / 86400); r -= d * 86400;
+    var h = Math.floor(r / 3600); r -= h * 3600;
+    var m = Math.floor(r / 60); var s = r - m * 60;
+    document.getElementById('c-d').textContent = z(d);
+    document.getElementById('c-h').textContent = z(h);
+    document.getElementById('c-m').textContent = z(m);
+    document.getElementById('c-s').textContent = z(s);
+    document.getElementById('a-timer').setAttribute('aria-label', 'Tu carta se abre en ' + d + ' días, ' + h + ' horas y ' + m + ' minutos');
+    if (d + h + m + s === 0 && reloj) { clearInterval(reloj); reloj = null; cargar(); }
+  }
+
+  function abrirCarta() {
+    document.getElementById('a-saludo').textContent = datos.saludo;
+    document.getElementById('a-cuerpo').textContent = datos.texto;
+    document.getElementById('a-firma').textContent = datos.firma;
+    document.getElementById('a-nota-seud').textContent = datos.seudonimo;
+    document.getElementById('a-aprobada').style.display = datos.aprobada_entregada ? 'block' : 'none';
+    if (datos.nota_enviada) {
+      document.getElementById('a-gracias-abrir').style.display = 'none';
+      document.getElementById('a-nota-ok').style.display = 'block';
+    }
+    muestra('estado-abierta');
+  }
+
+  function cargar() {
+    if (!token) { muestra('estado-no-valido'); return; }
+    fetch('/api/navidad/abrir?t=' + encodeURIComponent(token), { cache: 'no-store' })
+      .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); })
+      .then(function (res) {
+        var d = res.body || {};
+        if (res.status === 404 || d.estado === 'no_valido') return muestra('estado-no-valido');
+        if (res.status !== 200) return muestra('estado-error');
+        if (d.estado === 'antes') { muestra('estado-antes'); tick(); if (!reloj) reloj = setInterval(tick, 1000); return; }
+        if (d.estado === 'abierta') { datos = d; muestra('estado-lista'); return; }
+        muestra('estado-error');
+      })
+      .catch(function () { muestra('estado-error'); });
+  }
+
+  document.getElementById('a-sobre').addEventListener('click', abrirCarta);
+  document.getElementById('a-abrir').addEventListener('click', abrirCarta);
+  document.getElementById('a-reintentar').addEventListener('click', cargar);
+  document.getElementById('a-guardar').addEventListener('click', function () { window.print(); });
+
+  document.getElementById('a-gracias-abrir').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('a-nota-caja').style.display = 'flex';
+    this.style.display = 'none';
+    document.getElementById('a-nota-texto').focus();
+  });
+  document.getElementById('a-nota-texto').addEventListener('input', function () {
+    document.getElementById('a-nota-n').textContent = this.value.length;
+  });
+  document.getElementById('a-nota-enviar').addEventListener('click', function () {
+    var b = this; var texto = document.getElementById('a-nota-texto').value.trim();
+    var err = document.getElementById('a-nota-error');
+    if (!texto) return;
+    b.disabled = true; err.style.display = 'none';
+    fetch('/api/navidad/abrir', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: token, texto: texto }) })
+      .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); })
+      .then(function (res) {
+        if (res.status === 201 || res.status === 409) {
+          document.getElementById('a-nota-caja').style.display = 'none';
+          document.getElementById('a-nota-ok').style.display = 'block';
+          return;
+        }
+        err.textContent = (res.status === 422 && res.body && res.body.error) || 'No he podido guardar tu nota. Inténtalo de nuevo en un momento.';
+        err.style.display = 'flex'; b.disabled = false;
+      })
+      .catch(function () { err.textContent = 'No he podido guardar tu nota. Inténtalo de nuevo en un momento.'; err.style.display = 'flex'; b.disabled = false; });
+  });
+
+  cargar();
+})();
+</script>
+</body>
+</html>
