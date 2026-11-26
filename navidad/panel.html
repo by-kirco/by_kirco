@@ -33,7 +33,7 @@
 
 <div id="p-login" class="p-login">
   <h1 class="daruma" style="margin:0;font-size:32px">Panel de la campaña</h1>
-  <p style="margin:0;color:var(--k-tinta-suave)">Solo para Sara.</p>
+  <p style="margin:0;color:var(--k-tinta-suave)">Panel privado de by_kirco.</p>
   <label for="p-email" style="font-size:14px">Correo</label>
   <input id="p-email" type="email" class="campo" autocomplete="username">
   <label for="p-pass" style="font-size:14px">Contraseña</label>
@@ -48,7 +48,7 @@
       <div style="display:flex;flex-direction:column;gap:10px">
         <span class="p-badge p-badge-green">Cartas abiertas hasta el 23/12</span>
         <h1 class="daruma" style="margin:0;font-size:44px;line-height:1.05;color:#fff">Panel de la campaña</h1>
-        <p style="margin:0;color:#fff">Esta Navidad, alguien te escribe · solo para Sara</p>
+        <p style="margin:0;color:#fff">Esta Navidad, alguien te escribe · panel privado de by_kirco</p>
       </div>
       <button type="button" id="p-salir" class="chip-volver">Salir</button>
     </header>
@@ -90,7 +90,7 @@
         </dl>
         <button type="button" id="p-exportar" class="p-pill p-amarillo">Exportar recuento (.csv)</button>
         <button type="button" class="p-pill p-gris" disabled title="Todavía no está construido">Cerrar las cartas ahora</button>
-        <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">El cierre manual anticipado aún no está disponible — por ahora el buzón se cierra solo al llegar a 300 cartas o al pasar el plazo.</p>
+        <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">El cierre manual anticipado aún no está disponible — por ahora el buzón se cierra solo al llegar a 100 cartas o al pasar el plazo.</p>
       </aside>
     </div>
   </div>
@@ -126,20 +126,49 @@
         '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(c.nombre) + ' → ' + escapa(c.para) + ' · ' + escapa(c.fecha) + '</p>' +
         '<span class="p-badge ' + badgeClase(c.tono) + '">' + escapa(c.aviso) + '</span></div>' +
         '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(c.texto) + '</p>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
+        '<div class="p-motivo" style="display:none;flex-direction:column;gap:8px;padding:14px 16px;border-radius:13px;background:var(--k-naranja-tint);border:1.5px solid var(--k-naranja)">' +
+        '<p style="margin:0;font-size:13px;font-weight:700">¿Por qué se rechaza? Se lo decimos a quien la escribió.</p>' +
+        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Lleva datos que podrían dar pistas sobre ti o sobre otra persona, y en estas cartas eso no puede viajar."><span>Datos de contacto, enlaces o redes</span></label>' +
+        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Hay algo en ella que podría doler a quien la lea, aunque no fuera esa tu intención."><span>Contenido que puede herir</span></label>' +
+        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Menciona algo que se parece a una promoción, y estas cartas son solo de una persona a otra."><span>Publicidad o promoción</span></label>' +
+        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="__otro__"><span>Otro motivo (escríbelo)</span></label>' +
+        '<input type="text" class="campo p-motivo-otro" style="display:none;height:44px" maxlength="300" placeholder="Explica en una frase, sin juzgar">' +
+        '<div style="display:flex;gap:8px;justify-content:flex-end">' +
+        '<button type="button" class="p-pill p-gris" data-accion="cancelar-rechazo" style="cursor:pointer;color:var(--k-tinta);border-color:var(--k-tinta-suave)">Cancelar</button>' +
+        '<button type="button" class="p-pill p-naranja" data-accion="confirmar-rechazo">Confirmar rechazo</button></div></div>' +
+        '<div class="p-botones" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
         '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button>' +
         '<button type="button" class="p-pill p-verde" data-accion="aprobar">Aprobar · a la bolsa</button></div></article>';
     }).join('');
-    host.querySelectorAll('button[data-accion]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var art = b.closest('article'); var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
-        if (accion === 'rechazar' && !confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto.')) return;
+    host.querySelectorAll('article').forEach(function (art) {
+      var motivoBox = art.querySelector('.p-motivo');
+      var botonesBox = art.querySelector('.p-botones');
+      var otroInput = art.querySelector('.p-motivo-otro');
+      art.querySelectorAll('input[name="motivo"]').forEach(function (r) {
+        r.addEventListener('change', function () { otroInput.style.display = (r.checked && r.value === '__otro__') ? 'block' : 'none'; });
+      });
+      function enviarAccion(id, accion, motivo) {
         art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
-        api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion }) })
+        api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion, motivo: motivo }) })
           .then(function (res) {
             if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
           })
           .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
+      }
+      art.querySelectorAll('button[data-accion]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
+          if (accion === 'aprobar') { enviarAccion(id, 'aprobar'); return; }
+          if (accion === 'rechazar') { motivoBox.style.display = 'flex'; botonesBox.style.display = 'none'; return; }
+          if (accion === 'cancelar-rechazo') { motivoBox.style.display = 'none'; botonesBox.style.display = 'flex'; return; }
+          if (accion === 'confirmar-rechazo') {
+            var elegido = art.querySelector('input[name="motivo"]:checked');
+            var motivo = elegido ? (elegido.value === '__otro__' ? otroInput.value.trim() : elegido.value) : '';
+            if (!motivo) { alert('Elige o escribe un motivo antes de confirmar.'); return; }
+            if (!confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto.')) return;
+            enviarAccion(id, 'rechazar', motivo);
+          }
+        });
       });
     });
   }

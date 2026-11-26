@@ -1,11 +1,11 @@
 /* POST /api/navidad/carta
    Guarda una carta nueva. Toda la validación que importa vive aquí, nunca solo en el navegador:
-   plazo, límite de 300, un correo = una carta activa, destino único, filtro de contenido. */
+   plazo, límite de 100, un correo = una carta activa, destino único, filtro de contenido. */
 const crypto = require('crypto');
 const { getSupabase } = require('./_supabase');
 const filtro = require('./_filtro');
 
-const TOTAL = 300;
+const TOTAL = 100;
 const PLAZO_UTC = '2026-12-23T22:59:59Z'; // 23/12/2026 23:59 Europe/Madrid
 const SALUDOS_VALIDOS = { querido: 'querido', querida: 'querida', neutro: 'otro', otro: 'otro' };
 
@@ -64,7 +64,7 @@ module.exports = async function handler(req, res) {
       .in('estado', ['pendiente', 'aprobada']);
     if (errCount) throw errCount;
     if ((escritas || 0) >= TOTAL) {
-      return res.status(403).json({ error: 'El buzón está lleno: ya hay 300 cartas.' });
+      return res.status(403).json({ error: 'El buzón está lleno: ya hay 100 cartas.' });
     }
 
     stage = 'previas';

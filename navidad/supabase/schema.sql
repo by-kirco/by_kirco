@@ -16,9 +16,15 @@ create table if not exists cartas (
   estado text not null default 'pendiente' check (estado in ('pendiente', 'aprobada', 'rechazada')),
   recibe_carta_id uuid references cartas(id),
   enviada_25_at timestamptz,
+  abierta_at timestamptz,
+  motivo text,
   creada_at timestamptz not null default now(),
   acepto_18_privacidad_at timestamptz not null
 );
+
+-- Añadidas después de la primera entrega (seguro reaplicar: no falla si ya existen).
+alter table cartas add column if not exists abierta_at timestamptz;
+alter table cartas add column if not exists motivo text;
 
 -- un correo solo puede tener una carta pendiente o aprobada a la vez
 create unique index if not exists ux_cartas_correo_activo
