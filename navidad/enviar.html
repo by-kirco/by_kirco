@@ -69,7 +69,7 @@
 
             <div class="remite">
               <input id="correo" type="email" aria-label="Tu correo" autocomplete="email" inputmode="email" placeholder="tu@correo.com" aria-describedby="correo-aviso correo-error">
-              <p id="correo-aviso" style="margin:0;font-size:13px;color:var(--k-tinta);text-align:center">Aquí te llegará la tuya el <span class="etiqueta" style="font-size:12px">25/12 · 00:00</span>.</p>
+              <p id="correo-aviso" style="margin:0;font-size:13px;color:var(--k-tinta);text-align:center">Aquí te llegará la que alguien te escriba, el <span class="etiqueta" style="font-size:12px">25/12</span> a las 00:00.</p>
               <p id="correo-error" role="alert" class="aviso-error" style="display:none;margin:0"><span aria-hidden="true" class="icono-error">!</span>Escribe un correo válido.</p>
             </div>
 
@@ -241,13 +241,13 @@
         } else {
           cayendo = false;
           document.getElementById('b-enviar').setAttribute('aria-disabled', 'false');
-          document.getElementById('p-error-envio-texto').textContent = (res.body && res.body.error) || 'No hemos podido enviar tu carta. Inténtalo de nuevo en un momento.';
+          document.getElementById('p-error-envio-texto').textContent = (res.body && res.body.error) || 'No he podido enviar tu carta. Inténtalo de nuevo en un momento.';
           document.getElementById('p-error-envio').style.display = 'flex';
         }
       }).catch(function () {
         cayendo = false;
         document.getElementById('b-enviar').setAttribute('aria-disabled', 'false');
-        document.getElementById('p-error-envio-texto').textContent = 'No hemos podido conectar. Comprueba tu conexión e inténtalo de nuevo.';
+        document.getElementById('p-error-envio-texto').textContent = 'No se ha podido conectar. Comprueba tu conexión e inténtalo de nuevo.';
         document.getElementById('p-error-envio').style.display = 'flex';
       });
     };

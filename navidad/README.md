@@ -34,8 +34,13 @@ preparadas para cuando se construya esa segunda fase.
 Ya hecho y confirmado en producción (`bykirco.vercel.app/navidad`):
 
 1. Proyecto Supabase activo: `wpxsrzdlmcywynuftxzr`, con `navidad/supabase/schema.sql` aplicado
-   (tablas `cartas`/`notas` + índices únicos + el `GRANT` a `service_role`, imprescindible porque
-   las tablas se crearon con SQL a mano y no con el editor visual de Supabase).
+   (tablas `cartas`/`cartas_reserva`/`notas` + índices únicos + el `GRANT` a `service_role`,
+   imprescindible porque las tablas se crearon con SQL a mano y no con el editor visual de Supabase).
+   Después, ejecutar una sola vez `navidad/supabase/seed_reserva.sql` para cargar las 20 cartas
+   de reserva (ya escritas y aprobadas, firman "Kirco", no cuentan para el límite de 300 ni
+   aparecen en la bolsa — son solo un banco para cuando el reparto, fase futura, necesite dar una
+   carta a alguien que de otro modo se quedaría sin una). El panel muestra cuántas hay y cuántas
+   se han usado en el KPI "Reserva".
 2. Variables de entorno en Vercel (Project Settings → Environment Variables, nunca en el repo):
    `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (formato nuevo `sb_secret_...`).
 3. El repositorio conectado a Vercel para producción es `by-kirco/by_kirco` (rama `master`);
