@@ -64,6 +64,12 @@
         <div id="p-cola"></div>
 
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px">
+          <h2 class="daruma" style="margin:0;font-size:26px;line-height:1.1;color:#fff">Ya aprobadas</h2>
+          <p style="margin:0;color:#fff;max-width:50ch">Por si lo piensas mejor: puedes rechazar una carta que ya estaba aprobada, mientras no se haya repartido todavía.</p>
+        </div>
+        <div id="p-aprobadas"></div>
+
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px">
           <h2 class="daruma" style="margin:0;font-size:30px;line-height:1.1;color:#fff">Notas de agradecimiento</h2>
           <p style="margin:0;color:#fff;max-width:50ch">Al reenviar, le llega a quien escribió la carta, firmada por quien la recibió.</p>
         </div>
@@ -117,6 +123,51 @@
 
   function badgeClase(tono) { return tono === 'green' ? 'p-badge-green' : tono === 'orange' ? 'p-badge-orange' : 'p-badge-yellow'; }
 
+  function motivoBoxHtml() {
+    return '<div class="p-motivo" style="display:none;flex-direction:column;gap:8px;padding:14px 16px;border-radius:13px;background:var(--k-naranja-tint);border:1.5px solid var(--k-naranja)">' +
+      '<p style="margin:0;font-size:13px;font-weight:700">¿Por qué se rechaza? Se lo decimos a quien la escribió.</p>' +
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Lleva datos que podrían dar pistas sobre ti o sobre otra persona, y en estas cartas eso no puede viajar."><span>Datos de contacto, enlaces o redes</span></label>' +
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Hay algo en ella que podría doler a quien la lea, aunque no fuera esa tu intención."><span>Contenido que puede herir</span></label>' +
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Menciona algo que se parece a una promoción, y estas cartas son solo de una persona a otra."><span>Publicidad o promoción</span></label>' +
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="__otro__"><span>Otro motivo (escríbelo)</span></label>' +
+      '<input type="text" class="campo p-motivo-otro" style="display:none;height:44px" maxlength="300" placeholder="Explica en una frase, sin juzgar">' +
+      '<div style="display:flex;gap:8px;justify-content:flex-end">' +
+      '<button type="button" class="p-pill p-gris" data-accion="cancelar-rechazo" style="cursor:pointer;color:var(--k-tinta);border-color:var(--k-tinta-suave)">Cancelar</button>' +
+      '<button type="button" class="p-pill p-naranja" data-accion="confirmar-rechazo">Confirmar rechazo</button></div></div>';
+  }
+
+  function wireAccionesCarta(art) {
+    var motivoBox = art.querySelector('.p-motivo');
+    var botonesBox = art.querySelector('.p-botones');
+    var otroInput = art.querySelector('.p-motivo-otro');
+    art.querySelectorAll('input[name="motivo"]').forEach(function (r) {
+      r.addEventListener('change', function () { otroInput.style.display = (r.checked && r.value === '__otro__') ? 'block' : 'none'; });
+    });
+    function enviarAccion(id, accion, motivo) {
+      art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+      api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion, motivo: motivo }) })
+        .then(function (res) {
+          if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
+        })
+        .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
+    }
+    art.querySelectorAll('button[data-accion]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
+        if (accion === 'aprobar') { enviarAccion(id, 'aprobar'); return; }
+        if (accion === 'rechazar') { motivoBox.style.display = 'flex'; botonesBox.style.display = 'none'; return; }
+        if (accion === 'cancelar-rechazo') { motivoBox.style.display = 'none'; botonesBox.style.display = 'flex'; return; }
+        if (accion === 'confirmar-rechazo') {
+          var elegido = art.querySelector('input[name="motivo"]:checked');
+          var motivo = elegido ? (elegido.value === '__otro__' ? otroInput.value.trim() : elegido.value) : '';
+          if (!motivo) { alert('Elige o escribe un motivo antes de confirmar.'); return; }
+          if (!confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto.')) return;
+          enviarAccion(id, 'rechazar', motivo);
+        }
+      });
+    });
+  }
+
   function pintarCola(cola, vacio) {
     var host = document.getElementById('p-cola');
     if (vacio) { host.innerHTML = '<div style="padding:28px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0;font-weight:700">No hay cartas por revisar.</p></div>'; return; }
@@ -126,51 +177,28 @@
         '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(c.nombre) + ' → ' + escapa(c.para) + ' · ' + escapa(c.fecha) + '</p>' +
         '<span class="p-badge ' + badgeClase(c.tono) + '">' + escapa(c.aviso) + '</span></div>' +
         '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(c.texto) + '</p>' +
-        '<div class="p-motivo" style="display:none;flex-direction:column;gap:8px;padding:14px 16px;border-radius:13px;background:var(--k-naranja-tint);border:1.5px solid var(--k-naranja)">' +
-        '<p style="margin:0;font-size:13px;font-weight:700">¿Por qué se rechaza? Se lo decimos a quien la escribió.</p>' +
-        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Lleva datos que podrían dar pistas sobre ti o sobre otra persona, y en estas cartas eso no puede viajar."><span>Datos de contacto, enlaces o redes</span></label>' +
-        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Hay algo en ella que podría doler a quien la lea, aunque no fuera esa tu intención."><span>Contenido que puede herir</span></label>' +
-        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="Menciona algo que se parece a una promoción, y estas cartas son solo de una persona a otra."><span>Publicidad o promoción</span></label>' +
-        '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="radio" name="motivo" value="__otro__"><span>Otro motivo (escríbelo)</span></label>' +
-        '<input type="text" class="campo p-motivo-otro" style="display:none;height:44px" maxlength="300" placeholder="Explica en una frase, sin juzgar">' +
-        '<div style="display:flex;gap:8px;justify-content:flex-end">' +
-        '<button type="button" class="p-pill p-gris" data-accion="cancelar-rechazo" style="cursor:pointer;color:var(--k-tinta);border-color:var(--k-tinta-suave)">Cancelar</button>' +
-        '<button type="button" class="p-pill p-naranja" data-accion="confirmar-rechazo">Confirmar rechazo</button></div></div>' +
+        motivoBoxHtml() +
         '<div class="p-botones" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
         '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button>' +
         '<button type="button" class="p-pill p-verde" data-accion="aprobar">Aprobar · a la bolsa</button></div></article>';
     }).join('');
-    host.querySelectorAll('article').forEach(function (art) {
-      var motivoBox = art.querySelector('.p-motivo');
-      var botonesBox = art.querySelector('.p-botones');
-      var otroInput = art.querySelector('.p-motivo-otro');
-      art.querySelectorAll('input[name="motivo"]').forEach(function (r) {
-        r.addEventListener('change', function () { otroInput.style.display = (r.checked && r.value === '__otro__') ? 'block' : 'none'; });
-      });
-      function enviarAccion(id, accion, motivo) {
-        art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
-        api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion, motivo: motivo }) })
-          .then(function (res) {
-            if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
-          })
-          .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
-      }
-      art.querySelectorAll('button[data-accion]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
-          if (accion === 'aprobar') { enviarAccion(id, 'aprobar'); return; }
-          if (accion === 'rechazar') { motivoBox.style.display = 'flex'; botonesBox.style.display = 'none'; return; }
-          if (accion === 'cancelar-rechazo') { motivoBox.style.display = 'none'; botonesBox.style.display = 'flex'; return; }
-          if (accion === 'confirmar-rechazo') {
-            var elegido = art.querySelector('input[name="motivo"]:checked');
-            var motivo = elegido ? (elegido.value === '__otro__' ? otroInput.value.trim() : elegido.value) : '';
-            if (!motivo) { alert('Elige o escribe un motivo antes de confirmar.'); return; }
-            if (!confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto.')) return;
-            enviarAccion(id, 'rechazar', motivo);
-          }
-        });
-      });
-    });
+    host.querySelectorAll('article').forEach(wireAccionesCarta);
+  }
+
+  function pintarAprobadas(aprobadas) {
+    var host = document.getElementById('p-aprobadas');
+    if (!aprobadas || !aprobadas.length) { host.innerHTML = '<div style="padding:20px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0;font-size:14px;color:var(--k-tinta-suave)">No hay cartas aprobadas sin repartir.</p></div>'; return; }
+    host.innerHTML = aprobadas.map(function (c) {
+      return '<article class="p-carta" data-id="' + escapa(c.id) + '">' +
+        '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center">' +
+        '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(c.nombre) + ' → ' + escapa(c.para) + ' · ' + escapa(c.fecha) + '</p>' +
+        (c.yaElegida ? '<span class="p-badge p-badge-orange">Ya elegida por ' + escapa(c.yaElegida) + '</span>' : '<span class="p-badge p-badge-green">En la bolsa</span>') + '</div>' +
+        '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(c.texto) + '</p>' +
+        motivoBoxHtml() +
+        '<div class="p-botones" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
+        '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button></div></article>';
+    }).join('');
+    host.querySelectorAll('article').forEach(wireAccionesCarta);
   }
 
   function pintarNotas(notas) {
@@ -214,6 +242,7 @@
       ultimoDatos = res.body;
       pintarKpis(res.body.kpis);
       pintarCola(res.body.cola, res.body.vacio);
+      pintarAprobadas(res.body.aprobadas);
       pintarNotas(res.body.notas);
       pintarUltimas(res.body.ultimas);
     }).catch(function () { console.error('No se pudo cargar el panel.'); });
