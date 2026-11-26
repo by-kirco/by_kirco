@@ -24,8 +24,9 @@ function envoltorio(tituloHtml, cuerpoInteriorHtml, pieExtraHtml) {
   <tr><td><img src="${BASE}/email/ola_email.png" width="600" height="30" alt="" style="display:block;width:100%;height:30px"></td></tr>
   <tr><td style="background:#6F9C3E;padding:20px 32px 28px" align="center">
     <a href="https://www.bykirco.com" style="font-family:'Courier New',monospace;font-size:16px;color:#FFFFFF;text-decoration:none">www.bykirco.com</a>
-    <p style="margin:6px 0 0;font-size:12px;color:#FFFFFF">
-      <a href="https://www.bykirco.com/navidad/legal.html" style="color:#FFFA7D">Política de privacidad</a>
+    <p style="margin:10px 0 0;font-size:12px;color:#FFFFFF">
+      Recibes este correo porque has escrito una carta en by_kirco.<br>
+      Cómo cuidamos tus datos: <a href="https://www.bykirco.com/navidad/legal.html" style="color:#FFFA7D">bykirco.com/navidad/legal.html</a>
     </p>
     ${pieExtraHtml || ''}
   </td></tr>
@@ -49,31 +50,53 @@ function plantillaAprobada({ seudonimo }) {
   const nombre = esc(seudonimo);
   const cuerpo = tarjeta(`
       <p style="margin:0 0 12px">Hola, ${nombre}:</p>
-      <p style="margin:0 0 12px">Hemos leído tu carta y ya está dentro del buzón. Le llegará a alguien que no conoces.</p>
-      <p style="margin:0 0 12px">La que escriban para ti te llegará a este correo el <strong>25 de diciembre a las 00:00</strong>.</p>
-      <p style="margin:0 0 12px">Gracias por escribir.</p>
-      <p style="margin:0">Sara, de by_kirco</p>
+      <p style="margin:0 0 12px">Ya hemos leído tu carta y está lista para salir.</p>
+      <p style="margin:0 0 12px">La guardo hasta el 25 de diciembre. Esa noche, a las 00:00, le llegará a alguien que no conoces, firmada con tu seudónimo.</p>
+      <p style="margin:0 0 12px">Esa misma noche te llega la tuya, a este correo.</p>
+      <p style="margin:0 0 4px">Kirco</p>
+      <p style="margin:0;font-size:14px;color:#6b6557">Escribo para ti sin conocerte.</p>
     `) + `<div align="center">${boton(CALENDAR_URL, 'Añadir al calendario')}</div>`;
   return {
-    subject: 'Tu carta ya está dentro del buzón',
-    html: envoltorio('Tu carta ya está<br>dentro del buzón', cuerpo)
+    subject: `${seudonimo}, tu carta ya está en nuestro buzón navideño`,
+    html: envoltorio('Tu carta ya está<br>en el buzón', cuerpo)
   };
 }
 
-function plantillaRechazada({ seudonimo }) {
+function plantillaRechazada({ seudonimo, motivo }) {
   const nombre = esc(seudonimo);
+  const porque = esc(motivo || 'Hay algo en ella que no encaja con lo que cuidamos aquí.');
   const cuerpo = tarjeta(`
       <p style="margin:0 0 12px">Hola, ${nombre}:</p>
-      <p style="margin:0 0 12px">Tu carta no ha podido salir porque hay algo en ella que no encaja con lo que cuidamos aquí.</p>
-      <p style="margin:0 0 12px">No la va a leer nadie y no se ha guardado.</p>
-      <p style="margin:0 0 12px">Si te apetece, puedes escribir otra antes del 23 de diciembre. Alguien la está esperando.</p>
-      <p style="margin:0 0 12px">Gracias por querer escribir.</p>
-      <p style="margin:0">Sara, de by_kirco</p>
-    `) + `<div align="center">${boton('https://www.bykirco.com/navidad/presentate.html', 'Escribir otra carta')}
-      <p style="margin:10px 0 0"><a href="https://www.bykirco.com/navidad/legal.html" style="color:#FFFA7D;font-size:14px">Ver nuestra política</a></p></div>`;
+      <p style="margin:0 0 12px">Hemos leído tu carta y esta vez no podemos enviarla. ${porque}</p>
+      <p style="margin:0 0 12px">No te quedas sin la tuya. El 25 de diciembre, a las 00:00, te llega una carta a este correo, como a todos los que han escrito.</p>
+      <p style="margin:0 0 12px">Si quieres, puedes escribir otra hasta el 23 de diciembre a las 23:59.</p>
+      <p style="margin:0 0 12px">Gracias por sentarte a escribir.</p>
+      <p style="margin:0 0 4px">Kirco</p>
+      <p style="margin:0;font-size:14px;color:#6b6557">Escribo para ti sin conocerte.</p>
+    `) + `<div align="center">${boton('https://www.bykirco.com/navidad/presentate.html', 'Escribir otra carta')}</div>`;
   return {
-    subject: 'Esta carta no puede salir',
+    subject: `${seudonimo}, esta vez tu carta se queda, pero el 25 te llega una`,
     html: envoltorio('Esta carta<br>no puede salir', cuerpo)
+  };
+}
+
+function plantillaEntrega({ seudonimo, enlaceCarta, bloqueSiAprobada }) {
+  const nombre = esc(seudonimo);
+  const extra = bloqueSiAprobada ? '<p style="margin:0 0 12px">Y la tuya también ha llegado esta noche a alguien.</p>' : '';
+  const cuerpo = tarjeta(`
+      <p style="margin:0 0 12px">Hola, ${nombre}:</p>
+      <p style="margin:0 0 12px">Ya es 25. Alguien que no conoces te ha escrito una carta, y la tienes aquí:</p>
+    `) + `<div align="center">${boton(enlaceCarta, 'Abrir mi carta')}
+      <p style="margin:10px 0 0;font-size:13px;color:#FFFFFF">Si el botón no funciona, copia este enlace en tu navegador:<br><a href="${enlaceCarta}" style="color:#FFFA7D">${esc(enlaceCarta)}</a></p></div>` +
+    tarjeta(`
+      <p style="margin:0 0 12px">Ábrela cuando te apetezca, con calma.</p>
+      ${extra}
+      <p style="margin:0 0 4px">Kirco</p>
+      <p style="margin:0;font-size:14px;color:#6b6557">Escribo para ti sin conocerte.</p>
+    `);
+  return {
+    subject: `Feliz Navidad, ${seudonimo}. Alguien te ha escrito esto para ti 💚`,
+    html: envoltorio('Alguien ha<br>pensado en ti', cuerpo)
   };
 }
 
@@ -97,4 +120,4 @@ function plantillaNotaReenviada({ textoNota, seudonimoDestinatario }) {
   };
 }
 
-module.exports = { plantillaAprobada, plantillaRechazada, plantillaNotaReenviada };
+module.exports = { plantillaAprobada, plantillaRechazada, plantillaEntrega, plantillaNotaReenviada };
