@@ -39,13 +39,21 @@ module.exports = async function handler(req, res) {
     const conDestino = (cartas || []).filter((c) => !!c.destino_carta_id);
     const alAzar = (cartas || []).filter((c) => !c.destino_carta_id);
 
+    const { data: reserva, error: errReserva } = await supabase
+      .from('cartas_reserva')
+      .select('id, usada');
+    if (errReserva) throw errReserva;
+    const reservaTotal = (reserva || []).length;
+    const reservaUsadas = (reserva || []).filter((r) => r.usada).length;
+
     const kpis = [
       { label: 'Escritas', valor: cartas.length, nota: 'Pendientes + aprobadas + rechazadas', clase: 'kpi' },
       { label: 'Por revisar', valor: pendientes.length, nota: 'Esperando a Sara', clase: 'kpi naranja' },
       { label: 'En la bolsa', valor: aprobadas.filter((c) => !c.recibe_carta_id).length, nota: 'Aprobadas, sin repartir', clase: 'kpi' },
       { label: 'Rechazadas', valor: rechazadas.length, nota: 'No se enviaron', clase: 'kpi naranja' },
       { label: 'Con destino', valor: conDestino.length, nota: 'Eligieron a alguien', clase: 'kpi' },
-      { label: 'Al azar', valor: alAzar.length, nota: 'Desconocido al azar', clase: 'kpi' }
+      { label: 'Al azar', valor: alAzar.length, nota: 'Desconocido al azar', clase: 'kpi' },
+      { label: 'Reserva', valor: `${reservaUsadas}/${reservaTotal}`, nota: 'Usadas, solo si faltan cartas', clase: 'kpi' }
     ];
 
     const cola = pendientes.map((c) => {
