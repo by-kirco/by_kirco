@@ -19,27 +19,11 @@ var KFiltro = (function () {
 
   /* para la pasada difusa (separadores/leetspeak): cualquier raíz de una palabra basta, el patrón ya es poco casual */
   var TODAS_UNA_PALABRA = [].concat(INSULTOS, DISCRIMINACION, SEXUAL).filter(function (p) { return p.indexOf(' ') === -1 && p.length >= 4; });
-  /* para la pasada por distancia de edición: solo palabras de 6+ letras — con menos, palabras normales
-     (p.ej. "ruta" o "zorro") quedan a 1 letra de distancia de un insulto y darían falsos positivos */
-  var PARA_ERRORES = TODAS_UNA_PALABRA.filter(function (p) { return p.length >= 6; });
 
   var LEET = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '$': 's', '@': 'a' };
 
   function normaliza(s) {
     return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-  }
-
-  /* quita todo lo que no sea letra/número (espacios, puntos, guiones...) y pasa el leetspeak a letras,
-     para que "g.i.l.i.p.o.l.l.a.s" o "g1l1p0ll4s" se lean igual que "gilipollas" */
-  function normalizaDifuso(s) {
-    var n = normaliza(s);
-    var out = '';
-    for (var i = 0; i < n.length; i++) {
-      var c = n[i];
-      if (LEET[c]) { out += LEET[c]; continue; }
-      if (/[a-z0-9]/.test(c)) out += c;
-    }
-    return out;
   }
 
   function buscaLista(textoNorm, lista, categoria, hallazgos) {
@@ -50,10 +34,77 @@ var KFiltro = (function () {
     });
   }
 
-  function buscaDifuso(textoDifuso, hallazgos, yaEncontrado) {
+  /* ---- Pasadas difusas (26 nov): con lista de palabras válidas para evitar falsos positivos ----
+     Antes, «normal» se marcaba como «anormal» (1 letra de distancia), «página» como otra palabra,
+     «diputado»/«reputación» por llevar dentro otra palabra, etc. Ahora:
+     1) PALABRAS_VALIDAS / PREFIJOS_VALIDOS: nunca se marcan en las pasadas difusas (la pasada exacta
+        sigue igual: «anormal», «puta»... se bloquean siempre).
+     2) Pasada de separadores/leetspeak: una coincidencia dentro de UNA palabra normal solo cuenta si la
+        palabra EMPIEZA por la raíz («estúpido», «cabrones»), no si la lleva en medio («diputado»).
+        Si cruza varias palabras, solo cuenta si parece ofuscación: letras sueltas («p u t a»),
+        separadores raros o números («p.u.t.a», «g1l1p0ll4s»), o palabras enteras pegadas («gili pollas»).
+     3) Distancia de edición: solo contra palabras completas de la lista (no contra raíces tipo
+        «estupid»), 1 letra de margen hasta 8 letras y 2 a partir de 9. */
+  var PALABRAS_VALIDAS = ['normal', 'normales', 'normalidad', 'normalmente', 'normalizar', 'normalizado', 'anomalo', 'anomala',
+    'idioma', 'idiomas', 'pagina', 'paginas', 'collar', 'collares', 'fallar', 'fallare', 'dollar', 'foliar', 'follaje', 'follajes',
+    'sudaba', 'sudabas', 'sudada', 'sudado', 'pollera', 'polleras', 'bolera', 'boleras', 'marion', 'cabros', 'cabrea', 'cabreas', 'cabreo',
+    'ortografia', 'ortografias', 'monografia', 'monografias', 'orografia', 'coreografia', 'retraso', 'retrasos', 'retrasar', 'retrasa', 'retrasan',
+    'retrase', 'retraso', 'retrasando', 'pancho', 'panchos', 'mongolia', 'vergara', 'envergadura', 'ampolla', 'ampollas', 'repollo', 'repollos', 'carrona'];
+  var PREFIJOS_VALIDOS = ['penetr', 'penelope', 'impenetr', 'retrat', 'estudi', 'escupi'];
+  var VALIDAS = {};
+  PALABRAS_VALIDAS.forEach(function (p) { VALIDAS[p] = true; });
+
+  function esValida(palabra) {
+    if (VALIDAS[palabra]) return true;
+    for (var i = 0; i < PREFIJOS_VALIDOS.length; i++) if (palabra.indexOf(PREFIJOS_VALIDOS[i]) === 0) return true;
+    return false;
+  }
+
+  /* raíces que son prefijos (no palabras completas): no sirven para la distancia de edición */
+  var RAICES_PREFIJO = { estupid: true, retrasad: true, mogolic: true, panchit: true, desnud: true };
+  var PARA_ERRORES = TODAS_UNA_PALABRA.filter(function (p) { return p.length >= 6 && !RAICES_PREFIJO[p]; });
+
+  function esLetra(c) { return c >= 'a' && c <= 'z' || c === 'ñ'; }
+
+  function palabraEn(textoNorm, pos) {
+    var a = pos, b = pos;
+    while (a > 0 && esLetra(textoNorm[a - 1])) a--;
+    while (b < textoNorm.length && esLetra(textoNorm[b])) b++;
+    return { inicio: a, fin: b, palabra: textoNorm.slice(a, b) };
+  }
+
+  function buscaDifuso(textoNorm, hallazgos, yaEncontrado) {
+    /* texto "difuso" (solo letras/números, leetspeak traducido) + posición de cada carácter en textoNorm */
+    var dif = '', pos = [];
+    for (var i = 0; i < textoNorm.length; i++) {
+      var c = textoNorm[i];
+      if (LEET[c]) { dif += LEET[c]; pos.push(i); continue; }
+      if (/[a-z0-9]/.test(c)) { dif += c; pos.push(i); }
+    }
     TODAS_UNA_PALABRA.forEach(function (raiz) {
       if (yaEncontrado[raiz]) return;
-      if (textoDifuso.indexOf(raiz) !== -1) { hallazgos.push({ categoria: 'posible insulto (variante)', patron: raiz }); yaEncontrado[raiz] = true; }
+      var desde = 0, k;
+      while ((k = dif.indexOf(raiz, desde)) !== -1) {
+        desde = k + 1;
+        var p0 = pos[k], p1 = pos[k + raiz.length - 1];
+        var tramo = textoNorm.slice(p0, p1 + 1);
+        var cuenta = false;
+        if (/^[a-z]+$/.test(tramo)) {
+          /* dentro de una sola palabra normal */
+          var w = palabraEn(textoNorm, p0);
+          cuenta = w.inicio === p0 && !esValida(w.palabra);
+        } else if (/^[a-z]+( [a-z]+)+$/.test(tramo)) {
+          /* cruza palabras separadas por espacios simples */
+          var trozos = tramo.split(' ');
+          var maxTrozo = Math.max.apply(null, trozos.map(function (t) { return t.length; }));
+          var w0 = palabraEn(textoNorm, p0), w1 = palabraEn(textoNorm, p1);
+          cuenta = maxTrozo <= 2 || (w0.inicio === p0 && w1.fin === p1 + 1);
+        } else {
+          /* separadores raros, números o símbolos dentro: ofuscación */
+          cuenta = true;
+        }
+        if (cuenta) { hallazgos.push({ categoria: 'posible insulto (variante)', patron: raiz }); yaEncontrado[raiz] = true; return; }
+      }
     });
   }
 
@@ -74,13 +125,12 @@ var KFiltro = (function () {
     return fila[n];
   }
 
-  /* compara cada "palabra" del texto contra la lista, tolerando 1-2 letras de diferencia según el largo */
   function buscaConErrores(textoNorm, hallazgos, yaEncontrado) {
-    var palabras = textoNorm.split(/[^a-z]+/).filter(function (w) { return w.length >= 6; });
+    var palabras = textoNorm.split(/[^a-zñ]+/).filter(function (w) { return w.length >= 6 && !esValida(w); });
     palabras.forEach(function (palabra) {
       PARA_ERRORES.forEach(function (raiz) {
         if (yaEncontrado[raiz]) return;
-        var tolerancia = raiz.length <= 6 ? 1 : 2;
+        var tolerancia = raiz.length <= 8 ? 1 : 2;
         if (Math.abs(palabra.length - raiz.length) > tolerancia) return;
         if (distancia(palabra, raiz) <= tolerancia) { hallazgos.push({ categoria: 'posible insulto (variante)', patron: raiz }); yaEncontrado[raiz] = true; }
       });
@@ -110,7 +160,7 @@ var KFiltro = (function () {
 
     var yaEncontrado = {};
     hallazgos.forEach(function (h) { yaEncontrado[h.patron] = true; });
-    buscaDifuso(normalizaDifuso(original), hallazgos, yaEncontrado);
+    buscaDifuso(norm, hallazgos, yaEncontrado);
     buscaConErrores(norm, hallazgos, yaEncontrado);
 
     return { ok: hallazgos.length === 0, hallazgos: hallazgos, coincidencias: coincidencias };
