@@ -25,6 +25,9 @@
   .a-enlace { color: var(--k-amarillo); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; }
   .a-nota textarea { width: 100%; box-sizing: border-box; min-height: 110px; resize: vertical; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--k-tinta-suave); font-family: var(--font-hand); font-size: 20px; }
   .a-lema { margin: 8px 0 0; font-family: var(--font-mono); font-size: 14px; color: #fff; }
+  @media (max-width: 420px) {
+    #estado-antes .btn-carta { padding-left: 18px; padding-right: 18px; font-size: 15px; }
+  }
   @media print {
     body, .k-pagina { background: #fff !important; color: #000 !important; }
     .k-header, .copos, [data-k-pie], .no-imprimir, .k-pie { display: none !important; }
@@ -60,7 +63,7 @@
         </div>
         <p style="margin:0;font-size:20px;color:#fff">para abrir tu carta</p>
       </div>
-      <span class="btn btn-carta" aria-disabled="true" style="align-self:flex-start">Todavía no se puede abrir</span>
+      <span class="btn btn-carta" aria-disabled="true" style="align-self:flex-start;white-space:nowrap">Aún no se puede abrir</span>
     </section>
 
     <!-- Estado 2 · Desde el 25, sobre cerrado -->
@@ -98,7 +101,6 @@
         </div>
         <p id="a-nota-ok" role="status" style="display:none;margin:0;color:#fff">Guardada. Si sale, le llegará a quien te escribió.</p>
       </div>
-      <p class="a-lema">Escribo para ti sin conocerte.</p>
     </section>
 
     <!-- Estado 4 · Enlace no válido -->

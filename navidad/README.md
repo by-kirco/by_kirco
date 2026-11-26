@@ -129,7 +129,7 @@ obligatorio M1/M2/M3 o texto libre) cuando Sara decide en el panel (`panel-accio
 2. En Vercel → Environment Variables (nunca en el repo ni en un chat):
    - `RESEND_API_KEY` (la crea Sara en Resend, permiso «Sending access»).
    - `CORREO_REMITENTE` (opcional; por defecto `by_kirco <cartas@bykirco.com>`).
-   - `CORREO_RESPONDER_A` (opcional, p. ej. `by.kirco@gmail.com`).
+   - `CORREO_RESPONDER_A` (opcional; por defecto `by.kirco@gmail.com`, para que las respuestas a `cartas@bykirco.com` lleguen a Sara).
    - `CRON_SECRET` (una cadena larga aleatoria; Vercel la manda sola al cron).
    - `SITIO_URL` (opcional; por defecto `https://www.bykirco.com`).
 3. Aplicar la migración 02 en Supabase (abajo) y cargar las reservas.

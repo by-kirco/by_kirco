@@ -10,7 +10,7 @@
      {nota}            texto de la nota de agradecimiento (solo en «nota»)
      {seudonimo_nota}  seudónimo de quien dejó la nota (solo en «nota»)
    Párrafo condicional: un objeto { si: 'aprobada_entregada', texto } solo sale si su carta se aprobó
-   y se ha entregado. La firma («Kirco / Escribo para ti sin conocerte.») la pone la plantilla.
+   y se ha entregado. La firma («Kirco / Escribo para ti sin conocerte») la pone la plantilla.
    NUNCA metas aquí el texto de una carta ni datos de otra persona. */
 
 const PIE_LEGAL = 'Recibes este correo porque has escrito una carta en by_kirco. Cómo cuidamos tus datos: {enlace_privacidad}';
@@ -76,9 +76,8 @@ const CORREOS = {
       'Hola, {seudonimo}:',
       'La persona que recibió tu carta la ha leído y te ha dejado unas líneas. Te las paso tal cual me han llegado:',
       { cita: '«{nota}»', firma: '— {seudonimo_nota}' },
-      'No hace falta que contestes. Solo quería que lo supieras.'
-    ],
-    tras_firma: '{enlace_navidad}'
+      'Solo quería que lo supieras.'
+    ]
   }
 };
 

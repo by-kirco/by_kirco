@@ -5,7 +5,7 @@
      RESEND_API_KEY      clave de Resend. SIN CLAVE = MODO SIMULACIÓN: el correo se marca 'simulado'
                          y no se llama a Resend (sirve para previews y pruebas).
      CORREO_REMITENTE    por defecto «by_kirco <cartas@bykirco.com>» (dominio verificado en Resend).
-     CORREO_RESPONDER_A  opcional (p. ej. by.kirco@gmail.com).
+     CORREO_RESPONDER_A  por defecto by.kirco@gmail.com (respuestas a cartas@bykirco.com).
 
    Estados de una fila de `correos`:
      pendiente  → aún no ha salido (cuota de Resend agotada, error de red...). Lo reintenta
@@ -32,7 +32,7 @@ function config() {
   return {
     clave: process.env.RESEND_API_KEY || '',
     remitente: process.env.CORREO_REMITENTE || 'by_kirco <cartas@bykirco.com>',
-    responderA: process.env.CORREO_RESPONDER_A || ''
+    responderA: process.env.CORREO_RESPONDER_A || 'by.kirco@gmail.com'
   };
 }
 

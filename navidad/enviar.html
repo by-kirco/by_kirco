@@ -24,6 +24,11 @@
   .sello { position: absolute; left: 50%; top: 94%; transform: translate(-50%, -52px); display: flex; flex-direction: column-reverse; align-items: center; gap: 4px; padding: 0; border: 0; background: none; cursor: pointer; }
   .sello:hover .sello-disco { transform: rotate(-8deg) scale(1.05); }
   .sello-disco { transition: transform .2s; display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: var(--k-papel); border: 2px solid var(--k-verde); box-shadow: 0 2px 6px rgba(46,43,37,.2); }
+  @media (max-width: 520px) {
+    .sello { top: 46%; transform: translate(-50%, -50%); }
+    .sello-disco { width: 48px; height: 48px; }
+    .sello-disco svg { width: 30px; height: 30px; }
+  }
   #correo { height: 44px; box-sizing: border-box; padding: 0 2px; border: 0; border-bottom: 2px dashed var(--k-tinta-suave); border-radius: 0; background: transparent; font-family: var(--font-body); font-size: 18px; color: var(--k-tinta); text-align: center; width: 100%; }
   #correo.err { border-bottom-color: var(--k-naranja-deep); }
   #p-error-envio, #acepto-error { background: var(--k-papel); border: 1.5px solid var(--k-naranja-deep); }

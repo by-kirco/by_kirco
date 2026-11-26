@@ -133,7 +133,6 @@ const ESQUELETO = `<!DOCTYPE html>
 `;
 
 const P = 'margin:0 0 24px 0;';
-const P_SANGRIA = 'margin:0 0 24px 0; text-indent:0.5em;';
 
 function escapa(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -174,11 +173,11 @@ function construir(tipo, datos) {
   def.parrafos.forEach((p, i) => {
     if (typeof p === 'string') {
       const t = rellena(p, vars, false).trim();
-      html.push('<p style="' + (i === 0 ? P : P_SANGRIA) + '">' + rellena(p, vars, true).trim() + '</p>');
+      html.push('<p style="' + P + '">' + rellena(p, vars, true).trim() + '</p>');
       texto.push(t);
     } else if (p.si) {
       if (!datos[p.si]) return;
-      html.push('<p style="' + P_SANGRIA + '">' + rellena(p.texto, vars, true) + '</p>');
+      html.push('<p style="' + P + '">' + rellena(p.texto, vars, true) + '</p>');
       texto.push(rellena(p.texto, vars, false));
     } else if (p.boton) {
       const url = rellena(p.enlace, vars, false);
@@ -187,7 +186,7 @@ function construir(tipo, datos) {
       texto.push(p.boton + ': ' + url);
     } else if (p.pequeno) {
       html.push('<p style="margin:0 0 24px 0; font-size:12px; line-height:1.5; color:#6B6457;">' + rellena(p.pequeno, vars, true) + '</p>');
-      texto.push(rellena(p.pequeno, vars, false));
+      // En texto plano el botón ya lleva la URL; no repetir la línea de «Si el botón no funciona…».
     } else if (p.cita) {
       html.push('<p style="margin:0 0 4px 0; padding:0 0 0 14px; border-left:3px solid #FFAA4D; white-space:pre-wrap;">' + rellena(p.cita, vars, true) + '</p>' +
         '<p style="margin:0 0 24px 0; padding:0 0 0 14px;">' + rellena(p.firma, vars, true) + '</p>');
@@ -208,7 +207,7 @@ function construir(tipo, datos) {
     .replace('{{TRAS_FIRMA}}', trasFirma)
     .replace('{{PIE}}', pie);
 
-  const textoFinal = texto.join('\n\n') + '\n\nKirco\nEscribo para ti sin conocerte.' +
+  const textoFinal = texto.join('\n\n') + '\n\nKirco\nEscribo para ti sin conocerte' +
     (def.tras_firma ? '\n' + rellena(def.tras_firma, vars, false) : '') +
     '\n\n--\n' + rellena(PIE_LEGAL, vars, false) + '\n';
 

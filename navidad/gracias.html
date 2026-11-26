@@ -19,6 +19,11 @@
   .k-buzon { left: 50%; bottom: 0; width: 54%; transform: translateX(-50%); }
   .cifra { font-family: var(--font-mono); font-size: 56px; line-height: 1; color: #fff; letter-spacing: 0; }
   .unidad { font-family: var(--font-mono); font-size: 22px; line-height: 1.2; color: #fff; }
+  @media (max-width: 520px) {
+    .cifra { font-size: 44px; }
+    .unidad { font-size: 16px; }
+    #p-timer-label { gap: 12px; margin: 0 16px; }
+  }
   .k-final { background: #fff; padding: 4px 24px 36px; text-align: center; }
 </style>
 <div id="raiz" style="width:100%;min-height:100vh;box-sizing:border-box;background:var(--k-verde-deep);color:var(--k-tinta);font-family:var(--font-mono);font-size:16px;line-height:1.5;display:flex;flex-direction:column;overflow:hidden">
@@ -51,7 +56,7 @@
     <div style="max-width:560px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center">
       <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
         <p style="margin:0;font-size:24px;color:#fff">Quedan</p>
-        <div role="timer" aria-live="off" id="p-timer-label" style="display:flex;justify-content:center;gap:24px">
+        <div role="timer" aria-live="off" id="p-timer-label" style="display:flex;justify-content:center;gap:24px;box-sizing:border-box;max-width:100%">
           <div><p class="cifra" id="c-d">00</p><p class="unidad" style="margin:6px 0 0">días</p></div>
           <div><p class="cifra" id="c-h">00</p><p class="unidad" style="margin:6px 0 0">h</p></div>
           <div><p class="cifra" id="c-m">00</p><p class="unidad" style="margin:6px 0 0">min</p></div>

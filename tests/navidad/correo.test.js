@@ -81,6 +81,15 @@ test('entrega: se programa para el 25/12 00:00 Madrid; si ya pasó, sale al mome
   correo._ahora = null;
 });
 
+test('sin CORREO_RESPONDER_A: reply_to por defecto by.kirco@gmail.com', async () => {
+  process.env.RESEND_API_KEY = 're_prueba';
+  correo._fetch = F.fetchResend();
+  const sb = require('../../api/navidad/_supabase').getSupabase();
+  const r = await correo.procesarFilas(sb, sembrar(1));
+  assert.equal(r.enviado, 1);
+  assert.equal(correo._fetch.llamadas[0].cuerpo.reply_to, 'by.kirco@gmail.com');
+});
+
 test('plantillas: textos de Ryan, logo, sin datos de carta; rechazo dice que recibirá carta', () => {
   const tipos = ['acuse', 'aprobada', 'rechazada', 'entrega', 'nota'];
   const asuntos = ['Tu carta ya va de camino', 'Tu carta ya está lista', 'Sobre tu carta', 'Te ha llegado una carta', 'Alguien te ha dejado una nota'];
@@ -90,9 +99,25 @@ test('plantillas: textos de Ryan, logo, sin datos de carta; rechazo dice que rec
     assert.ok(m.html.includes('https://www.bykirco.com/assets/email/logo_bykirco.png'));
     assert.ok(m.html.includes('#FFE9D1'));
     assert.ok(!m.html.includes('<script>'), 'escapado');
+    assert.ok(!m.html.includes('text-indent'), 'sin sangría en los párrafos');
     assert.ok(m.texto.includes('Recibes este correo porque has escrito una carta en by_kirco.'));
+    assert.ok(m.texto.includes('Kirco\nEscribo para ti sin conocerte\n'), 'lema en texto plano, sin punto final');
+    assert.ok(!m.texto.includes('Escribo para ti sin conocerte.'), 'el lema no lleva punto');
   });
   assert.ok(construir('rechazada', { seudonimo: 'X', motivo: 'M1' }).texto.includes('No te quedas sin la tuya. El 25 de diciembre, a las 00:00, te llega una carta a este correo'));
   assert.ok(construir('rechazada', { seudonimo: 'X', motivo: 'M1' }).texto.includes('Lleva datos que podrían dar pistas'));
+  const libre = construir('rechazada', { seudonimo: 'X', motivo: 'Lleva el nombre completo de otra persona.' });
+  assert.ok(libre.texto.includes('Lleva el nombre completo de otra persona.'));
+  assert.ok(!libre.texto.includes('Tu carta tenía el nombre'));
+  const entrega = construir('entrega', { seudonimo: 'X', token: 'T', aprobada_entregada: true });
+  assert.equal([...entrega.texto.matchAll(/Abrir mi carta:/g)].length, 1);
+  assert.ok(entrega.texto.includes('Abrir mi carta: https://www.bykirco.com/navidad/abrir.html?t=T'));
+  assert.ok(!entrega.texto.includes('Si el botón no funciona'));
+  assert.ok(entrega.html.includes('Si el botón no funciona'), 'en HTML se queda la línea del botón');
   assert.ok(!construir('entrega', { seudonimo: 'X', token: 'T', aprobada_entregada: false }).texto.includes('Y la tuya también'));
+  const nota = construir('nota', { seudonimo: 'X', nota: 'Gracias', seudonimo_nota: 'Ana' });
+  assert.ok(nota.texto.includes('Solo quería que lo supieras.'));
+  assert.ok(!nota.texto.includes('No hace falta que contestes'));
+  assert.ok(!nota.texto.includes('https://www.bykirco.com/navidad/\n'), 'sin URL debajo de la firma');
+  assert.ok(!nota.html.includes('https://www.bykirco.com/navidad/</a></p>'));
 });
