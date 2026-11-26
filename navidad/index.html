@@ -87,6 +87,7 @@
 (function () {
   var TOTAL = 300;
   K.pintarCopos(document.getElementById('k-copos'));
+  K.listo(function () { K.nieve(document.getElementById('k-copos')); });
 
   function pintarContador(escritas, cerrado) {
     escritas = Math.max(0, Math.min(TOTAL, escritas));

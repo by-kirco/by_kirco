@@ -248,13 +248,18 @@ button{cursor:pointer;border:none;background:none;padding:0}
 
 <!-- HERO -->
 <section id="hero" style="position:relative;z-index:20;height:100vh;min-height:620px">
-  <div id="hero-page" style="position:absolute;inset:0;overflow:hidden;background:var(--kirco-ink);transform-origin:50% 0%;will-change:transform">
+  <div id="hero-page" style="position:absolute;inset:0;overflow:hidden;background:#1D2657;transform-origin:50% 0%;will-change:transform">
+    <!-- NAVIDAD 2026: fondo temporal azul estrellado con nieve, hasta el 23/12. Fotos originales comentadas debajo para restaurar. -->
+    <div aria-hidden="true" style="position:absolute;inset:0;z-index:1;background-image:radial-gradient(1.6px 1.6px at 10% 18%,#fff,transparent),radial-gradient(1.2px 1.2px at 24% 62%,#fff,transparent),radial-gradient(1.8px 1.8px at 38% 8%,#fff,transparent),radial-gradient(1.3px 1.3px at 52% 45%,#fff,transparent),radial-gradient(1.5px 1.5px at 66% 78%,#fff,transparent),radial-gradient(1.1px 1.1px at 78% 22%,#fff,transparent),radial-gradient(1.7px 1.7px at 88% 55%,#fff,transparent),radial-gradient(1.2px 1.2px at 6% 82%,#fff,transparent),radial-gradient(1.4px 1.4px at 46% 90%,#fff,transparent),radial-gradient(1.3px 1.3px at 94% 85%,#fff,transparent),radial-gradient(1.6px 1.6px at 30% 30%,#fff,transparent),radial-gradient(1.2px 1.2px at 72% 12%,#fff,transparent);opacity:0.6"></div>
+    <div id="hero-copos" aria-hidden="true" style="position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none"></div>
+    <div id="hero-shade" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,43,37,0) 0%,rgba(46,43,37,0.7) 100%);opacity:0;pointer-events:none;z-index:6"></div>
+    <!--
     <div class="slide" style="position:absolute;inset:0;opacity:1;z-index:1;will-change:opacity"><img class="kb" src="assets/hero/01-tren.webp" alt="Cartita naranja junto a la ventana de un tren, con luz de tarde" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
     <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/02-cafe.webp" alt="Cartita naranja en la mesa de un café" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
     <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/03-arte-simple.webp" alt="Cartita naranja colgada de una planta" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
     <div class="slide" style="position:absolute;inset:0;opacity:0;z-index:0;will-change:opacity"><img class="kb" src="assets/hero/04-obra-de-arte.webp" alt="Cartita naranja en un banco del parque" style="width:100%;height:100%;object-fit:cover;display:block;will-change:transform"></div>
     <div style="position:absolute;inset:0;background:var(--kirco-orange-deep);opacity:0.5;pointer-events:none"></div>
-    <div id="hero-shade" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,43,37,0) 0%,rgba(46,43,37,0.7) 100%);opacity:0;pointer-events:none;z-index:6"></div>
+    -->
 
     <header style="position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px clamp(20px,4vw,48px)">
       <img src="assets/logo-bykirco-contorno.svg" width="84" height="84" alt="by_kirco" style="height:84px;display:block;width:auto">
@@ -269,21 +274,14 @@ button{cursor:pointer;border:none;background:none;padding:0}
     </header>
 
     <div style="position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 clamp(20px,5vw,72px);text-align:center">
-      <!-- NAVIDAD 2026: hero temporal hasta el 23/12. Original "Queridos Desconocidos" comentado justo debajo para restaurar fácil. -->
-      <h1 aria-label="Regala una carta a un desconocido por Navidad" style="font-family:var(--font-display);font-weight:400;font-size:clamp(40px,6vw,76px);line-height:1.02;margin:0;color:var(--kirco-paper);text-shadow:0 4px 30px rgba(46,43,37,0.4)">
-        <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">R</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">g</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">l</span><span data-ch style="display:inline-block">a</span> <span data-ch style="display:inline-block">u</span><span data-ch style="display:inline-block">n</span><span data-ch style="display:inline-block">a</span> <span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">r</span><span data-ch style="display:inline-block">t</span><span data-ch style="display:inline-block">a</span></span>
-        <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">a</span> <span data-ch style="display:inline-block">u</span><span data-ch style="display:inline-block">n</span> <span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">s</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">n</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">o</span></span>
-        <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">p</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">r</span> <span data-ch style="display:inline-block">N</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">v</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">.</span></span>
-      </h1>
-      <!--
+      <!-- NAVIDAD 2026: solo cambia el fondo (azul estrellado + nieve) y el botón (lleva a la campaña). El texto se queda como siempre. -->
       <h1 aria-label="Queridos Desconocidos" style="font-family:var(--font-display);font-weight:400;font-size:clamp(52px,8.4vw,128px);line-height:0.98;margin:0;color:var(--kirco-paper);text-shadow:0 4px 30px rgba(46,43,37,0.4)">
         <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">Q</span><span data-ch style="display:inline-block">u</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">r</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">s</span></span>
         <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">D</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">s</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">n</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">s</span></span>
       </h1>
-      -->
-      <p data-hero-fade style="font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:var(--kirco-paper);margin:20px 0 0;text-shadow:0 2px 14px rgba(46,43,37,0.5)">Y el 25, recibe la tuya.</p>
+      <p data-hero-fade style="font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:var(--kirco-paper);margin:20px 0 0;text-shadow:0 2px 14px rgba(46,43,37,0.5)">tengo un mensaje</p>
       <div data-hero-fade style="margin-top:24px">
-        <a id="btn-navidad-hero" href="/navidad/index.html" style="display:inline-block;font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:#fff;background:var(--kirco-green);border:2px solid var(--kirco-green);border-radius:999px;padding:14px 48px;text-decoration:none;transition:transform 180ms ease-out,filter 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)';this.style.filter='brightness(1.05)'" onmouseout="this.style.transform='';this.style.filter=''">Empieza a escribir</a>
+        <a id="btn-navidad-hero" href="/navidad/index.html" style="display:inline-block;font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:#fff;background:var(--kirco-green);border:2px solid var(--kirco-green);border-radius:999px;padding:14px 48px;text-decoration:none;transition:transform 180ms ease-out,filter 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)';this.style.filter='brightness(1.05)'" onmouseout="this.style.transform='';this.style.filter=''">para ti</a>
       </div>
       <!-- <button id="btn-quiz-hero" style="font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:#fff;background:var(--kirco-green);border:2px solid var(--kirco-green);border-radius:999px;padding:14px 48px;transition:transform 180ms ease-out,filter 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)';this.style.filter='brightness(1.05)'" onmouseout="this.style.transform='';this.style.filter=''">para ti</button> -->
       <div data-hero-fade id="navidad-contador" style="margin-top:14px;font-family:'OCR B Libre','Courier New',monospace;font-size:14px;letter-spacing:0.02em;color:var(--kirco-paper);opacity:0.85"></div>
@@ -293,11 +291,40 @@ button{cursor:pointer;border:none;background:none;padding:0}
 <script>
 (function () {
   var el = document.getElementById('navidad-contador');
-  if (!el) return;
-  fetch('/api/navidad/estado').then(function (r) { return r.json(); }).then(function (d) {
-    if (!el) return;
-    el.textContent = (d.cerrado ? 'El buzón de Navidad está cerrado.' : (d.escritas || 0) + ' de 300 cartas ya escritas');
-  }).catch(function () {});
+  if (el) {
+    fetch('/api/navidad/estado').then(function (r) { return r.json(); }).then(function (d) {
+      el.textContent = (d.cerrado ? 'El buzón de Navidad está cerrado.' : (d.escritas || 0) + ' de 300 cartas ya escritas');
+    }).catch(function () {});
+  }
+
+  function nieveHero() {
+    var box = document.getElementById('hero-copos');
+    var g = window.gsap;
+    if (!box || !g) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    var src = ['/navidad/assets/svg/copo_1.svg', '/navidad/assets/svg/copo_2.svg', '/navidad/assets/svg/copo_3.svg', '/navidad/assets/svg/copo_4.svg', '/navidad/assets/svg/copo_5.svg'];
+    for (var i = 0; i < 28; i++) {
+      var im = document.createElement('img');
+      var s = 8 + ((i * 7) % 15);
+      im.src = src[i % 5]; im.alt = ''; im.width = s; im.height = s;
+      im.style.position = 'absolute'; im.style.left = '0'; im.style.top = '0';
+      im.style.opacity = (0.5 + ((i * 13) % 41) / 100).toFixed(2); im.style.willChange = 'transform';
+      box.appendChild(im);
+    }
+    Array.prototype.slice.call(box.querySelectorAll('img')).forEach(function (im) {
+      var s = im.width || 14;
+      var cae = function () {
+        g.set(im, { x: g.utils.random(0, box.clientWidth), y: -30, rotation: g.utils.random(0, 180) });
+        g.to(im, { y: box.clientHeight + 30, rotation: '+=' + g.utils.random(-120, 120), duration: g.utils.random(7, 14) * (22 / (s + 8)), ease: 'none', onComplete: cae });
+      };
+      g.set(im, { y: -40 });
+      g.delayedCall(g.utils.random(0, 8), cae);
+      g.to(im, { xPercent: g.utils.random(-120, 120), duration: g.utils.random(2.5, 4.5), ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    });
+  }
+  if (document.readyState === 'complete' || document.readyState === 'interactive') nieveHero();
+  else document.addEventListener('DOMContentLoaded', nieveHero);
 })();
 </script>
 
