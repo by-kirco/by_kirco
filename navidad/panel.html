@@ -65,7 +65,7 @@
 
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px">
           <h2 class="daruma" style="margin:0;font-size:30px;line-height:1.1;color:#fff">Notas de agradecimiento</h2>
-          <p style="margin:0;color:#fff;max-width:50ch">Todavía no hay — se activan cuando esté la pantalla de abrir la carta.</p>
+          <p style="margin:0;color:#fff;max-width:50ch">Al reenviar, le llega a quien escribió la carta, firmada por quien la recibió.</p>
         </div>
         <div id="p-notas"></div>
 
@@ -144,6 +144,33 @@
     });
   }
 
+  function pintarNotas(notas) {
+    var host = document.getElementById('p-notas');
+    if (!notas || !notas.length) { host.innerHTML = '<div style="padding:28px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0;font-weight:700">No hay notas pendientes.</p></div>'; return; }
+    host.innerHTML = notas.map(function (n) {
+      return '<article class="p-carta" data-id="' + escapa(n.id) + '">' +
+        '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center">' +
+        '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(n.de) + ' → ' + escapa(n.para) + ' · ' + escapa(n.fecha) + '</p>' +
+        '<span class="p-badge p-badge-yellow">Pendiente</span></div>' +
+        '<p class="manuscrita" style="margin:0;padding:12px 16px;border-radius:13px;background:#fff;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(n.texto) + '</p>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
+        '<button type="button" class="p-pill p-naranja" data-accion="descartar">Descartar</button>' +
+        '<button type="button" class="p-pill p-verde" data-accion="reenviar">Reenviar nota</button></div></article>';
+    }).join('');
+    host.querySelectorAll('button[data-accion]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var art = b.closest('article'); var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
+        if (accion === 'descartar' && !confirm('¿Seguro que quieres descartar esta nota? No se enviará.')) return;
+        art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+        api('panel-notas-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion }) })
+          .then(function (res) {
+            if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo completar la acción.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
+          })
+          .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
+      });
+    });
+  }
+
   function pintarUltimas(filas) {
     document.getElementById('p-ultimas').innerHTML = filas.map(function (f) {
       return '<tr><td>' + escapa(f.nombre) + '</td><td>' + escapa(f.correo) + '</td><td>' + escapa(f.para) + '</td>' +
@@ -158,6 +185,7 @@
       ultimoDatos = res.body;
       pintarKpis(res.body.kpis);
       pintarCola(res.body.cola, res.body.vacio);
+      pintarNotas(res.body.notas);
       pintarUltimas(res.body.ultimas);
     }).catch(function () { console.error('No se pudo cargar el panel.'); });
   }
