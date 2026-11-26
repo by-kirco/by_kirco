@@ -1,6 +1,8 @@
-design_extracted
-design_file.bin
-design_file.gz
-.claude
+# Archivos del repo que NO deben servirse como estáticos en bykirco.com (añadido en navidad-resend, 26 nov 2026).
+# Scripts internos, pruebas y SQL de Supabase: no los necesita la web y no tienen por qué ser públicos.
+scripts/
+tests/
+navidad/supabase/
+navidad/README.md
 CLAUDE.md
 landing-page-brief.md
