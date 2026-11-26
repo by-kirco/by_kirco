@@ -39,6 +39,9 @@ module.exports = async function handler(req, res) {
     const conDestino = (cartas || []).filter((c) => !!c.destino_carta_id);
     const alAzar = (cartas || []).filter((c) => !c.destino_carta_id);
 
+    const elegidaPor = new Map();
+    (cartas || []).forEach((c) => { if (c.destino_carta_id) elegidaPor.set(c.destino_carta_id, c); });
+
     const { data: reserva, error: errReserva } = await supabase
       .from('cartas_reserva')
       .select('id, usada');
@@ -68,6 +71,20 @@ module.exports = async function handler(req, res) {
         aviso: r.ok ? 'Sin avisos del filtro' : 'El filtro marcó algo: revisar con atención'
       };
     });
+
+    const aprobadasRevisables = aprobadas
+      .filter((c) => !c.recibe_carta_id) // una vez repartida, ya es tarde para rechazarla
+      .map((c) => {
+        const elegidaPorCarta = elegidaPor.get(c.id);
+        return {
+          id: c.id,
+          nombre: c.seudonimo,
+          para: nombrePara(c),
+          fecha: fechaCorta(c.creada_at),
+          texto: c.texto || '',
+          yaElegida: elegidaPorCarta ? elegidaPorCarta.seudonimo : null
+        };
+      });
 
     const ultimas = (cartas || [])
       .slice()
@@ -104,7 +121,7 @@ module.exports = async function handler(req, res) {
     });
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json({ kpis, cola, notas, ultimas, vacio: cola.length === 0 });
+    return res.status(200).json({ kpis, cola, aprobadas: aprobadasRevisables, notas, ultimas, vacio: cola.length === 0 });
   } catch (e) {
     console.error('panel-datos.js', { name: e && e.name, message: e && e.message, code: e && e.code, details: e && e.details, hint: e && e.hint });
     return res.status(500).json({ error: 'No hemos podido cargar los datos del panel.' });

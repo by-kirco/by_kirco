@@ -1,7 +1,9 @@
 /* POST /api/navidad/panel-accion — solo con sesión de Sara.
    body: { id, accion: 'aprobar' | 'rechazar' }
-   Aprobar: estado -> aprobada (entra en la bolsa).
-   Rechazar: estado -> rechazada y se borra el texto de la carta. */
+   Aprobar: estado -> aprobada (entra en la bolsa). Solo si estaba pendiente.
+   Rechazar: estado -> rechazada y se borra el texto de la carta. Vale tanto para una
+   carta pendiente como para una ya aprobada (por si Sara se lo piensa mejor), pero nunca
+   si ya tiene recibe_carta_id (ya le ha llegado una carta de otra persona: sería demasiado tarde). */
 const { requiereSesion } = require('./_auth');
 const { getSupabase } = require('./_supabase');
 const { enviaEmail } = require('./_resend');
@@ -35,16 +37,18 @@ module.exports = async function handler(req, res) {
       ? { estado: 'aprobada' }
       : { estado: 'rechazada', texto: null, motivo };
 
-    const { data, error } = await supabase
-      .from('cartas')
-      .update(cambios)
-      .eq('id', id)
-      .eq('estado', 'pendiente')
-      .select('id, estado, correo, seudonimo')
-      .maybeSingle();
+    let query = supabase.from('cartas').update(cambios).eq('id', id).is('recibe_carta_id', null);
+    query = accion === 'aprobar' ? query.eq('estado', 'pendiente') : query.in('estado', ['pendiente', 'aprobada']);
+    const { data, error } = await query.select('id, estado, correo, seudonimo').maybeSingle();
 
     if (error) throw error;
-    if (!data) return res.status(409).json({ error: 'Esa carta ya no está pendiente (puede que otra persona la haya gestionado ya).' });
+    if (!data) {
+      return res.status(409).json({
+        error: accion === 'aprobar'
+          ? 'Esa carta ya no está pendiente (puede que otra persona la haya gestionado ya).'
+          : 'Esa carta ya no se puede rechazar (puede que ya se haya repartido, o que otra persona la haya gestionado ya).'
+      });
+    }
 
     const plantilla = accion === 'aprobar'
       ? plantillaAprobada({ seudonimo: data.seudonimo })

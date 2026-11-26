@@ -15,9 +15,10 @@ Flujo completo de quien participa, conectado a Supabase de verdad:
 - `enviar.html` — Paso 3: correo + casilla 18+, guarda la carta de verdad (`POST /api/navidad/carta`).
 - `gracias.html` — Confirmación + cuenta atrás al 25/12 00:00 + añadir al calendario.
 - `legal.html` — Política de privacidad completa.
-- `panel.html` — Panel privado de Sara (Supabase Auth), para aprobar/rechazar cartas (con motivo
-  obligatorio al rechazar) y reenviar notas de agradecimiento, con email automático en los dos
-  casos. Ver más abajo.
+- `panel.html` — Panel privado de Sara (Supabase Auth), para aprobar/rechazar cartas pendientes
+  (con motivo obligatorio al rechazar), **reconsiderar una carta ya aprobada y rechazarla** si
+  hace falta (siempre que todavía no se haya repartido), y reenviar notas de agradecimiento, con
+  email automático en todos los casos. Ver más abajo.
 - `abrir.html` — Página para abrir la carta recibida (`/navidad/abrir.html?t={token}`), con sus
   5 estados: antes del 25, carta al llegar, sobre sellado listo para abrir, carta abierta (con
   "Guardar mi carta" en PDF vía imprimir, "Avísanos" y la nota de agradecimiento de verdad) y
