@@ -259,6 +259,9 @@ button{cursor:pointer;border:none;background:none;padding:0}
     <header style="position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px clamp(20px,4vw,48px)">
       <img src="assets/logo-bykirco-contorno.svg" width="84" height="84" alt="by_kirco" style="height:84px;display:block;width:auto">
       <nav style="display:flex;gap:28px;font-family:var(--font-mono);font-size:13px;letter-spacing:var(--track-mono);text-transform:uppercase">
+        <!-- NAVIDAD 2026: temporal hasta el 23/12 -->
+        <a href="/navidad/index.html" style="color:var(--kirco-yellow);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-paper)'" onmouseout="this.style.color='var(--kirco-yellow)'">Carta de Navidad</a>
+        <a href="#" id="nav-quiz" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Tu carta ideal</a>
         <a href="/sobre-mi.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Sobre mí</a>
         <a href="/destinatarios.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Destinatarios</a>
         <a href="/blog.html" style="color:var(--kirco-paper);text-decoration:none;transition:color 180ms ease-out" onmouseover="this.style.color='var(--kirco-yellow)'" onmouseout="this.style.color='var(--kirco-paper)'">Blog</a>
@@ -266,17 +269,37 @@ button{cursor:pointer;border:none;background:none;padding:0}
     </header>
 
     <div style="position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 clamp(20px,5vw,72px);text-align:center">
+      <!-- NAVIDAD 2026: hero temporal hasta el 23/12. Original "Queridos Desconocidos" comentado justo debajo para restaurar fácil. -->
+      <h1 aria-label="Regala una carta a un desconocido por Navidad" style="font-family:var(--font-display);font-weight:400;font-size:clamp(40px,6vw,76px);line-height:1.02;margin:0;color:var(--kirco-paper);text-shadow:0 4px 30px rgba(46,43,37,0.4)">
+        <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">R</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">g</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">l</span><span data-ch style="display:inline-block">a</span> <span data-ch style="display:inline-block">u</span><span data-ch style="display:inline-block">n</span><span data-ch style="display:inline-block">a</span> <span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">r</span><span data-ch style="display:inline-block">t</span><span data-ch style="display:inline-block">a</span></span>
+        <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">a</span> <span data-ch style="display:inline-block">u</span><span data-ch style="display:inline-block">n</span> <span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">s</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">n</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">o</span></span>
+        <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">p</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">r</span> <span data-ch style="display:inline-block">N</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">v</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">a</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">.</span></span>
+      </h1>
+      <!--
       <h1 aria-label="Queridos Desconocidos" style="font-family:var(--font-display);font-weight:400;font-size:clamp(52px,8.4vw,128px);line-height:0.98;margin:0;color:var(--kirco-paper);text-shadow:0 4px 30px rgba(46,43,37,0.4)">
         <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">Q</span><span data-ch style="display:inline-block">u</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">r</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">s</span></span>
         <span style="display:block;white-space:nowrap"><span data-ch style="display:inline-block">D</span><span data-ch style="display:inline-block">e</span><span data-ch style="display:inline-block">s</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">n</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">c</span><span data-ch style="display:inline-block">i</span><span data-ch style="display:inline-block">d</span><span data-ch style="display:inline-block">o</span><span data-ch style="display:inline-block">s</span></span>
       </h1>
-      <p data-hero-fade style="font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:var(--kirco-paper);margin:20px 0 0;text-shadow:0 2px 14px rgba(46,43,37,0.5)">tengo un mensaje</p>
+      -->
+      <p data-hero-fade style="font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:var(--kirco-paper);margin:20px 0 0;text-shadow:0 2px 14px rgba(46,43,37,0.5)">Y el 25, recibe la tuya.</p>
       <div data-hero-fade style="margin-top:24px">
-        <button id="btn-quiz-hero" style="font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:#fff;background:var(--kirco-green);border:2px solid var(--kirco-green);border-radius:999px;padding:14px 48px;transition:transform 180ms ease-out,filter 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)';this.style.filter='brightness(1.05)'" onmouseout="this.style.transform='';this.style.filter=''">para ti</button>
+        <a id="btn-navidad-hero" href="/navidad/index.html" style="display:inline-block;font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:#fff;background:var(--kirco-green);border:2px solid var(--kirco-green);border-radius:999px;padding:14px 48px;text-decoration:none;transition:transform 180ms ease-out,filter 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)';this.style.filter='brightness(1.05)'" onmouseout="this.style.transform='';this.style.filter=''">Empieza a escribir</a>
       </div>
+      <!-- <button id="btn-quiz-hero" style="font-family:'OCR B Libre','Courier New',monospace;font-size:24px;color:#fff;background:var(--kirco-green);border:2px solid var(--kirco-green);border-radius:999px;padding:14px 48px;transition:transform 180ms ease-out,filter 180ms ease-out" onmouseover="this.style.transform='translateY(-2px)';this.style.filter='brightness(1.05)'" onmouseout="this.style.transform='';this.style.filter=''">para ti</button> -->
+      <div data-hero-fade id="navidad-contador" style="margin-top:14px;font-family:'OCR B Libre','Courier New',monospace;font-size:14px;letter-spacing:0.02em;color:var(--kirco-paper);opacity:0.85"></div>
     </div>
   </div>
 </section>
+<script>
+(function () {
+  var el = document.getElementById('navidad-contador');
+  if (!el) return;
+  fetch('/api/navidad/estado').then(function (r) { return r.json(); }).then(function (d) {
+    if (!el) return;
+    el.textContent = (d.cerrado ? 'El buzón de Navidad está cerrado.' : (d.escritas || 0) + ' de 300 cartas ya escritas');
+  }).catch(function () {});
+})();
+</script>
 
 <!-- DESDE 2021 / ESCRIBO PARA TI / SIN CONOCERTE -->
 <section id="phrase-section" style="position:relative;z-index:1;min-height:115vh;padding:70px 0 120px;overflow:hidden;display:flex;flex-direction:column;justify-content:center">
@@ -773,7 +796,7 @@ button{cursor:pointer;border:none;background:none;padding:0}
     if (lenis) lenis.start();
   }
 
-  q('#btn-quiz-hero').addEventListener('click', openQuiz);
+  if (q('#nav-quiz')) q('#nav-quiz').addEventListener('click', function(e) { e.preventDefault(); openQuiz(); });
   q('#btn-seal').addEventListener('click', openQuiz);
   q('#quiz-overlay').addEventListener('click', closeQuiz);
   q('#quiz-modal').addEventListener('click', function(e) { e.stopPropagation(); });
