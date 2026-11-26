@@ -2,5 +2,8 @@
   "redirects": [
     { "source": "/carta-para-ti.html", "destination": "/", "permanent": true },
     { "source": "/carta-para-ti", "destination": "/", "permanent": true }
+  ],
+  "crons": [
+    { "path": "/api/navidad/correos-pendientes", "schedule": "0 8 * * *" }
   ]
 }

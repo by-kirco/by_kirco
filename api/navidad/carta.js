@@ -4,6 +4,7 @@
 const crypto = require('crypto');
 const { getSupabase } = require('./_supabase');
 const filtro = require('./_filtro');
+const colaCorreo = require('./_correo');
 
 const TOTAL = 300;
 const PLAZO_UTC = '2026-12-23T22:59:59Z'; // 23/12/2026 23:59 Europe/Madrid
@@ -119,6 +120,11 @@ module.exports = async function handler(req, res) {
       }
       throw errInsert;
     }
+
+    // Correo de acuse («Tu carta ya va de camino»). Un fallo aquí nunca rompe la respuesta:
+    // encolarYEnviar no lanza y, si no sale, queda 'pendiente' en la cola.
+    stage = 'correo';
+    try { await colaCorreo.encolarYEnviar(supabase, insertada.id, 'acuse'); } catch (e) { console.error('carta.js acuse', e && e.message); }
 
     return res.status(201).json({ ok: true, id: insertada.id, token: insertada.token });
   } catch (e) {
