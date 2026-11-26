@@ -1,0 +1,8 @@
+{
+  "name": "by_kirco",
+  "private": true,
+  "description": "Web estática de by_kirco + funciones serverless de la campaña de Navidad (/navidad, /api/navidad).",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}

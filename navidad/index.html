@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regala una carta a un desconocido por Navidad · by_kirco</title>
+<meta name="description" content="Escribe una carta anónima para un desconocido. El 25 de diciembre a las 00:00 recibes la que alguien escribió para ti. Gratis, hasta 300 cartas.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/navidad/css/navidad.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body class="k-raiz">
+<style>
+  .k-hero { position: relative; background: var(--k-cielo); overflow: hidden; }
+  .k-hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 24px 24px 0; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 32px 48px; }
+  .k-hero-texto { flex: 1 1 360px; max-width: 600px; display: flex; flex-direction: column; gap: 24px; padding-bottom: 72px; }
+  .k-titulo { margin: 0; font-size: clamp(40px, 6vw, 76px); line-height: 1.02; color: #fff; }
+  .k-sub { margin: 0; font-family: var(--font-mono); font-size: 24px; line-height: 1.3; color: #fff; }
+  .k-comp { flex: 1 1 340px; max-width: 620px; position: relative; z-index: 2; transform: translateY(calc(9% + 30px)); }
+  .k-comp svg { display: block; width: 100%; height: auto; }
+  .k-contador { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+  .k-barra { height: 10px; border-radius: 999px; background: rgba(255,255,255,.2); overflow: hidden; }
+  .k-barra > span { display: block; height: 100%; width: 0%; border-radius: 999px; background: var(--k-amarillo); transition: width .6s var(--ease-mill3), background-color .4s; }
+  .k-pasos { max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; list-style: none; }
+  .k-paso { display: flex; flex-direction: column; gap: 6px; padding: 40px 0; border-top: 2px solid rgba(255,255,255,.25); }
+  .k-paso .daruma { margin: 0; font-size: clamp(56px, 10vw, 120px); line-height: 1; color: #fff; }
+  .k-paso .etiqueta { margin: 0; font-size: 24px; color: #fff; }
+</style>
+
+<section class="k-hero sobre-oscuro" aria-labelledby="k-titulo">
+  <div class="copos" aria-hidden="true" id="k-copos"></div>
+
+  <header class="k-header">
+    <span></span>
+    <img src="/navidad/assets/img/logo_blanco.png" alt="by_kirco">
+  </header>
+
+  <div class="k-hero-inner">
+    <div class="k-hero-texto">
+      <h1 id="k-titulo" class="daruma k-titulo">
+        <span class="linea"><span>Regala una carta</span></span>
+        <span class="linea"><span>a un desconocido</span></span>
+        <span class="linea"><span>por Navidad.</span></span>
+      </h1>
+      <p class="linea k-sub"><span>Y el 25, recibe la tuya.</span></p>
+
+      <div id="k-cta-abierto" style="display:none; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
+        <a href="/navidad/presentate.html" class="btn btn-carta">Empieza a escribir</a>
+        <p class="linea" style="margin:0;font-size:20px;color:#fff"><span>Es gratis :)</span></p>
+      </div>
+      <div id="k-cta-lleno" style="display:none; flex-direction: column; gap: 6px;">
+        <span class="btn" aria-disabled="true" style="align-self:flex-start;background:var(--k-papel);color:var(--k-tinta-suave);border:2px solid var(--k-tinta-suave);cursor:default">El buzón está lleno</span>
+        <p style="margin:0;font-size:16px;color:#fff">Este año ya no caben más cartas. Gracias por querer escribir.</p>
+      </div>
+
+      <div class="k-contador" role="status">
+        <p style="margin:0;font-size:16px;color:#fff"><span class="etiqueta" id="k-escritas" style="font-size:20px;letter-spacing:0">…</span> de 300 cartas en el buzón</p>
+        <div class="k-barra" aria-hidden="true"><span id="k-barra-fill"></span></div>
+      </div>
+    </div>
+
+    <div class="k-comp" aria-hidden="true" id="k-comp"></div>
+  </div>
+
+  <div aria-hidden="true" style="position:relative;z-index:3;margin-top:-10px;pointer-events:none">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style="display:block;width:100%;height:120px"><path d="M0 120 L0 30 C70 18 130 12 200 22 C260 31 300 40 370 34 C450 26 500 8 590 12 C660 15 700 30 770 32 C840 34 880 18 960 16 C1040 14 1080 30 1150 34 C1220 38 1260 22 1330 18 C1380 15 1420 22 1440 26 L1440 120 Z" fill="#FFFFFF"></path><path d="M0 120 L0 98 C90 90 170 96 260 100 C360 104 430 92 530 90 C620 88 690 100 780 102 C870 104 950 92 1040 92 C1130 92 1200 102 1290 100 C1360 98 1410 92 1440 94 L1440 120 Z" fill="#6F9C3E"></path></svg>
+    <div style="height:32px;background:#6F9C3E;margin-top:-1px"></div>
+  </div>
+</section>
+
+<main style="background:var(--k-verde-deep)">
+  <section aria-label="Cómo funciona">
+    <ol class="k-pasos">
+      <li class="k-paso"><p class="daruma linea"><span>Escribe.</span></p><p class="etiqueta">A alguien que no conoces.</p></li>
+      <li class="k-paso"><p class="daruma linea"><span>Envía.</span></p><p class="etiqueta">Antes del 23 de diciembre.</p></li>
+      <li class="k-paso"><p class="daruma linea"><span>Espera.</span></p><p class="etiqueta">Se sortea solo.</p></li>
+      <li class="k-paso"><p class="daruma linea"><span>Abre</span></p><p class="etiqueta">En tu correo el 25 de diciembre a las 00:00</p></li>
+    </ol>
+  </section>
+</main>
+
+<div data-k-pie></div>
+
+<script src="/navidad/js/kirco-anim.js"></script>
+<script>
+(function () {
+  var TOTAL = 300;
+  K.pintarCopos(document.getElementById('k-copos'));
+
+  function pintarContador(escritas, cerrado) {
+    escritas = Math.max(0, Math.min(TOTAL, escritas));
+    var lleno = escritas >= TOTAL || cerrado;
+    document.getElementById('k-escritas').textContent = escritas;
+    var pct = Math.round(escritas / TOTAL * 100);
+    var fill = document.getElementById('k-barra-fill');
+    fill.style.width = pct + '%';
+    fill.style.background = (escritas / TOTAL >= .9) ? 'var(--k-naranja)' : 'var(--k-amarillo)';
+    document.getElementById('k-cta-abierto').style.display = lleno ? 'none' : 'flex';
+    document.getElementById('k-cta-lleno').style.display = lleno ? 'flex' : 'none';
+  }
+
+  function plazoCerrado() {
+    try {
+      var limite = new Date('2026-12-23T23:59:59+01:00');
+      return new Date() > limite;
+    } catch (e) { return false; }
+  }
+
+  fetch('/api/navidad/estado').then(function (r) { return r.json(); }).then(function (d) {
+    pintarContador(d.escritas || 0, !!d.cerrado || plazoCerrado());
+  }).catch(function () {
+    pintarContador(0, plazoCerrado());
+  });
+
+  /* composición buzón + pino: se inyecta para poder animar sus partes internas (igual que el diseño) */
+  fetch('/navidad/assets/svg/composicion_buzon_pino.svg').then(function (r) { return r.text(); }).then(function (svg) {
+    var host = document.getElementById('k-comp');
+    host.innerHTML = svg;
+    K.listo(function () {
+      var g = K.g();
+      var root = document.getElementById('raiz') || document.querySelector('.k-hero');
+      K.entrada(document.querySelector('.k-hero'));
+      var svgEl = host.querySelector('svg');
+      if (!svgEl) return;
+      var bucles = K.pino(svgEl.querySelector('#pino'));
+      var r = K.respira(svgEl.querySelector('#buzon'), '476 629'); if (r) bucles.push(r);
+      K.pausable(bucles, document.querySelector('.k-hero'));
+      if (!K.rm() && window.ScrollTrigger) {
+        var mov = window.innerWidth < 700 ? .5 : 1;
+        g.to(svgEl.querySelector('#pino'), { yPercent: -4 * mov, ease: 'none', scrollTrigger: { trigger: '.k-hero', start: 'top top', end: 'bottom top', scrub: .6 } });
+      }
+    });
+  }).catch(function () { K.listo(function () { K.entrada(document.querySelector('.k-hero')); }); });
+
+  if (!K.rm() && window.ScrollTrigger) {
+    K.listo(function () {
+      var g = K.g();
+      document.querySelectorAll('main .k-paso').forEach(function (p) {
+        g.from(p.querySelector('.linea > span'), { yPercent: 110, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: p, start: 'top 85%', once: true } });
+        g.from(p.querySelector('.etiqueta'), { opacity: 0, y: 12, duration: .9, ease: 'expo.out', delay: .15, scrollTrigger: { trigger: p, start: 'top 85%', once: true } });
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de la campaña · by_kirco</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="/navidad/css/navidad.css">
+</head>
+<body class="k-raiz" style="background:var(--k-cielo)">
+<style>
+  .p-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 24px 56px; display: flex; flex-direction: column; gap: 24px; }
+  .p-login { max-width: 420px; margin: 10vh auto; padding: 28px 24px; border-radius: 20px; background: var(--k-papel); display: flex; flex-direction: column; gap: 16px; }
+  .kpi { flex: 1 1 160px; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; background: var(--k-papel); border-radius: 20px; border-top: 6px solid var(--k-verde); }
+  .kpi.naranja { border-top-color: var(--k-naranja); }
+  .p-pill { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 18px; border-radius: 999px; font-family: var(--font-mono); font-size: 14px; letter-spacing: .026em; text-transform: uppercase; cursor: pointer; border: 0; }
+  .p-verde { border: 2px solid var(--k-verde-deep); background: var(--k-verde-tint); color: var(--k-tinta); }
+  .p-verde:hover { background: var(--k-verde); }
+  .p-naranja { border: 2px solid var(--k-naranja-deep); background: var(--k-naranja-tint); color: var(--k-tinta); }
+  .p-naranja:hover { background: var(--k-naranja); }
+  .p-amarillo { border: 2px solid var(--k-tinta); background: var(--k-amarillo); color: var(--k-tinta); }
+  .p-gris { border: 2px solid var(--k-tinta-suave); background: transparent; color: var(--k-tinta-suave); cursor: not-allowed; }
+  .p-badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .026em; text-transform: uppercase; border-radius: 999px; padding: 5px 14px; }
+  .p-badge-green { background: var(--k-verde-tint); color: var(--k-verde-deep); border: 2px solid var(--k-verde); }
+  .p-badge-yellow { background: var(--k-amarillo); color: var(--k-tinta); border: 2px solid var(--k-amarillo); }
+  .p-badge-orange { background: var(--k-naranja-tint); color: var(--k-naranja-deep); border: 2px solid var(--k-naranja); }
+  .p-carta { border-radius: 18px; background: var(--k-papel); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .p-tabla { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; }
+  .p-tabla td, .p-tabla th { padding: 10px 8px; border-bottom: 2px solid #ece3cf; text-align: left; }
+  .p-tabla th { border-bottom: 2px solid var(--k-verde); }
+  #p-dashboard { display: none; }
+</style>
+
+<div id="p-login" class="p-login">
+  <h1 class="daruma" style="margin:0;font-size:32px">Panel de la campaña</h1>
+  <p style="margin:0;color:var(--k-tinta-suave)">Solo para Sara.</p>
+  <label for="p-email" style="font-size:14px">Correo</label>
+  <input id="p-email" type="email" class="campo" autocomplete="username">
+  <label for="p-pass" style="font-size:14px">Contraseña</label>
+  <input id="p-pass" type="password" class="campo" autocomplete="current-password">
+  <p id="p-login-error" role="alert" class="aviso-error" style="display:none;margin:0"></p>
+  <button type="button" id="p-entrar" class="btn btn-carta">Entrar</button>
+</div>
+
+<div id="p-dashboard">
+  <div class="p-wrap">
+    <header style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span class="p-badge p-badge-green">Cartas abiertas hasta el 23/12</span>
+        <h1 class="daruma" style="margin:0;font-size:44px;line-height:1.05;color:#fff">Panel de la campaña</h1>
+        <p style="margin:0;color:#fff">Esta Navidad, alguien te escribe · solo para Sara</p>
+      </div>
+      <button type="button" id="p-salir" class="chip-volver">Salir</button>
+    </header>
+
+    <section aria-label="Resumen" id="p-kpis" style="display:flex;flex-wrap:wrap;gap:16px"></section>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <section aria-labelledby="rev-t" style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <h2 id="rev-t" class="daruma" style="margin:0;font-size:30px;line-height:1.1;color:#fff">Por revisar</h2>
+          <p style="margin:0;color:#fff;max-width:50ch">Al aprobar, la carta entra en la bolsa. Al rechazar, se borra el texto y se marca como rechazada.</p>
+        </div>
+        <div id="p-cola"></div>
+
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px">
+          <h2 class="daruma" style="margin:0;font-size:30px;line-height:1.1;color:#fff">Notas de agradecimiento</h2>
+          <p style="margin:0;color:#fff;max-width:50ch">Todavía no hay — se activan cuando esté la pantalla de abrir la carta.</p>
+        </div>
+        <div id="p-notas"></div>
+
+        <div style="padding:20px 22px;border-radius:20px;background:var(--k-papel);display:flex;flex-direction:column;gap:12px">
+          <h2 class="etiqueta" style="margin:0;font-size:14px">Últimas cartas</h2>
+          <div style="overflow-x:auto">
+            <table class="p-tabla">
+              <thead><tr class="etiqueta" style="font-size:12px"><th scope="col">Seudónimo</th><th scope="col">Correo</th><th scope="col">Para</th><th scope="col">Estado</th><th scope="col">Fecha</th></tr></thead>
+              <tbody id="p-ultimas"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <aside aria-labelledby="acc-t" style="flex:1 1 300px;padding:22px;border-radius:20px;background:var(--k-papel);display:flex;flex-direction:column;gap:14px">
+        <h2 id="acc-t" class="daruma" style="margin:0;font-size:26px;line-height:1.2">Fechas y acciones</h2>
+        <dl class="etiqueta" style="margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;font-size:13px">
+          <dt>Cierre</dt><dd style="margin:0">23/12 · 23:59</dd>
+          <dt>Revisión</dt><dd style="margin:0">Hasta el 24/12</dd>
+          <dt>Sorteo</dt><dd style="margin:0">25/12 · 00:00</dd>
+          <dt>Envío</dt><dd style="margin:0">Automático</dd>
+        </dl>
+        <button type="button" id="p-exportar" class="p-pill p-amarillo">Exportar recuento (.csv)</button>
+        <button type="button" class="p-pill p-gris" disabled title="Todavía no está construido">Cerrar las cartas ahora</button>
+        <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">El cierre manual anticipado aún no está disponible — por ahora el buzón se cierra solo al llegar a 300 cartas o al pasar el plazo.</p>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function api(path, opts) {
+    return fetch('/api/navidad/' + path, Object.assign({ credentials: 'same-origin' }, opts || {}))
+      .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); });
+  }
+
+  function escapa(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+  }
+
+  function pintarKpis(kpis) {
+    document.getElementById('p-kpis').innerHTML = kpis.map(function (k) {
+      return '<div class="' + k.clase + '"><p class="etiqueta" style="margin:0;font-size:13px">' + escapa(k.label) + '</p>' +
+        '<p class="etiqueta" style="margin:0;font-size:36px;line-height:1.1;letter-spacing:0">' + k.valor + '</p>' +
+        '<p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">' + escapa(k.nota) + '</p></div>';
+    }).join('');
+  }
+
+  function badgeClase(tono) { return tono === 'green' ? 'p-badge-green' : tono === 'orange' ? 'p-badge-orange' : 'p-badge-yellow'; }
+
+  function pintarCola(cola, vacio) {
+    var host = document.getElementById('p-cola');
+    if (vacio) { host.innerHTML = '<div style="padding:28px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0;font-weight:700">No hay cartas por revisar.</p></div>'; return; }
+    host.innerHTML = cola.map(function (c) {
+      return '<article class="p-carta" data-id="' + escapa(c.id) + '">' +
+        '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center">' +
+        '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(c.nombre) + ' → ' + escapa(c.para) + ' · ' + escapa(c.fecha) + '</p>' +
+        '<span class="p-badge ' + badgeClase(c.tono) + '">' + escapa(c.aviso) + '</span></div>' +
+        '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(c.texto) + '</p>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
+        '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button>' +
+        '<button type="button" class="p-pill p-verde" data-accion="aprobar">Aprobar · a la bolsa</button></div></article>';
+    }).join('');
+    host.querySelectorAll('button[data-accion]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var art = b.closest('article'); var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
+        if (accion === 'rechazar' && !confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto.')) return;
+        art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+        api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion }) })
+          .then(function (res) {
+            if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
+          })
+          .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
+      });
+    });
+  }
+
+  function pintarUltimas(filas) {
+    document.getElementById('p-ultimas').innerHTML = filas.map(function (f) {
+      return '<tr><td>' + escapa(f.nombre) + '</td><td>' + escapa(f.correo) + '</td><td>' + escapa(f.para) + '</td>' +
+        '<td><span class="p-badge ' + badgeClase(f.tono) + '">' + escapa(f.estado) + '</span></td><td class="etiqueta">' + escapa(f.fecha) + '</td></tr>';
+    }).join('');
+  }
+
+  var ultimoDatos = null;
+  function cargarDatos() {
+    api('panel-datos').then(function (res) {
+      if (res.status !== 200) { if (res.status === 401) mostrarLogin(); return; }
+      ultimoDatos = res.body;
+      pintarKpis(res.body.kpis);
+      pintarCola(res.body.cola, res.body.vacio);
+      pintarUltimas(res.body.ultimas);
+    }).catch(function () { console.error('No se pudo cargar el panel.'); });
+  }
+
+  function mostrarLogin() {
+    document.getElementById('p-dashboard').style.display = 'none';
+    document.getElementById('p-login').style.display = 'flex';
+  }
+  function mostrarDashboard() {
+    document.getElementById('p-login').style.display = 'none';
+    document.getElementById('p-dashboard').style.display = 'block';
+    cargarDatos();
+  }
+
+  document.getElementById('p-entrar').addEventListener('click', intentarEntrar);
+  document.getElementById('p-pass').addEventListener('keydown', function (e) { if (e.key === 'Enter') intentarEntrar(); });
+  document.getElementById('p-email').addEventListener('keydown', function (e) { if (e.key === 'Enter') intentarEntrar(); });
+  function intentarEntrar() {
+    var email = document.getElementById('p-email').value;
+    var pass = document.getElementById('p-pass').value;
+    var err = document.getElementById('p-login-error');
+    api('panel-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, password: pass }) })
+      .then(function (res) {
+        if (res.status === 200) { err.style.display = 'none'; mostrarDashboard(); }
+        else { err.textContent = (res.body && res.body.error) || 'No se pudo entrar.'; err.style.display = 'flex'; }
+      })
+      .catch(function () { err.textContent = 'No se pudo conectar. Inténtalo de nuevo.'; err.style.display = 'flex'; });
+  }
+
+  document.getElementById('p-salir').addEventListener('click', function () {
+    api('panel-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ logout: true }) }).then(mostrarLogin).catch(mostrarLogin);
+  });
+
+  document.getElementById('p-exportar').addEventListener('click', function () {
+    if (!ultimoDatos) return;
+    var filas = [['Seudónimo', 'Correo', 'Para', 'Estado', 'Fecha']].concat(
+      ultimoDatos.ultimas.map(function (f) { return [f.nombre, f.correo, f.para, f.estado, f.fecha]; })
+    );
+    var csv = filas.map(function (r) { return r.map(function (v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; }).join(','); }).join('\r\n');
+    var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cartas-by-kirco.csv'; a.click();
+  });
+
+  api('panel-auth').then(function (res) { (res.status === 200 && res.body.authed) ? mostrarDashboard() : mostrarLogin(); }).catch(mostrarLogin);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Envía tu carta · Regala una carta por Navidad · by_kirco</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/navidad/css/navidad.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body class="k-raiz sobre-oscuro k-oscuro">
+<style>
+  .sobre-zona { position: relative; padding-top: 34px; transition: none; }
+  .sobre-marco { position: relative; border-radius: 22px; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+  .sobre-cuerpo { position: relative; margin: 0; width: 100%; box-sizing: border-box; aspect-ratio: 1.45; min-height: 280px; border-radius: 22px; background: var(--k-sobre-interior); }
+  .previa-carta { position: absolute; z-index: 1; left: 9%; right: 9%; top: 7%; height: 200px; box-sizing: border-box; border-radius: 12px; padding: 7px; background: repeating-linear-gradient(-45deg, var(--k-verde-deep) 0 12px, var(--k-papel) 12px 20px, var(--k-naranja) 20px 32px, var(--k-papel) 32px 40px); box-shadow: 0 1px 4px rgba(46,43,37,.12); display: flex; }
+  .previa-carta > div { flex: 1; min-width: 0; border-radius: 7px; background: var(--k-papel); padding: 12px 16px; display: flex; flex-direction: column; }
+  .previa-texto { flex: 1; overflow: hidden; -webkit-mask-image: linear-gradient(#000 75%, transparent); mask-image: linear-gradient(#000 75%, transparent); }
+  .bolsillo { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; border-radius: 22px; }
+  .remite { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; padding: 0 9% 18px; display: flex; flex-direction: column; gap: 6px; }
+  .solapa { position: absolute; z-index: 4; top: 0; left: 0; right: 0; height: 58%; transform-origin: 50% 0; filter: drop-shadow(0 3px 3px rgba(46,43,37,.14)); }
+  .sello { position: absolute; left: 50%; top: 94%; transform: translate(-50%, -52px); display: flex; flex-direction: column-reverse; align-items: center; gap: 4px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .sello:hover .sello-disco { transform: rotate(-8deg) scale(1.05); }
+  .sello-disco { transition: transform .2s; display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: var(--k-papel); border: 2px solid var(--k-verde); box-shadow: 0 2px 6px rgba(46,43,37,.2); }
+  #correo { height: 44px; box-sizing: border-box; padding: 0 2px; border: 0; border-bottom: 2px dashed var(--k-tinta-suave); border-radius: 0; background: transparent; font-family: var(--font-body); font-size: 18px; color: var(--k-tinta); text-align: center; width: 100%; }
+  #correo.err { border-bottom-color: var(--k-naranja-deep); }
+  #p-error-envio, #acepto-error { background: var(--k-papel); border: 1.5px solid var(--k-naranja-deep); }
+</style>
+<div class="k-pagina k-oscuro">
+  <div class="copos" aria-hidden="true" id="k-copos"></div>
+
+  <header class="k-header">
+    <a href="/navidad/carta.html" class="chip-volver">← Volver</a>
+    <img src="/navidad/assets/img/logo_blanco.png" alt="by_kirco" style="height:40px">
+  </header>
+
+  <main class="k-main">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span class="k-badge k-badge-verde">Paso 3 de 3</span>
+      <h1 class="daruma" style="margin:0;font-size:52px;line-height:1.05;color:#fff"><span class="linea"><span>Envía tu carta</span></span></h1>
+    </div>
+
+    <div class="sobre-zona hoja-entra">
+      <div class="sobre con-nieve" style="position:relative">
+        <div class="nieve-cap" aria-hidden="true"><span style="height:16px"></span><span style="height:22px"></span><span style="height:14px"></span><span style="height:26px"></span><span style="height:19px"></span><span style="height:15px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:21px"></span><span style="height:14px"></span><span style="height:23px"></span><span style="height:17px"></span></div>
+
+        <div class="sobre-marco">
+          <form class="sobre-cuerpo" id="f-enviar" novalidate>
+            <div id="previa" class="previa-carta" aria-hidden="true">
+              <div>
+                <div style="display:flex;justify-content:space-between;gap:12px;margin:-10px -4px 2px">
+                  <a href="/navidad/carta.html" style="display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--k-tinta)">Editar</a>
+                  <button type="button" id="b-cerrar-previa" style="min-height:44px;padding:0;border:0;background:none;font:inherit;font-size:14px;color:var(--k-tinta);text-decoration:underline;cursor:pointer">Cerrar ✕</button>
+                </div>
+                <div class="previa-texto">
+                  <p id="p-previa-saludo" class="manuscrita" style="margin:0;font-size:24px;line-height:1.3;display:none"></p>
+                  <p id="p-previa-hueco" style="margin:0 0 6px"><span class="hueco-saludo">Su saludo y su nombre</span></p>
+                  <p id="p-previa-texto" class="manuscrita" style="margin:0;font-size:24px;line-height:1.3"></p>
+                </div>
+              </div>
+            </div>
+
+            <svg class="bolsillo" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M0 0 L45 47 Q50 52 55 47 L100 0 L100 100 L0 100 Z" fill="#F7F1E3"></path>
+              <path d="M0 0 L45 47 Q50 52 55 47 L100 0" fill="none" stroke="#2E2B25" stroke-opacity=".16" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+              <path d="M0 100 L42 58 Q50 50 58 58 L100 100 Z" fill="#2E2B25" fill-opacity=".035" stroke="#2E2B25" stroke-opacity=".14" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+            </svg>
+
+            <div class="remite">
+              <input id="correo" type="email" aria-label="Tu correo" autocomplete="email" inputmode="email" placeholder="tu@correo.com" aria-describedby="correo-aviso correo-error">
+              <p id="correo-aviso" style="margin:0;font-size:13px;color:var(--k-tinta);text-align:center">Aquí te llegará la tuya el <span class="etiqueta" style="font-size:12px">25/12 · 00:00</span>.</p>
+              <p id="correo-error" role="alert" class="aviso-error" style="display:none;margin:0"><span aria-hidden="true" class="icono-error">!</span>Escribe un correo válido.</p>
+            </div>
+
+            <div class="solapa">
+              <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:hidden;border-radius:22px 22px 0 0"><path class="solapa-cara" d="M0 2 Q0 0 3 0 L97 0 Q100 0 100 2 L58 88 Q50 102 42 88 Z" fill="#FBF8F0"></path></svg>
+              <button type="button" class="sello" aria-expanded="false" aria-controls="previa" aria-label="Vista previa de tu carta">
+                <span class="sello-disco"><svg viewBox="334.6 345.9 410.8 388.1" width="38" height="38" aria-hidden="true" style="display:block"><path fill="#A1D66B" d="M445.42,365.74c-63.67-2.15-139.75,78.26-99.69,140.24,12.95,20.02,33.63,34.41,55.3,44.82-2.91,1.89-5.63,3.78-8.02,5.59-18.12,13.78-34.28,32.49-38.3,55.57-12.11,69.62,78.82,133.9,141.52,120.27,28.18-6.12,50.24-26.73,65.23-50.58,12.94,12.53,27.87,22.81,45.17,28.98,32.45,11.57,68.04,5.5,94.52-16.66,25.79-21.58,50.21-55.51,42.97-90.83-6.97-34-38.03-57.58-67.26-72.99,19.31-12.47,37.23-28.02,48.45-47.39,24.06-41.54.86-80.48-34.21-106.37-44.1-32.57-105.44-46.65-147.16-3.18-8.32,8.67-14.96,18.54-20.48,29.08C503.03,381.26,474.91,366.73,445.42,365.74ZM436.53,668.13c-18.39-20.26-25.55-43.53-7.45-66.11,9.51-11.86,22.24-20.08,35.23-27.76,12.29,21.52,32.55,39.06,55.47,48.3-.09.14-.2.27-.29.41l-.48.48c-.86,1.72-1.48,3.04-1.89,4.02-1.35,3.06-2.41,6.32-3.82,9.57-5.05,11.7-11.61,23.22-19.64,33.13-5.38,6.65-13.68,16.31-22.4,18.41C457.74,691.83,444.59,677,436.53,668.13ZM639.25,557.23c11.21,7.19,23.01,15.55,31.49,25.98,21.58,26.54,3.7,56.38-18.56,76.35-4.83,4.34-10.1,8.66-16.25,10.95-1.18.44-6.37.61-6.28.88-4.94-1.09-13.72-7.55-20.87-14.9-6.37-6.53-11.78-13.58-16.62-21.29-2.37-3.77-4.91-7.62-7.66-11.31,27.83-11.22,47.88-37.64,50.75-69.03C636.6,555.63,637.95,556.4,639.25,557.23ZM619.91,389.88c13.37.72,31.11,15.97,39.93,25.29,31.66,33.49-11.56,69.31-39.46,85.67-12.35-19.85-31-35.83-52.83-44.46,9.16-16.31,14.53-35.25,26.79-50.03C600.47,398.96,609.39,389.3,619.91,389.88ZM455.93,410.78c4.9,1.74,7.73,3.64,12.95,7.61,9.13,6.96,18,16.45,25.46,25.77,3.21,4.02,6.41,7.64,9.7,10.93-28.02,10.95-49.07,36.92-51.8,68.04-.11-.04-.1-.03,0,0,0,.01,0,.02,0,.03-10.34-3.6-19.81-7.34-28.37-12.52-25.23-15.27-31.5-37.59-15.2-63.26,9.39-14.78,24.28-33.02,42.31-36.86C452.92,410.11,454.41,410.24,455.93,410.78Z"/></svg></span>
+                <span class="etiqueta" style="font-size:11px;color:#2E2B25;background:#FBF8F0;padding:1px 8px;border-radius:999px">Vista previa</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:4px;color:#fff">
+      <label style="display:flex;gap:12px;align-items:flex-start;min-height:44px;padding:6px 0;cursor:pointer;font-size:15px">
+        <input type="checkbox" id="acepto" style="flex:0 0 24px;width:24px;height:24px;margin:0;accent-color:var(--k-verde-deep)">
+        <span>Tengo 18 años o más y acepto la <a href="/navidad/legal.html" style="color:var(--k-amarillo)">política de privacidad</a>.</span>
+      </label>
+      <p id="acepto-error" role="alert" class="aviso-error" style="display:none;margin:0"><span aria-hidden="true" class="icono-error">!</span>Marca esta casilla para participar.</p>
+    </div>
+
+    <p id="p-error-envio" role="alert" class="aviso-error" style="display:none;margin:0"><span aria-hidden="true" class="icono-error">!</span><span id="p-error-envio-texto"></span></p>
+
+    <button type="button" id="b-enviar" class="btn btn-carta" style="width:100%">Enviar mi carta</button>
+    <p id="p-bloqueado" style="margin:-8px 0 0;font-size:13px;color:#fff;text-align:center">Escribe tu correo y marca la casilla para poder enviarla.</p>
+    <a class="ir" href="/navidad/gracias.html" tabindex="-1" aria-hidden="true" style="display:none">Gracias</a>
+  </main>
+
+  <div data-k-pie data-nieve="si"></div>
+</div>
+
+<script src="/navidad/js/kirco-anim.js"></script>
+<script>
+(function () {
+  K.pintarCopos(document.getElementById('k-copos'));
+
+  var saludoDestino = ''; try { saludoDestino = sessionStorage.getItem('kirco-destino-saludo') || ''; } catch (e) {}
+  var texto = ''; try { texto = sessionStorage.getItem('kirco-texto') || ''; } catch (e) {}
+  if (saludoDestino) { document.getElementById('p-previa-saludo').style.display = 'block'; document.getElementById('p-previa-saludo').textContent = saludoDestino; document.getElementById('p-previa-hueco').style.display = 'none'; }
+  document.getElementById('p-previa-texto').textContent = texto;
+
+  var abierto = false, cayendo = false, intento = false;
+  var elSobre = document.querySelector('.sobre > :not(.nieve-cap)');
+
+  function reacumula() {
+    var g = K.g(); if (!g) return;
+    document.querySelectorAll('.nieve-cap span').forEach(function (s) { g.killTweensOf(s); g.set(s, { x: 0, y: 0, rotation: 0, opacity: 1, scaleY: 0 }); delete s.dataset.acu; });
+    K.acumula();
+  }
+
+  function cae(listo, quieto) {
+    var g = K.g(); var c = Array.prototype.slice.call(document.querySelectorAll('.nieve-cap span'));
+    if (!g || !c.length) { listo(); return; }
+    if (K.rm()) { g.to(c, { opacity: 0, duration: .2, onComplete: listo }); return; }
+    var H = window.innerHeight || 800;
+    g.killTweensOf(c);
+    g.to(c, { y: function () { return H * g.utils.random(.9, 1.3); }, x: function () { return g.utils.random(-40, 40); },
+      rotation: function () { return g.utils.random(-120, 120); }, opacity: 0,
+      duration: function () { return g.utils.random(1, 1.6); }, ease: 'power2.in', stagger: { each: .04, from: 'random' },
+      onComplete: function () { quieto ? listo() : setTimeout(listo, 150); } });
+  }
+
+  function alternar(listo) {
+    var g = K.g();
+    var zona = document.querySelector('.sobre-zona');
+    var sol = document.querySelector('.solapa');
+    var cara = document.querySelector('.solapa-cara');
+    var pre = document.getElementById('previa');
+    var sello = document.querySelector('.sello');
+    var abrir = !abierto; abierto = abrir;
+    sello.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    pre.setAttribute('aria-hidden', abrir ? 'false' : 'true');
+    if (!g || !sol || !pre) { if (listo) listo(); return; }
+    var solH = sol.offsetHeight, top = pre.offsetTop, alto = pre.offsetHeight;
+    var fuera = -(top + alto * .8);
+    var final = -(top + 36);
+    var abiertoZona = 34 + solH;
+    if (abrir) cae(function () {}, true);
+    if (K.rm()) {
+      g.set(sol, { rotationX: abrir ? 180 : 0, zIndex: abrir ? 0 : 4 }); g.set(cara, { attr: { fill: abrir ? '#E9DFC9' : '#FBF8F0' } });
+      g.set(zona, { paddingTop: abrir ? abiertoZona : 34 }); g.set(sello, { opacity: abrir ? 0 : 1 });
+      g.set(pre, { y: abrir ? final : 0, zIndex: abrir ? 6 : 1, rotation: abrir ? -1.5 : 0 });
+      if (!abrir) { if (listo) listo(); else reacumula(); } return;
+    }
+    g.killTweensOf([sol, pre, zona, sello, cara]);
+    var tl = g.timeline();
+    if (abrir) {
+      g.set(sol, { transformOrigin: '50% 0%', transformPerspective: 1000 });
+      tl.to(sello, { opacity: 0, scale: .8, duration: .2 })
+        .to(zona, { paddingTop: abiertoZona, duration: .5, ease: 'power2.inOut' }, 0)
+        .to(sol, { rotationX: 90, duration: .35, ease: 'power2.in' }, '>')
+        .set(sol, { zIndex: 0 }).set(cara, { attr: { fill: '#E9DFC9' } })
+        .to(sol, { rotationX: 180, duration: .4, ease: 'power2.out' })
+        .to(pre, { y: fuera, duration: .7, ease: 'power2.out' }, '+=.05')
+        .set(pre, { zIndex: 6 })
+        .to(pre, { y: final, rotation: -1.5, scale: 1.04, boxShadow: '0 12px 30px rgba(46,43,37,.3)', duration: .6, ease: 'back.out(1.3)' });
+    } else {
+      g.set(sol, { transformOrigin: '50% 0%', transformPerspective: 1000 });
+      tl.to(pre, { y: fuera, rotation: 0, scale: 1, boxShadow: '0 1px 4px rgba(46,43,37,.12)', duration: .45, ease: 'power2.inOut' })
+        .set(pre, { zIndex: 1 })
+        .to(pre, { y: 0, duration: .5, ease: 'power2.in' })
+        .to(sol, { rotationX: 90, duration: .3, ease: 'power2.in' })
+        .set(sol, { zIndex: 4 }).set(cara, { attr: { fill: '#FBF8F0' } })
+        .to(sol, { rotationX: 0, duration: .35, ease: 'power2.out' })
+        .to(zona, { paddingTop: 34, duration: .45, ease: 'power2.inOut' })
+        .to(sello, { opacity: 1, scale: 1, duration: .25 }, '-=.1')
+        .add(function () { if (listo) listo(); else reacumula(); });
+    }
+  }
+
+  document.querySelector('.sello').addEventListener('click', function () { if (!cayendo) alternar(); });
+  document.getElementById('b-cerrar-previa').addEventListener('click', function () { if (!cayendo) alternar(); });
+
+  function correoOk() { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(document.getElementById('correo').value || ''); }
+  function aceptoOk() { return !!document.getElementById('acepto').checked; }
+
+  function pintarValidacion() {
+    var cOk = correoOk(), aOk = aceptoOk(), valido = cOk && aOk;
+    document.getElementById('correo').classList.toggle('err', intento && !cOk);
+    document.getElementById('correo-error').style.display = (intento && !cOk) ? 'flex' : 'none';
+    document.getElementById('acepto-error').style.display = (intento && !aOk) ? 'flex' : 'none';
+    document.getElementById('b-enviar').setAttribute('aria-disabled', valido ? 'false' : 'true');
+    document.getElementById('p-bloqueado').style.display = valido ? 'none' : 'block';
+    return valido;
+  }
+  document.getElementById('correo').addEventListener('input', function (e) {
+    var v = e.target.value.trim(); try { sessionStorage.setItem('kirco-correo', v); } catch (x) {}
+    pintarValidacion();
+  });
+  document.getElementById('acepto').addEventListener('change', pintarValidacion);
+  pintarValidacion();
+
+  function vuela(listo) {
+    var g = K.g();
+    var nodos = Array.prototype.slice.call(document.querySelectorAll('.sobre > :not(.nieve-cap)'));
+    if (!g || !nodos.length) { listo(); return; }
+    if (K.rm()) { g.to(nodos, { opacity: 0, duration: .2, onComplete: listo }); return; }
+    g.to(nodos, { y: -(window.innerHeight || 800) * 1.1, rotation: -8, scale: .85, opacity: 0, duration: .8, ease: 'power3.in', onComplete: listo });
+  }
+
+  function enviarApi() {
+    var payload = {
+      seudonimo: (function () { try { return sessionStorage.getItem('kirco-seudonimo') || ''; } catch (e) { return ''; } })(),
+      saludo: (function () { try { return sessionStorage.getItem('kirco-saludo') || 'neutro'; } catch (e) { return 'neutro'; } })(),
+      idea: (function () { try { return sessionStorage.getItem('kirco-tema') || null; } catch (e) { return null; } })(),
+      texto: (function () { try { return sessionStorage.getItem('kirco-texto') || ''; } catch (e) { return ''; } })(),
+      destino_carta_id: (function () { try { return sessionStorage.getItem('kirco-destino-id') || null; } catch (e) { return null; } })() || null,
+      correo: document.getElementById('correo').value.trim(),
+      acepto_18: true
+    };
+    return fetch('/api/navidad/carta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); });
+  }
+
+  document.getElementById('b-enviar').addEventListener('click', function () {
+    if (cayendo) return;
+    if (!pintarValidacion()) { intento = true; pintarValidacion(); return; }
+    cayendo = true;
+    document.getElementById('b-enviar').setAttribute('aria-disabled', 'true');
+    document.getElementById('p-error-envio').style.display = 'none';
+
+    var lanza = function () {
+      enviarApi().then(function (res) {
+        if (res.status >= 200 && res.status < 300) {
+          var fin = 0; var listo = function () { if (++fin === 2) { var a = document.querySelector('a.ir'); if (a) a.click(); } };
+          vuela(listo); cae(listo);
+        } else {
+          cayendo = false;
+          document.getElementById('b-enviar').setAttribute('aria-disabled', 'false');
+          document.getElementById('p-error-envio-texto').textContent = (res.body && res.body.error) || 'No hemos podido enviar tu carta. Inténtalo de nuevo en un momento.';
+          document.getElementById('p-error-envio').style.display = 'flex';
+        }
+      }).catch(function () {
+        cayendo = false;
+        document.getElementById('b-enviar').setAttribute('aria-disabled', 'false');
+        document.getElementById('p-error-envio-texto').textContent = 'No hemos podido conectar. Comprueba tu conexión e inténtalo de nuevo.';
+        document.getElementById('p-error-envio').style.display = 'flex';
+      });
+    };
+    if (abierto) alternar(lanza); else lanza();
+  });
+
+  K.listo(function () { K.acumula(); K.nieve(document.getElementById('k-copos')); K.entrada(document.getElementById('raiz') || document.querySelector('.k-pagina')); });
+})();
+</script>
+</body>
+</html>
