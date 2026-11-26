@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Preséntate · Regala una carta por Navidad · by_kirco</title>
-<meta name="robots" content="noindex">
+<!-- QUITAR AL LANZAR: noindex de la preview privada -->
+<meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="/navidad/css/navidad.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
@@ -43,22 +44,22 @@
           <div id="g-saludo" style="display:flex;flex-wrap:wrap;gap:8px" role="group">
             <button type="button" class="op" data-v="querido" aria-pressed="false">Querido</button>
             <button type="button" class="op" data-v="querida" aria-pressed="false">Querida</button>
-            <button type="button" class="op" data-v="neutro" aria-pressed="false">Otro</button>
+            <button type="button" class="op" data-v="neutro" aria-pressed="false">Hola, sin más</button>
           </div>
-          <p id="p-saludo-vista" style="margin:0;font-size:16px;color:var(--k-verde);display:none">Tu carta empezará: «Hola, <span id="p-saludo-nombre">tu seudónimo</span>:»</p>
+          <p id="p-saludo-vista" style="margin:0;font-size:16px;color:var(--k-verde);display:none">La carta que te llegue empezará: «Hola, <span id="p-saludo-nombre">tu seudónimo</span>:»</p>
         </fieldset>
 
         <fieldset style="margin:0;padding:0;border:0;display:flex;flex-direction:column;gap:12px">
           <legend style="padding:0;margin-bottom:12px">¿A quién se la mandas?</legend>
           <div id="bloque-con-bolsa" style="display:none;flex-direction:column;gap:12px">
             <div id="g-destino" style="display:flex;flex-wrap:wrap;gap:8px" role="group"></div>
-            <p style="margin:0;font-size:14px;color:var(--k-tinta-suave)">Son personas cuya carta ya está aprobada y esperan la suya.</p>
+            <p style="margin:0;font-size:14px;color:var(--k-tinta-suave)">Ya han escrito su carta y están esperando que alguien les escriba.</p>
           </div>
-          <p id="p-sin-bolsa" style="margin:0;font-size:15px;color:var(--k-verde)">A alguien desconocido, al azar. Todavía no hay cartas aprobadas para elegir.</p>
+          <p id="p-sin-bolsa" style="margin:0;font-size:15px;color:var(--k-verde)">A alguien que no conoces, al azar. Todavía no hay cartas aprobadas para elegir.</p>
         </fieldset>
 
         <fieldset style="margin:0;padding:0;border:0;display:flex;flex-direction:column;gap:12px">
-          <legend style="padding:0;margin-bottom:12px">¿Tienes alguna idea de lo que escribir?</legend>
+          <legend style="padding:0;margin-bottom:12px">¿Ya sabes qué quieres escribir?</legend>
           <div id="g-idea" style="display:flex;flex-wrap:wrap;gap:8px" role="group">
             <button type="button" class="op op-naranja" data-v="si" aria-pressed="false">Sí</button>
             <button type="button" class="op op-naranja" data-v="no" aria-pressed="false">No</button>
@@ -85,7 +86,7 @@
 <script src="/navidad/js/kirco-anim.js"></script>
 <script>
 (function () {
-  var T = ["Una frase que esa persona pueda guardar, si este año se le ha hecho largo.", "Que está bien llegar a estas fechas sin tenerlo todo resuelto.", "Lo que le dirías a alguien que se ha esforzado y nadie se lo ha dicho.", "Un deseo pequeño para quien va a leerte, no un propósito grande.", "Que esta Navidad no tiene que parecerse a ninguna otra para valer.", "Un «te he pensado» para quien sienta que pasa desapercibido.", "Que no hace falta estar alegre para merecer una carta.", "Algo tierno para quien echa de menos a alguien estas fiestas, sin intentar consolar de más.", "Un permiso para no poder con todo en diciembre.", "Lo que te habría gustado recibir tú, escrito ahora para esa persona.", "Lo que le dirías a alguien que necesita un rato de calma en medio de estas fiestas.", "Escríbele como quien le acerca una taza y le dice que puede quedarse un rato.", "Un olor, un sabor o un calor de estas fechas, escrito para que lo sienta quien te lea.", "Lo que le dirías a alguien que este año ha tenido que ser fuerte más veces de las que habría querido.", "Que esa persona no está sola cuando abra esta carta, aunque se lea en silencio.", "Una sola cosa bella que hayas visto estos días, contada para que la reciba esa persona, no para hablar de ti.", "Que merece el mismo cuidado que suele dar.", "Un deseo para el año que entra que no le pida cambiar, solo que le vaya un poco más suave.", "Lo que le dirías a alguien que se siente fuera de sitio en las reuniones de estas fechas.", "Algo que le pueda sacar una sonrisa al abrirla, sin pedirle que esté de fiesta."];
+  var T = ["Una frase que esa persona pueda guardar, si este año se le ha hecho largo.", "Que está bien llegar a estas fechas sin tenerlo todo resuelto.", "Lo que le dirías a alguien que se ha esforzado y nadie se lo ha dicho.", "Un deseo pequeño para quien va a leerte, no un propósito grande.", "Que esta Navidad no tiene que parecerse a ninguna otra para valer.", "Un «he pensado en ti» para quien sienta que pasa desapercibido.", "Que no hace falta estar alegre para merecer una carta.", "Algo tierno para quien echa de menos a alguien estas fiestas, sin intentar consolar de más.", "Un permiso para no poder con todo en diciembre.", "Lo que te habría gustado recibir tú, escrito ahora para esa persona.", "Lo que le dirías a alguien que necesita un rato de calma en medio de estas fiestas.", "Escríbele como quien le acerca una taza y le dice que puede quedarse un rato.", "Un olor, un sabor o un calor de estas fechas, escrito para que lo sienta quien te lea.", "Lo que le dirías a alguien que este año ha tenido que ser fuerte más veces de las que habría querido.", "Que, cuando abra esta carta, esa persona no estará sola, aunque la lea en silencio.", "Una sola cosa bella que hayas visto estos días, contada para que la reciba esa persona, no para hablar de ti.", "Que merece el mismo cuidado que suele dar.", "Un deseo para el año que entra que no le pida cambiar, solo que le vaya un poco más suave.", "Lo que le dirías a alguien que se siente fuera de sitio en las reuniones de estas fechas.", "Algo que le pueda sacar una sonrisa al abrirla, sin pedirle que esté de fiesta."];
 
   K.pintarCopos(document.getElementById('k-copos'));
 

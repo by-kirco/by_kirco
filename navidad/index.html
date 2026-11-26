@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Regala una carta a un desconocido por Navidad · by_kirco</title>
-<meta name="description" content="Escribe una carta anónima para un desconocido. El 25 de diciembre a las 00:00 recibes la que alguien escribió para ti. Gratis, hasta 300 cartas.">
-<meta name="robots" content="noindex">
+<meta name="description" content="Escribe una carta a alguien que no conoces. El 25 de diciembre a las 00:00, te llega a tu correo la que alguien te ha escrito a ti. Gratis, hasta 300 cartas.">
+<!-- QUITAR AL LANZAR: noindex de la preview privada -->
+<meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="/navidad/css/navidad.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
@@ -43,15 +44,16 @@
         <span class="linea"><span>a un desconocido</span></span>
         <span class="linea"><span>por Navidad.</span></span>
       </h1>
-      <p class="linea k-sub"><span>Y el 25, recibe la tuya.</span></p>
+      <p class="linea k-sub"><span>Y el 25, alguien que no te conoce te escribe a ti.</span></p>
+      <p class="k-intro" style="margin:0;max-width:46ch;font-size:17px;line-height:1.5;color:#fff">A todos nos gusta que nos llegue algo en Navidad. Si este año se te está haciendo largo, también puedes escribir: no hace falta estar bien para hacerlo. Tú le escribes a alguien que no conoces, y alguien que no te conoce te escribe a ti.</p>
 
       <div id="k-cta-abierto" style="display:none; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
         <a href="/navidad/presentate.html" class="btn btn-carta">Empieza a escribir</a>
-        <p class="linea" style="margin:0;font-size:20px;color:#fff"><span>Es gratis :)</span></p>
+        <p class="linea" style="margin:0;font-size:20px;color:#fff"><span>Es gratis.</span></p>
       </div>
       <div id="k-cta-lleno" style="display:none; flex-direction: column; gap: 6px;">
-        <span class="btn" aria-disabled="true" style="align-self:flex-start;background:var(--k-papel);color:var(--k-tinta-suave);border:2px solid var(--k-tinta-suave);cursor:default">El buzón está lleno</span>
-        <p style="margin:0;font-size:16px;color:#fff">Este año ya no caben más cartas. Gracias por querer escribir.</p>
+        <span class="btn" id="k-cta-lleno-btn" aria-disabled="true" style="align-self:flex-start;background:var(--k-papel);color:var(--k-tinta-suave);border:2px solid var(--k-tinta-suave);cursor:default">El buzón está lleno</span>
+        <p id="k-cta-lleno-txt" style="margin:0;font-size:16px;color:#fff">Este año ya no caben más cartas. Gracias por querer escribir.</p>
       </div>
 
       <div class="k-contador" role="status">
@@ -73,9 +75,9 @@
   <section aria-label="Cómo funciona">
     <ol class="k-pasos">
       <li class="k-paso"><p class="daruma linea"><span>Escribe.</span></p><p class="etiqueta">A alguien que no conoces.</p></li>
-      <li class="k-paso"><p class="daruma linea"><span>Envía.</span></p><p class="etiqueta">Antes del 23 de diciembre.</p></li>
-      <li class="k-paso"><p class="daruma linea"><span>Espera.</span></p><p class="etiqueta">Se sortea solo.</p></li>
-      <li class="k-paso"><p class="daruma linea"><span>Abre</span></p><p class="etiqueta">En tu correo el 25 de diciembre a las 00:00</p></li>
+      <li class="k-paso"><p class="daruma linea"><span>Envía.</span></p><p class="etiqueta">Hasta el 23 de diciembre.</p></li>
+      <li class="k-paso"><p class="daruma linea"><span>Espera.</span></p><p class="etiqueta">Mientras, alguien que no conoces te escribe a ti.</p></li>
+      <li class="k-paso"><p class="daruma linea"><span>Abre.</span></p><p class="etiqueta">Te llega a tu correo el 25 de diciembre, a las 00:00.</p></li>
     </ol>
   </section>
 </main>
@@ -91,7 +93,13 @@
 
   function pintarContador(escritas, cerrado) {
     escritas = Math.max(0, Math.min(TOTAL, escritas));
-    var lleno = escritas >= TOTAL || cerrado;
+    var porLimite = escritas >= TOTAL;
+    var lleno = porLimite || cerrado;
+    // Dos casos distintos: lleno (300 cartas) o cerrado por fecha (aunque no esté lleno).
+    document.getElementById('k-cta-lleno-btn').textContent = porLimite ? 'El buzón está lleno' : 'El buzón ya está cerrado';
+    document.getElementById('k-cta-lleno-txt').textContent = porLimite
+      ? 'Este año ya no caben más cartas. Gracias por querer escribir.'
+      : 'Este año ya no se pueden escribir más cartas. Gracias por querer escribir.';
     document.getElementById('k-escritas').textContent = escritas;
     var pct = Math.round(escritas / TOTAL * 100);
     var fill = document.getElementById('k-barra-fill');

@@ -35,17 +35,17 @@ module.exports = async function handler(req, res) {
   const destinoId = body.destino_carta_id ? String(body.destino_carta_id).trim() : null;
   const acepto18 = body.acepto_18 === true;
 
-  if (!acepto18) return res.status(422).json({ error: 'Tienes que marcar que eres mayor de edad y aceptas la privacidad.' });
+  if (!acepto18) return res.status(422).json({ error: 'Marca la casilla: tienes que tener 18 años o más y aceptar la política de privacidad.' });
   if (!seudonimo) return res.status(422).json({ error: 'Escribe tu nombre o seudónimo.' });
   if (!saludo) return res.status(422).json({ error: 'Elige cómo quieres que te saluden.' });
   if (!correoValido(correo)) return res.status(422).json({ error: 'Escribe un correo válido.' });
-  if (texto.length < 80) return res.status(422).json({ error: 'Tu carta necesita al menos 80 caracteres.' });
+  if (texto.length < 80) return res.status(422).json({ error: 'Escribe un poquito más: hacen falta al menos 80 caracteres.' });
   if (texto.length > 3000) return res.status(422).json({ error: 'Tu carta es demasiado larga.' });
 
   const filtroTexto = filtro.revisa(texto);
   const filtroNombre = filtro.revisa(seudonimo);
   if (!filtroTexto.ok || !filtroNombre.ok) {
-    return res.status(422).json({ error: 'Hay algo en tu carta o tu seudónimo que no podemos aceptar (insultos, amenazas, discriminación, contenido sexual, enlaces o datos de contacto). Revísalo e inténtalo de nuevo.' });
+    return res.status(422).json({ error: 'Hay algo en tu carta o en tu seudónimo que no puede ir (insultos, amenazas, discriminación, contenido sexual, enlaces o datos de contacto). Revísalo y vuelve a intentarlo.' });
   }
 
   if (Date.now() > new Date(PLAZO_UTC).getTime()) {
@@ -131,6 +131,6 @@ module.exports = async function handler(req, res) {
       status: e && e.status,
       stack: e && e.stack
     });
-    return res.status(500).json({ error: 'No hemos podido guardar tu carta. Inténtalo de nuevo en un momento.' });
+    return res.status(500).json({ error: 'No he podido guardar tu carta. Inténtalo de nuevo en un momento.' });
   }
 };
