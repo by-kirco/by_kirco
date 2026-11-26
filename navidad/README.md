@@ -50,7 +50,7 @@ Ya hecho y confirmado en producción (`bykirco.vercel.app/navidad`):
    (tablas `cartas`/`cartas_reserva`/`notas` + índices únicos + el `GRANT` a `service_role`,
    imprescindible porque las tablas se crearon con SQL a mano y no con el editor visual de Supabase).
    Después, ejecutar una sola vez `navidad/supabase/seed_reserva.sql` para cargar las 20 cartas
-   de reserva (ya escritas y aprobadas, firman "Kirco", no cuentan para el límite de 300 ni
+   de reserva (ya escritas y aprobadas, firman "Kirco", no cuentan para el límite de 100 ni
    aparecen en la bolsa — son solo un banco para cuando el reparto, fase futura, necesite dar una
    carta a alguien que de otro modo se quedaría sin una). El panel muestra cuántas hay y cuántas
    se han usado en el KPI "Reserva".
@@ -81,7 +81,7 @@ gestiona Supabase, no este código.
 El panel no está enlazado desde ninguna página pública — solo se llega escribiendo la URL
 directamente. "Cerrar las cartas ahora" (cierre manual anticipado) se ve en el diseño pero no
 está construido todavía: requeriría guardar un estado global de "cerrado" en algún sitio
-(hoy el cierre es automático por fecha o por las 300 cartas).
+(hoy el cierre es automático por fecha o por las 100 cartas).
 
 Si se recrea el proyecto de Supabase alguna vez, no olvidar el `GRANT` del final de
 `schema.sql` — sin él, el servidor recibe `permission denied for table cartas` aunque la URL
@@ -90,7 +90,7 @@ y la clave sean correctas.
 ## Pruebas ya hechas
 
 - Sintaxis y lógica de las funciones serverless (`node --check` + pruebas con un cliente
-  Supabase simulado): validaciones de plazo, límite de 300, correo inválido, texto corto, filtro
+  Supabase simulado): validaciones de plazo, límite de 100, correo inválido, texto corto, filtro
   de contenido en servidor, errores de concurrencia (correo duplicado / destino ya elegido),
   `carta-abierta` en sus 4 estados (no encontrada / antes / camino / abierta, con saludo y firma
   correctos) y `nota` (antes del 25, sin carta asignada, guardado correcto, duplicado, filtro).
