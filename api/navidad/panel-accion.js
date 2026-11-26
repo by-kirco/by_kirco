@@ -21,15 +21,19 @@ module.exports = async function handler(req, res) {
 
   const id = String(body.id || '').trim();
   const accion = String(body.accion || '').trim();
+  const motivo = accion === 'rechazar' ? String(body.motivo || '').trim().slice(0, 300) : null;
   if (!id || !['aprobar', 'rechazar'].includes(accion)) {
     return res.status(422).json({ error: 'Faltan datos de la acción.' });
+  }
+  if (accion === 'rechazar' && !motivo) {
+    return res.status(422).json({ error: 'Elige o escribe un motivo para el rechazo: hay que avisar por qué.' });
   }
 
   try {
     const supabase = getSupabase();
     const cambios = accion === 'aprobar'
       ? { estado: 'aprobada' }
-      : { estado: 'rechazada', texto: null };
+      : { estado: 'rechazada', texto: null, motivo };
 
     const { data, error } = await supabase
       .from('cartas')
@@ -44,7 +48,7 @@ module.exports = async function handler(req, res) {
 
     const plantilla = accion === 'aprobar'
       ? plantillaAprobada({ seudonimo: data.seudonimo })
-      : plantillaRechazada({ seudonimo: data.seudonimo });
+      : plantillaRechazada({ seudonimo: data.seudonimo, motivo });
     const envio = await enviaEmail({ to: data.correo, subject: plantilla.subject, html: plantilla.html });
     if (!envio.ok) console.error('panel-accion.js: email no enviado', envio.error);
 

@@ -3,7 +3,7 @@
    No expone correos ni textos. */
 const { getSupabase } = require('./_supabase');
 
-const TOTAL = 300;
+const TOTAL = 100;
 const PLAZO_UTC = '2026-12-23T22:59:59Z'; // 23/12/2026 23:59 Europe/Madrid (CET, UTC+1)
 
 module.exports = async function handler(req, res) {
