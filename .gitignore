@@ -26,3 +26,8 @@ design_extracted/
 # Logs
 *.log
 npm-debug.log*
+
+# Navidad: cartas de reserva (privadas, nunca en el repo) — ver navidad/README.md
+reservas*.json
+reservas*.sql
+cartas-reserva*.json
