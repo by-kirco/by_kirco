@@ -15,12 +15,16 @@ Flujo completo de quien participa, conectado a Supabase de verdad:
 - `enviar.html` — Paso 3: correo + casilla 18+, guarda la carta de verdad (`POST /api/navidad/carta`).
 - `gracias.html` — Confirmación + cuenta atrás al 25/12 00:00 + añadir al calendario.
 - `legal.html` — Política de privacidad completa.
-- `panel.html` — Panel privado de Sara (contraseña), para aprobar/rechazar cartas. Ver más abajo.
+- `panel.html` — Panel privado de Sara (Supabase Auth), para aprobar/rechazar cartas y reenviar
+  notas de agradecimiento, con email automático en los dos casos. Ver más abajo.
 
 **Deliberadamente fuera de esta entrega** (a petición explícita, para después):
 
-- Reparto automático del 25 de diciembre y la pantalla `/carta/{token}` para abrir la carta recibida.
-- Envío de emails transaccionales (Brevo): aprobación, rechazo, entrega, notas de agradecimiento.
+- Reparto automático del 25 de diciembre y la pantalla `/carta/{token}` para abrir la carta
+  recibida — y con ella, el único sitio donde alguien puede escribir una nota de agradecimiento
+  de verdad. Hasta que exista, la sección de notas del panel estará vacía salvo que insertes una
+  de prueba a mano (ver más abajo).
+- Email "Te ha llegado tu carta" del 25 de diciembre (depende del reparto de arriba).
 
 El esquema de datos (`supabase/schema.sql`) ya incluye las tablas `cartas` y `notas` completas,
 preparadas para cuando se construya esa segunda fase.

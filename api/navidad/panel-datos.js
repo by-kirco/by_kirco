@@ -74,8 +74,29 @@ module.exports = async function handler(req, res) {
         fecha: fechaCorta(c.creada_at)
       }));
 
+    const { data: notasPendientes, error: errNotas } = await supabase
+      .from('notas')
+      .select('id, carta_id, texto, estado, creada_at')
+      .eq('estado', 'pendiente')
+      .order('creada_at', { ascending: true });
+    if (errNotas) throw errNotas;
+
+    const notas = (notasPendientes || []).map((n) => {
+      const cartaDe = porId.get(n.carta_id); // la carta que se agradece (a quien le llega el email)
+      const cartaFirma = cartaDe && cartaDe.recibe_carta_id ? porId.get(cartaDe.recibe_carta_id) : null; // quien la escribe (firma la nota)
+      return {
+        id: n.id,
+        de: cartaFirma ? cartaFirma.seudonimo : '—',
+        para: cartaDe ? cartaDe.seudonimo : '—',
+        fecha: fechaCorta(n.creada_at),
+        texto: n.texto,
+        tono: 'yellow',
+        estado: 'pendiente'
+      };
+    });
+
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json({ kpis, cola, notas: [], ultimas, vacio: cola.length === 0 });
+    return res.status(200).json({ kpis, cola, notas, ultimas, vacio: cola.length === 0 });
   } catch (e) {
     console.error('panel-datos.js', { name: e && e.name, message: e && e.message, code: e && e.code, details: e && e.details, hint: e && e.hint });
     return res.status(500).json({ error: 'No hemos podido cargar los datos del panel.' });
