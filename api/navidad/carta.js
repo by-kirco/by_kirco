@@ -57,6 +57,23 @@ module.exports = async function handler(req, res) {
     stage = 'getSupabase';
     const supabase = getSupabase();
 
+    stage = 'bloqueado';
+    try {
+      const { data: bloqueo, error: errBloqueo } = await supabase
+        .from('correos_bloqueados')
+        .select('correo')
+        .eq('correo', correo)
+        .maybeSingle();
+      if (errBloqueo) throw errBloqueo;
+      if (bloqueo) {
+        return res.status(403).json({ error: 'No podemos aceptar cartas desde este correo.' });
+      }
+    } catch (eBloqueo) {
+      // correos_bloqueados es una tabla nueva: si este proyecto de Supabase todavía no la
+      // tiene, no debe impedir que nadie escriba — se trata como si no hubiera nadie bloqueado.
+      console.error('carta.js: correos_bloqueados no disponible (¿falta aplicar schema.sql?)', eBloqueo && eBloqueo.message);
+    }
+
     stage = 'count';
     const { count: escritas, error: errCount } = await supabase
       .from('cartas')

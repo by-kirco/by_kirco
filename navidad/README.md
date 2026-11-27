@@ -52,6 +52,18 @@ reserva sin usar mandarle — no es automático ni al azar. Al confirmar, se mar
 usada (`cartas_reserva.usada`), la carta deja de aparecer en "Ya aprobadas" y se manda ya el
 email de entrega real. En `/navidad/abrir.html` se ve igual que una carta normal, firmada "Kirco".
 
+### Bloquear un correo a mano (botón "Bloquear correo" en "Por revisar" y en "Ya aprobadas")
+
+Para spam o incumplimiento repetido de las políticas desde la misma cuenta. Hace lo mismo que
+"Rechazar" (se pide un motivo, la carta pasa a `rechazada` y se borra el texto, se manda el
+mismo email de rechazo de siempre) y además guarda el correo en `correos_bloqueados`. Mientras
+esté ahí, `POST /api/navidad/carta` rechaza cualquier carta nueva desde ese correo con un 403,
+antes incluso de llegar a la cola de revisión. La persona no recibe ningún aviso de que,
+además de rechazada, ha quedado bloqueada — ve el mismo mensaje que cualquier rechazo normal.
+
+Quitar un bloqueo todavía no tiene botón en el panel: por ahora se borra a mano la fila
+correspondiente en `correos_bloqueados` desde el SQL Editor de Supabase.
+
 **Deliberadamente fuera de esta entrega** (a petición explícita, para después):
 
 - El reparto automático de verdad, disparado solo el 25 de diciembre a las 00:00 sin que nadie
@@ -59,7 +71,8 @@ email de entrega real. En `/navidad/abrir.html` se ve igual que una carta normal
   decidir por su cuenta cuándo hace falta una carta de reserva).
 
 El esquema de datos (`supabase/schema.sql`) ya incluye las columnas (`abierta_at`, `motivo`,
-`recibe_reserva_id`) y la tabla `cartas_reserva` preparadas para cuando se construya esa fase.
+`recibe_reserva_id`) y la tabla `cartas_reserva` preparadas para cuando se construya esa fase,
+y también la tabla `correos_bloqueados` del bloqueo manual descrito arriba.
 
 ## Puesta en marcha
 
