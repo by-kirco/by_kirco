@@ -52,6 +52,24 @@ reserva sin usar mandarle — no es automático ni al azar. Al confirmar, se mar
 usada (`cartas_reserva.usada`), la carta deja de aparecer en "Ya aprobadas" y se manda ya el
 email de entrega real. En `/navidad/abrir.html` se ve igual que una carta normal, firmada "Kirco".
 
+### Añadir una carta de reserva como "carta de Kirco" (aside "Fechas y acciones")
+
+Distinto del punto anterior: en vez de dar una reserva a una persona concreta que se ha
+quedado sin pareja, esto convierte una carta de reserva en una carta normal y aprobada más,
+como si la hubiese escrito `by.kirco@gmail.com` (con un alias `+`, p. ej.
+`by.kirco+a1b2c3d4@gmail.com` — Gmail ignora lo que va después del `+` y todo llega al mismo
+buzón real). Sirve para rellenar el buzón con cartas de verdad antes de "Repartir ahora",
+por ejemplo para poder probar el reparto sin esperar a tener suficientes cartas reales, o para
+cuadrar un número impar de participantes.
+
+Como es una carta aprobada más, entra en "Repartir ahora" exactamente igual que cualquier
+otra: puede tocarle a alguien como destino, y a su vez recibe una carta real en el sorteo — no
+hace falta ningún código especial para que quede equilibrado, es el mismo `emparejaSinAutoenvio`
+de siempre. En "Ya aprobadas" se distingue con la etiqueta "· relleno de Kirco" junto al nombre.
+No manda ningún email al crearla (no hay nadie real esperando el aviso de "tu carta ya está en
+el buzón"). Marca la reserva como usada (`cartas_reserva.usada`), así que no se puede volver a
+usar ni aquí ni en el asignar-reserva del punto anterior.
+
 ### Bloquear un correo a mano (botón "Bloquear correo" en "Por revisar" y en "Ya aprobadas")
 
 Para spam o incumplimiento repetido de las políticas desde la misma cuenta. Hace lo mismo que

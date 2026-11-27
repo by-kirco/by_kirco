@@ -98,6 +98,10 @@
         <button type="button" class="p-pill p-gris" disabled title="Todavía no está construido">Cerrar las cartas ahora</button>
         <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">El cierre manual anticipado aún no está disponible — por ahora el buzón se cierra solo al llegar a 100 cartas o al pasar el plazo.</p>
         <hr style="width:100%;border:none;border-top:2px dashed var(--k-tinta-suave);margin:4px 0">
+        <p style="margin:0;font-weight:700">Cartas de Kirco (relleno)</p>
+        <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">Añade una carta de reserva al buzón como si la hubiese escrito by.kirco@gmail.com (todos los avisos llegan a ese correo real, con un alias +). Entra en el reparto como una más: puede tocarle a alguien, y a su vez le llegará una carta de verdad — queda equilibrado.</p>
+        <div id="p-kirco-relleno"></div>
+        <hr style="width:100%;border:none;border-top:2px dashed var(--k-tinta-suave);margin:4px 0">
         <button type="button" id="p-repartir" class="p-pill p-naranja">Repartir ahora (prueba)</button>
         <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">Empareja las cartas aprobadas sin repartir y manda ya el email de entrega. Esto NO es el sorteo automático del 25 — es solo para probar con cartas de prueba antes de esa fecha. Hacen falta al menos 2 aprobadas sin repartir.</p>
       </aside>
@@ -269,13 +273,40 @@
       '<button type="button" class="p-pill p-verde" data-accion="asignar-reserva">Mandarle esta</button></div>';
   }
 
+  function pintarKircoRelleno(reservaDisponibles) {
+    var host = document.getElementById('p-kirco-relleno');
+    if (!reservaDisponibles || !reservaDisponibles.length) {
+      host.innerHTML = '<p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">No hay cartas de reserva cargadas, o ya están todas usadas.</p>';
+      return;
+    }
+    var opciones = reservaDisponibles.map(function (r) {
+      return '<option value="' + escapa(r.id) + '">' + escapa(r.tema) + '</option>';
+    }).join('');
+    host.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
+      '<select class="campo" id="p-kirco-select" style="height:40px;flex:1 1 200px"><option value="">— elige una carta de reserva —</option>' + opciones + '</select>' +
+      '<button type="button" class="p-pill p-verde" id="p-kirco-anadir">Añadir al buzón</button></div>';
+    document.getElementById('p-kirco-anadir').addEventListener('click', function () {
+      var select = document.getElementById('p-kirco-select');
+      var reservaId = select ? select.value : '';
+      if (!reservaId) { alert('Elige primero qué carta de reserva quieres añadir.'); return; }
+      var boton = this;
+      boton.disabled = true; select.disabled = true;
+      api('panel-reserva-como-carta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reservaId: reservaId }) })
+        .then(function (res) {
+          if (res.status === 200) { cargarDatos(); }
+          else { alert((res.body && res.body.error) || 'No se pudo añadir.'); boton.disabled = false; select.disabled = false; }
+        })
+        .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); boton.disabled = false; select.disabled = false; });
+    });
+  }
+
   function pintarAprobadas(aprobadas, reservaDisponibles) {
     var host = document.getElementById('p-aprobadas');
     if (!aprobadas || !aprobadas.length) { host.innerHTML = '<div style="padding:20px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0;font-size:14px;color:var(--k-tinta-suave)">No hay cartas aprobadas sin repartir.</p></div>'; return; }
     host.innerHTML = aprobadas.map(function (c) {
       return '<article class="p-carta" data-id="' + escapa(c.id) + '">' +
         '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center">' +
-        '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(c.nombre) + ' → ' + escapa(c.para) + ' · ' + escapa(c.fecha) + '</p>' +
+        '<p class="etiqueta" style="margin:0;font-size:13px">' + escapa(c.nombre) + (c.esDeKirco ? ' <span style="color:var(--k-naranja-deep)">· relleno de Kirco</span>' : '') + ' → ' + escapa(c.para) + ' · ' + escapa(c.fecha) + '</p>' +
         (c.yaElegida ? '<span class="p-badge p-badge-orange">Ya elegida por ' + escapa(c.yaElegida) + '</span>' : '<span class="p-badge p-badge-green">En el buzón</span>') + '</div>' +
         textoEditableHtml(c.texto) +
         motivoBoxHtml() +
@@ -356,6 +387,7 @@
       pintarKpis(res.body.kpis);
       pintarCola(res.body.cola, res.body.vacio);
       pintarAprobadas(res.body.aprobadas, res.body.reservaDisponibles);
+      pintarKircoRelleno(res.body.reservaDisponibles);
       pintarNotas(res.body.notas);
       pintarUltimas(res.body.ultimas);
     }).catch(function () { console.error('No se pudo cargar el panel.'); });
