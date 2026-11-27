@@ -95,8 +95,8 @@
 
     <p id="p-error-envio" role="alert" class="aviso-error" style="display:none;margin:0"><span aria-hidden="true" class="icono-error">!</span><span id="p-error-envio-texto"></span></p>
 
-    <button type="button" id="b-enviar" class="btn btn-carta" style="width:100%">Enviar mi carta</button>
-    <p id="p-bloqueado" style="margin:-8px 0 0;font-size:13px;color:#fff;text-align:center">Escribe tu correo y marca la casilla para poder enviarla.</p>
+    <button type="button" id="b-enviar" class="btn btn-carta" style="width:100%"><span id="b-enviar-texto">Enviar mi carta</span></button>
+    <p id="p-bloqueado" role="status" aria-live="polite" style="margin:-8px 0 0;font-size:13px;color:#fff;text-align:center">Escribe tu correo y marca la casilla para poder enviarla.</p>
     <a class="ir" href="/navidad/gracias.html" tabindex="-1" aria-hidden="true" style="display:none">Gracias</a>
   </main>
 
@@ -232,21 +232,34 @@
     cayendo = true;
     document.getElementById('b-enviar').setAttribute('aria-disabled', 'true');
     document.getElementById('p-error-envio').style.display = 'none';
+    document.getElementById('b-enviar-texto').textContent = 'Enviando…';
+    var pBloqueado = document.getElementById('p-bloqueado');
+    pBloqueado.textContent = 'Enviando tu carta, un momento…';
+    pBloqueado.style.display = 'block';
+
+    function restaura() {
+      document.getElementById('b-enviar-texto').textContent = 'Enviar mi carta';
+      pBloqueado.textContent = 'Escribe tu correo y marca la casilla para poder enviarla.';
+      pintarValidacion();
+    }
 
     var lanza = function () {
       enviarApi().then(function (res) {
         if (res.status >= 200 && res.status < 300) {
+          pBloqueado.style.display = 'none';
           var fin = 0; var listo = function () { if (++fin === 2) { var a = document.querySelector('a.ir'); if (a) a.click(); } };
           vuela(listo); cae(listo);
         } else {
           cayendo = false;
           document.getElementById('b-enviar').setAttribute('aria-disabled', 'false');
+          restaura();
           document.getElementById('p-error-envio-texto').textContent = (res.body && res.body.error) || 'No he podido enviar tu carta. Inténtalo de nuevo en un momento.';
           document.getElementById('p-error-envio').style.display = 'flex';
         }
       }).catch(function () {
         cayendo = false;
         document.getElementById('b-enviar').setAttribute('aria-disabled', 'false');
+        restaura();
         document.getElementById('p-error-envio-texto').textContent = 'No se ha podido conectar. Comprueba tu conexión e inténtalo de nuevo.';
         document.getElementById('p-error-envio').style.display = 'flex';
       });
