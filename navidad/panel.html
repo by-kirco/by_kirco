@@ -97,6 +97,9 @@
         <button type="button" id="p-exportar" class="p-pill p-amarillo">Exportar recuento (.csv)</button>
         <button type="button" class="p-pill p-gris" disabled title="Todavía no está construido">Cerrar las cartas ahora</button>
         <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">El cierre manual anticipado aún no está disponible — por ahora el buzón se cierra solo al llegar a 100 cartas o al pasar el plazo.</p>
+        <hr style="width:100%;border:none;border-top:2px dashed var(--k-tinta-suave);margin:4px 0">
+        <button type="button" id="p-repartir" class="p-pill p-naranja">Repartir ahora (prueba)</button>
+        <p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">Empareja las cartas aprobadas sin repartir y manda ya el email de entrega. Esto NO es el sorteo automático del 25 — es solo para probar con cartas de prueba antes de esa fecha. Hacen falta al menos 2 aprobadas sin repartir.</p>
       </aside>
     </div>
   </div>
@@ -285,6 +288,21 @@
     var csv = filas.map(function (r) { return r.map(function (v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; }).join(','); }).join('\r\n');
     var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cartas-by-kirco.csv'; a.click();
+  });
+
+  document.getElementById('p-repartir').addEventListener('click', function () {
+    if (!confirm('¿Repartir ahora las cartas aprobadas sin repartir? Se manda ya el email de entrega a quien le toque. No es el sorteo del 25, es solo para probar.')) return;
+    var b = document.getElementById('p-repartir');
+    b.disabled = true;
+    api('panel-repartir', { method: 'POST' }).then(function (res) {
+      b.disabled = false;
+      if (res.status === 200) {
+        alert('Repartidas ' + res.body.repartidas + ' de ' + res.body.total + ' cartas. Revisa el correo de cada una.');
+        cargarDatos();
+      } else {
+        alert((res.body && res.body.error) || 'No se pudo repartir.');
+      }
+    }).catch(function () { b.disabled = false; alert('No se pudo conectar. Inténtalo de nuevo.'); });
   });
 
   api('panel-auth').then(function (res) { (res.status === 200 && res.body.authed) ? mostrarDashboard() : mostrarLogin(); }).catch(mostrarLogin);

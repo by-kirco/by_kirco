@@ -32,13 +32,9 @@ module.exports = async function handler(req, res) {
     if (error) throw error;
     if (!d) return res.status(404).json({ estado: 'no_encontrada' });
 
-    if (Date.now() < OBJETIVO_25) {
-      res.setHeader('Cache-Control', 'no-store');
-      return res.status(200).json({ estado: 'antes', objetivo: new Date(OBJETIVO_25).toISOString() });
-    }
-
     if (!d.recibe_carta_id) {
       res.setHeader('Cache-Control', 'no-store');
+      if (Date.now() < OBJETIVO_25) return res.status(200).json({ estado: 'antes', objetivo: new Date(OBJETIVO_25).toISOString() });
       return res.status(200).json({ estado: 'camino' });
     }
 

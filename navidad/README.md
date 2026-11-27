@@ -27,17 +27,27 @@ Flujo completo de quien participa, conectado a Supabase de verdad:
 
 Emails automáticos (Resend), en voz de Kirco ("yo") salvo el pie legal ("nosotros"):
 aprobar, rechazar (con el motivo elegido en el panel), reenvío de nota de agradecimiento, y
-"Feliz Navidad, alguien te ha escrito esto para ti" (lista en `_emailTemplates.js` como
-`plantillaEntrega`, pero **nada la dispara todavía** — ver limitación justo debajo).
+"Feliz Navidad, alguien te ha escrito esto para ti" (se dispara con "Repartir ahora", ver abajo).
+
+### Reparto manual, para pruebas (botón "Repartir ahora (prueba)" en el panel)
+
+El panel tiene un botón que empareja las cartas aprobadas sin repartir (respeta los destinos
+elegidos a mano, reparte al azar entre el resto, sin que nadie se escriba a sí mismo) y manda ya
+el email "Feliz Navidad..." a cada una. En cuanto una carta tiene `recibe_carta_id` asignado,
+`/navidad/abrir.html` la muestra al momento — **no hace falta esperar al 25 de diciembre**: la
+fecha solo bloquea a quien todavía no tiene nada asignado. Así se puede probar el flujo completo
+(email de entrega → abrir la carta → mandar las gracias) cualquier día, con un puñado de cartas
+de prueba aprobadas (`POST /api/navidad/panel-repartir`).
+
+**Esto NO es el reparto automático real del 25 de diciembre** (eso sigue sin construirse: haría
+falta decidir el reparto de las 100 cartas reales a las 00:00 hora de Madrid, probablemente con
+un cron — limitación del plan Hobby de Vercel a tener en cuenta). "Repartir ahora" es un disparador
+manual pensado para probar con pocas cartas, no para usarse el día de verdad con el buzón completo.
 
 **Deliberadamente fuera de esta entrega** (a petición explícita, para después):
 
-- El reparto automático del 25 de diciembre: el algoritmo que decide quién escribió a quién
-  (`recibe_carta_id`) y lo ejecuta a las 00:00 hora de Madrid. Sin él, `abrir.html` para cualquier
-  token se queda en el estado "tu carta está al llegar" aunque ya sea 25 de diciembre, porque
-  nadie tiene `recibe_carta_id` asignado. Para probar el flujo completo (carta abierta + nota de
-  agradecimiento real) antes de construir el reparto, hazlo a mano en el SQL Editor de Supabase:
-  `update cartas set recibe_carta_id = '<id de otra carta aprobada>' where token = '<tu token>';`
+- El reparto automático de verdad, disparado solo el 25 de diciembre a las 00:00 sin que nadie
+  tenga que entrar al panel a darle al botón.
 - Disparar de verdad el email `plantillaEntrega` (depende del reparto de arriba).
 
 El esquema de datos (`supabase/schema.sql`) ya incluye las columnas (`abierta_at`, `motivo`) y la

@@ -5,8 +5,6 @@
 const { getSupabase } = require('./_supabase');
 const filtro = require('./_filtro');
 
-const OBJETIVO_25 = Date.UTC(2026, 11, 24, 23, 0, 0); // 25/12/2026 00:00 Europe/Madrid (CET, UTC+1)
-
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -23,7 +21,6 @@ module.exports = async function handler(req, res) {
   if (!token) return res.status(422).json({ error: 'Falta el enlace de tu carta.' });
   if (!texto) return res.status(422).json({ error: 'Escribe algo antes de enviar.' });
   if (texto.length > 300) return res.status(422).json({ error: 'Tu nota es demasiado larga: como mucho 300 caracteres.' });
-  if (Date.now() < OBJETIVO_25) return res.status(403).json({ error: 'Todavía no puedes mandar gracias: tu carta no ha llegado.' });
 
   const filtroTexto = filtro.revisa(texto);
   if (!filtroTexto.ok) {
