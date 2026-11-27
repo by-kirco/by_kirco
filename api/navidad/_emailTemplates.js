@@ -18,11 +18,17 @@ function envoltorio(tituloHtml, cuerpoInteriorHtml, pieExtraHtml) {
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;font-family:'Courier New',monospace;color:#FFFFFF">
   <tr><td style="background-color:#1D2657;background-image:url('${BASE}/email/nieve_email.gif');background-repeat:repeat-y;background-position:top center;padding:40px 32px 28px" align="center">
     <img src="${BASE}/img/logo_blanco.png" width="84" alt="by_kirco" style="display:block;width:84px;height:auto;margin:0 auto 22px">
-    <h1 style="margin:0 0 24px;text-align:center;font-size:36px;line-height:1.15;color:#FFFFFF;font-family:Georgia,serif;font-weight:400">${tituloHtml}</h1>
+    <h1 style="margin:0 0 24px;text-align:center;font-size:40px;line-height:1.2;color:#FFFFFF;font-family:'Courier New',monospace;font-weight:700">${tituloHtml}</h1>
     ${cuerpoInteriorHtml}
   </td></tr>
   <tr><td><img src="${BASE}/email/ola_email.png" width="600" height="30" alt="" style="display:block;width:100%;height:30px"></td></tr>
-  <tr><td style="background:#6F9C3E;padding:20px 32px 28px" align="center">
+</table>
+</td></tr>
+</table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#6F9C3E">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;font-family:'Courier New',monospace;color:#FFFFFF">
+  <tr><td style="padding:20px 32px 28px" align="center">
     <a href="https://www.bykirco.com" style="font-family:'Courier New',monospace;font-size:16px;color:#FFFFFF;text-decoration:none">www.bykirco.com</a>
     <p style="margin:10px 0 0;font-size:12px;color:#FFFFFF">
       Recibes este correo porque has escrito una carta en by_kirco.<br>
@@ -68,14 +74,14 @@ function plantillaRechazada({ seudonimo, motivo }) {
   const cuerpo = tarjeta(`
       <p style="margin:0 0 12px">Hola, ${nombre}:</p>
       <p style="margin:0 0 12px">Hemos leído tu carta y esta vez no podemos enviarla. ${porque}</p>
-      <p style="margin:0 0 12px">No te quedas sin la tuya. El 25 de diciembre, a las 00:00, te llega una carta a este correo, como a todos los que han escrito.</p>
-      <p style="margin:0 0 12px">Si quieres, puedes escribir otra hasta el 23 de diciembre a las 23:59.</p>
+      <p style="margin:0 0 12px">Lamentablemente no podemos mandarte una carta el 25 de diciembre 😔: solo le llega a quien ha escrito una que cumple nuestras políticas.</p>
+      <p style="margin:0 0 12px">Si quieres recibir una, escribe otra antes del 23 de diciembre a las 23:59 y que esta sí las cumpla.</p>
       <p style="margin:0 0 12px">Gracias por sentarte a escribir.</p>
       <p style="margin:0 0 4px">Kirco</p>
       <p style="margin:0;font-size:14px;color:#6b6557">Escribo para ti sin conocerte.</p>
     `) + `<div align="center">${boton('https://www.bykirco.com/navidad/presentate.html', 'Escribir otra carta')}</div>`;
   return {
-    subject: `${seudonimo}, esta vez tu carta se queda, pero el 25 te llega una`,
+    subject: `${seudonimo}, esta vez tu carta no puede salir`,
     html: envoltorio('Esta carta<br>no puede salir', cuerpo)
   };
 }
