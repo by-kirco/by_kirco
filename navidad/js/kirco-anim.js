@@ -134,7 +134,7 @@ K.pintarPie = function () {
         '<nav aria-label="Enlaces legales"><a href="/navidad/legal.html" style="display:inline-flex;align-items:center;min-height:44px">Política de privacidad</a></nav>' +
         '<p class="etiqueta" style="margin:0;font-size:13px;color:#fff">by_kirco · Escribo para ti sin conocerte</p>' +
       '</div>' +
-      '<img src="/navidad/assets/svg/logo_bk-neg2c_naranja.svg" alt="by_kirco">' +
+      '<a href="/navidad/panel.html" aria-label="by_kirco" style="display:block;margin-left:auto"><img src="/navidad/assets/svg/logo_bk-neg2c_naranja.svg" alt="by_kirco"></a>' +
     '</div></footer>';
 };
 document.addEventListener('DOMContentLoaded', K.pintarPie);
