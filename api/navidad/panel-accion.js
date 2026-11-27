@@ -37,7 +37,7 @@ module.exports = async function handler(req, res) {
       ? { estado: 'aprobada' }
       : { estado: 'rechazada', texto: null, motivo };
 
-    let query = supabase.from('cartas').update(cambios).eq('id', id).is('recibe_carta_id', null);
+    let query = supabase.from('cartas').update(cambios).eq('id', id).is('recibe_carta_id', null).is('recibe_reserva_id', null);
     query = accion === 'aprobar' ? query.eq('estado', 'pendiente') : query.in('estado', ['pendiente', 'aprobada']);
     const { data, error } = await query.select('id, estado, correo, seudonimo').maybeSingle();
 

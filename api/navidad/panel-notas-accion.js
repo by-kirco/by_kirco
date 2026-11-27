@@ -69,7 +69,7 @@ module.exports = async function handler(req, res) {
       if (cartaFirma) seudonimoFirma = cartaFirma.seudonimo;
     }
 
-    const plantilla = plantillaNotaReenviada({ textoNota: nota.texto, seudonimoDestinatario: seudonimoFirma });
+    const plantilla = plantillaNotaReenviada({ seudonimo: cartaDe.seudonimo, textoNota: nota.texto, seudonimoDestinatario: seudonimoFirma });
     const envio = await enviaEmail({ to: cartaDe.correo, subject: plantilla.subject, html: plantilla.html });
     if (!envio.ok) return res.status(502).json({ error: 'No se pudo enviar el email: ' + envio.error });
 

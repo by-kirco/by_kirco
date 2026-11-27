@@ -44,14 +44,22 @@ falta decidir el reparto de las 100 cartas reales a las 00:00 hora de Madrid, pr
 un cron — limitación del plan Hobby de Vercel a tener en cuenta). "Repartir ahora" es un disparador
 manual pensado para probar con pocas cartas, no para usarse el día de verdad con el buzón completo.
 
+### Asignar una carta de reserva a mano (botón en cada tarjeta de "Ya aprobadas")
+
+Cuando alguien aprobado se queda sin pareja (por ejemplo, una sola carta aprobada: "Repartir
+ahora" exige mínimo 2), Sara puede elegir ella misma, en un desplegable, cuál de las cartas de
+reserva sin usar mandarle — no es automático ni al azar. Al confirmar, se marca esa reserva como
+usada (`cartas_reserva.usada`), la carta deja de aparecer en "Ya aprobadas" y se manda ya el
+email de entrega real. En `/navidad/abrir.html` se ve igual que una carta normal, firmada "Kirco".
+
 **Deliberadamente fuera de esta entrega** (a petición explícita, para después):
 
 - El reparto automático de verdad, disparado solo el 25 de diciembre a las 00:00 sin que nadie
-  tenga que entrar al panel a darle al botón.
-- Disparar de verdad el email `plantillaEntrega` (depende del reparto de arriba).
+  tenga que entrar al panel a darle al botón (ni para emparejar cartas reales entre sí, ni para
+  decidir por su cuenta cuándo hace falta una carta de reserva).
 
-El esquema de datos (`supabase/schema.sql`) ya incluye las columnas (`abierta_at`, `motivo`) y la
-tabla `cartas_reserva` preparadas para cuando se construya esa segunda fase.
+El esquema de datos (`supabase/schema.sql`) ya incluye las columnas (`abierta_at`, `motivo`,
+`recibe_reserva_id`) y la tabla `cartas_reserva` preparadas para cuando se construya esa fase.
 
 ## Puesta en marcha
 
