@@ -146,12 +146,14 @@
     art.querySelectorAll('input[name="motivo"]').forEach(function (r) {
       r.addEventListener('change', function () { otroInput.style.display = (r.checked && r.value === '__otro__') ? 'block' : 'none'; });
     });
+    var confirmarBtn = motivoBox.querySelector('[data-accion="confirmar-rechazo"]');
     function enviarAccion(id, accion, motivo) {
       art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
       api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion, motivo: motivo }) })
         .then(function (res) {
           if (res.status === 200) {
             if (res.body && res.body.email === false) alert('Guardado, pero el email no se ha podido mandar. Revisa la configuración de Resend (API key, dominio verificado).');
+            if (res.body && res.body.bloqueado === false) alert('La carta se ha rechazado, pero el correo NO se ha podido bloquear: falta aplicar el esquema de Supabase (tabla correos_bloqueados).');
             cargarDatos();
           } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
         })
@@ -161,14 +163,22 @@
       b.addEventListener('click', function () {
         var id = art.getAttribute('data-id'); var accion = b.getAttribute('data-accion');
         if (accion === 'aprobar') { enviarAccion(id, 'aprobar'); return; }
-        if (accion === 'rechazar') { motivoBox.style.display = 'flex'; botonesBox.style.display = 'none'; return; }
+        if (accion === 'rechazar' || accion === 'bloquear') {
+          art.dataset.accionMotivo = accion;
+          if (confirmarBtn) confirmarBtn.textContent = accion === 'bloquear' ? 'Confirmar rechazo y bloqueo' : 'Confirmar rechazo';
+          motivoBox.style.display = 'flex'; botonesBox.style.display = 'none'; return;
+        }
         if (accion === 'cancelar-rechazo') { motivoBox.style.display = 'none'; botonesBox.style.display = 'flex'; return; }
         if (accion === 'confirmar-rechazo') {
           var elegido = art.querySelector('input[name="motivo"]:checked');
           var motivo = elegido ? (elegido.value === '__otro__' ? otroInput.value.trim() : elegido.value) : '';
           if (!motivo) { alert('Elige o escribe un motivo antes de confirmar.'); return; }
-          if (!confirm('¿Seguro que quieres rechazar esta carta? Se borrará el texto.')) return;
-          enviarAccion(id, 'rechazar', motivo);
+          var accionFinal = art.dataset.accionMotivo || 'rechazar';
+          var mensajeConfirm = accionFinal === 'bloquear'
+            ? '¿Seguro que quieres rechazar esta carta y bloquear este correo? No podrá volver a mandar otra.'
+            : '¿Seguro que quieres rechazar esta carta? Se borrará el texto.';
+          if (!confirm(mensajeConfirm)) return;
+          enviarAccion(id, accionFinal, motivo);
         }
       });
     });
@@ -185,6 +195,7 @@
         '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(c.texto) + '</p>' +
         motivoBoxHtml() +
         '<div class="p-botones" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
+        '<button type="button" class="p-pill p-naranja" data-accion="bloquear">Bloquear correo</button>' +
         '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button>' +
         '<button type="button" class="p-pill p-verde" data-accion="aprobar">Aprobar · a la bolsa</button></div></article>';
     }).join('');
@@ -218,6 +229,7 @@
         reservaBoxHtml(reservaDisponibles) +
         '</div>' +
         '<div class="p-botones" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
+        '<button type="button" class="p-pill p-naranja" data-accion="bloquear">Bloquear correo</button>' +
         '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button></div></article>';
     }).join('');
     host.querySelectorAll('article').forEach(wireAccionesCarta);
