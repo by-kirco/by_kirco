@@ -109,7 +109,8 @@ module.exports = async function handler(req, res) {
           para: nombrePara(c),
           fecha: fechaCorta(c.creada_at),
           texto: c.texto || '',
-          yaElegida: elegidaPorCarta ? elegidaPorCarta.seudonimo : null
+          yaElegida: elegidaPorCarta ? elegidaPorCarta.seudonimo : null,
+          esDeKirco: !!(c.correo && c.correo.indexOf('by.kirco+') === 0)
         };
       });
 
