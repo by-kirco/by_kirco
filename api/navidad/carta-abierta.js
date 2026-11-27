@@ -24,12 +24,22 @@ module.exports = async function handler(req, res) {
   try {
     const supabase = getSupabase();
 
-    const { data: d, error } = await supabase
-      .from('cartas')
-      .select('id, seudonimo, saludo, estado, recibe_carta_id, recibe_reserva_id, abierta_at')
-      .eq('token', token)
-      .maybeSingle();
-    if (error) throw error;
+    // recibe_reserva_id es una columna nueva: si este proyecto de Supabase todavía no la tiene,
+    // se repite la consulta sin ella en vez de romper la página (nadie podrá abrir una carta de
+    // reserva hasta entonces, pero las cartas normales siguen funcionando).
+    let d;
+    {
+      const r = await supabase.from('cartas').select('id, seudonimo, saludo, estado, recibe_carta_id, recibe_reserva_id, abierta_at').eq('token', token).maybeSingle();
+      if (r.error && String(r.error.message || '').includes('recibe_reserva_id')) {
+        console.error('carta-abierta.js: recibe_reserva_id no disponible (¿falta aplicar schema.sql?)', r.error.message);
+        const r2 = await supabase.from('cartas').select('id, seudonimo, saludo, estado, recibe_carta_id, abierta_at').eq('token', token).maybeSingle();
+        if (r2.error) throw r2.error;
+        d = r2.data ? Object.assign({ recibe_reserva_id: null }, r2.data) : null;
+      } else {
+        if (r.error) throw r.error;
+        d = r.data;
+      }
+    }
     if (!d) return res.status(404).json({ estado: 'no_encontrada' });
 
     if (!d.recibe_carta_id && !d.recibe_reserva_id) {
