@@ -42,12 +42,18 @@ module.exports = async function handler(req, res) {
     const elegidaPor = new Map();
     (cartas || []).forEach((c) => { if (c.destino_carta_id) elegidaPor.set(c.destino_carta_id, c); });
 
-    const { data: reserva, error: errReserva } = await supabase
-      .from('cartas_reserva')
-      .select('id, usada');
-    if (errReserva) throw errReserva;
-    const reservaTotal = (reserva || []).length;
-    const reservaUsadas = (reserva || []).filter((r) => r.usada).length;
+    // cartas_reserva es un extra (fase de reparto): si la tabla todavía no existe en este
+    // proyecto de Supabase, no debe tumbar el resto del panel — solo se omite ese KPI.
+    let reservaTotal = null;
+    let reservaUsadas = null;
+    try {
+      const { data: reserva, error: errReserva } = await supabase.from('cartas_reserva').select('id, usada');
+      if (errReserva) throw errReserva;
+      reservaTotal = (reserva || []).length;
+      reservaUsadas = (reserva || []).filter((r) => r.usada).length;
+    } catch (eReserva) {
+      console.error('panel-datos.js: cartas_reserva no disponible (¿falta aplicar schema.sql?)', eReserva && eReserva.message);
+    }
 
     const kpis = [
       { label: 'Escritas', valor: cartas.length, nota: 'Pendientes + aprobadas + rechazadas', clase: 'kpi' },
@@ -55,9 +61,11 @@ module.exports = async function handler(req, res) {
       { label: 'En la bolsa', valor: aprobadas.filter((c) => !c.recibe_carta_id).length, nota: 'Aprobadas, sin repartir', clase: 'kpi' },
       { label: 'Rechazadas', valor: rechazadas.length, nota: 'No se enviaron', clase: 'kpi naranja' },
       { label: 'Con destino', valor: conDestino.length, nota: 'Eligieron a alguien', clase: 'kpi' },
-      { label: 'Al azar', valor: alAzar.length, nota: 'Desconocido al azar', clase: 'kpi' },
-      { label: 'Reserva', valor: `${reservaUsadas}/${reservaTotal}`, nota: 'Usadas, solo si faltan cartas', clase: 'kpi' }
+      { label: 'Al azar', valor: alAzar.length, nota: 'Desconocido al azar', clase: 'kpi' }
     ];
+    if (reservaTotal !== null) {
+      kpis.push({ label: 'Reserva', valor: `${reservaUsadas}/${reservaTotal}`, nota: 'Usadas, solo si faltan cartas', clase: 'kpi' });
+    }
 
     const cola = pendientes.map((c) => {
       const r = filtro.revisa(`${c.seudonimo} ${c.texto || ''}`);
