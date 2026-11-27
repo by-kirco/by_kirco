@@ -131,7 +131,7 @@ K.pintarPie = function () {
     (nieve ? '<div style="position:relative;z-index:4;margin-top:-2px"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%;height:36px"><path d="M0 50 L0 24 C240 4 480 4 720 22 C960 40 1200 36 1440 14 L1440 50 Z" fill="#FFFFFF"></path><path d="M0 50 L0 40 C240 22 480 22 720 36 C960 50 1200 48 1440 30 L1440 50 Z" fill="#6F9C3E"></path></svg></div>' : '') +
     '<footer class="k-pie"><div class="k-pie-inner">' +
       '<div style="flex:1 1 260px;display:flex;flex-direction:column;gap:4px">' +
-        '<nav aria-label="Enlaces legales" style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="/navidad/legal.html" style="display:inline-flex;align-items:center;min-height:44px">Política de privacidad</a><a href="/navidad/panel.html" style="display:inline-flex;align-items:center;min-height:44px;opacity:0.6">Panel</a></nav>' +
+        '<nav aria-label="Enlaces legales"><a href="/navidad/legal.html" style="display:inline-flex;align-items:center;min-height:44px">Política de privacidad</a></nav>' +
         '<p class="etiqueta" style="margin:0;font-size:13px;color:#fff">by_kirco · Escribo para ti sin conocerte</p>' +
       '</div>' +
       '<a href="/navidad/panel.html" aria-label="by_kirco" style="display:block;margin-left:auto"><img src="/navidad/assets/svg/logo_bk-neg2c_naranja.svg" alt="by_kirco"></a>' +
