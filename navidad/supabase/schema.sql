@@ -63,9 +63,19 @@ create table if not exists notas (
   creada_at timestamptz not null default now()
 );
 
+-- Correos bloqueados a mano desde el panel (spam o incumplimiento repetido de las políticas):
+-- quien escriba desde uno de estos correos no puede volver a mandar una carta nueva.
+create table if not exists correos_bloqueados (
+  correo text primary key,
+  motivo text,
+  bloqueada_en_carta_id uuid references cartas(id),
+  creada_at timestamptz not null default now()
+);
+
 alter table cartas enable row level security;
 alter table cartas_reserva enable row level security;
 alter table notas enable row level security;
+alter table correos_bloqueados enable row level security;
 -- Sin políticas públicas a propósito: todo el acceso pasa por las funciones serverless
 -- (/api/navidad/*) con la service role key, que ignora RLS. El panel de Sara (futuro)
 -- hará lo mismo desde el servidor.
@@ -78,3 +88,4 @@ grant usage on schema public to service_role;
 grant all on table public.cartas to service_role;
 grant all on table public.cartas_reserva to service_role;
 grant all on table public.notas to service_role;
+grant all on table public.correos_bloqueados to service_role;

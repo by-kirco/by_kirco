@@ -1,9 +1,13 @@
 /* POST /api/navidad/panel-accion — solo con sesión de Sara.
-   body: { id, accion: 'aprobar' | 'rechazar' }
+   body: { id, accion: 'aprobar' | 'rechazar' | 'bloquear', motivo? }
    Aprobar: estado -> aprobada (entra en la bolsa). Solo si estaba pendiente.
    Rechazar: estado -> rechazada y se borra el texto de la carta. Vale tanto para una
    carta pendiente como para una ya aprobada (por si Sara se lo piensa mejor), pero nunca
-   si ya tiene recibe_carta_id (ya le ha llegado una carta de otra persona: sería demasiado tarde). */
+   si ya tiene recibe_carta_id (ya le ha llegado una carta de otra persona: sería demasiado tarde).
+   Bloquear: hace lo mismo que rechazar y, además, guarda el correo en correos_bloqueados
+   para que esa cuenta no pueda volver a mandar otra carta (spam o incumplimiento repetido).
+   La persona recibe el mismo email de rechazo de siempre: no se le avisa de que, además,
+   queda bloqueada. */
 const { requiereSesion } = require('./_auth');
 const { getSupabase } = require('./_supabase');
 const { enviaEmail } = require('./_resend');
@@ -23,12 +27,13 @@ module.exports = async function handler(req, res) {
 
   const id = String(body.id || '').trim();
   const accion = String(body.accion || '').trim();
-  const motivo = accion === 'rechazar' ? String(body.motivo || '').trim().slice(0, 300) : null;
-  if (!id || !['aprobar', 'rechazar'].includes(accion)) {
+  const necesitaMotivo = accion === 'rechazar' || accion === 'bloquear';
+  const motivo = necesitaMotivo ? String(body.motivo || '').trim().slice(0, 300) : null;
+  if (!id || !['aprobar', 'rechazar', 'bloquear'].includes(accion)) {
     return res.status(422).json({ error: 'Faltan datos de la acción.' });
   }
-  if (accion === 'rechazar' && !motivo) {
-    return res.status(422).json({ error: 'Elige o escribe un motivo para el rechazo: hay que avisar por qué.' });
+  if (necesitaMotivo && !motivo) {
+    return res.status(422).json({ error: 'Elige o escribe un motivo: hay que avisar por qué.' });
   }
 
   try {
@@ -56,8 +61,24 @@ module.exports = async function handler(req, res) {
       return res.status(409).json({
         error: accion === 'aprobar'
           ? 'Esa carta ya no está pendiente (puede que otra persona la haya gestionado ya).'
-          : 'Esa carta ya no se puede rechazar (puede que ya se haya repartido, o que otra persona la haya gestionado ya).'
+          : 'Esa carta ya no se puede gestionar (puede que ya se haya repartido, o que otra persona la haya gestionado ya).'
       });
+    }
+
+    let bloqueado;
+    if (accion === 'bloquear') {
+      try {
+        const { error: errBloqueo } = await supabase
+          .from('correos_bloqueados')
+          .upsert({ correo: data.correo, motivo, bloqueada_en_carta_id: data.id }, { onConflict: 'correo' });
+        if (errBloqueo) throw errBloqueo;
+        bloqueado = true;
+      } catch (eBloqueo) {
+        // correos_bloqueados es una tabla nueva: si todavía no existe, la carta se rechaza
+        // igualmente, pero el correo no queda bloqueado hasta que se aplique schema.sql.
+        console.error('panel-accion.js: no se ha podido bloquear el correo (¿falta aplicar schema.sql?)', eBloqueo && eBloqueo.message);
+        bloqueado = false;
+      }
     }
 
     const plantilla = accion === 'aprobar'
@@ -66,7 +87,7 @@ module.exports = async function handler(req, res) {
     const envio = await enviaEmail({ to: data.correo, subject: plantilla.subject, html: plantilla.html });
     if (!envio.ok) console.error('panel-accion.js: email no enviado', envio.error);
 
-    return res.status(200).json({ ok: true, id: data.id, estado: data.estado, email: envio.ok });
+    return res.status(200).json({ ok: true, id: data.id, estado: data.estado, email: envio.ok, bloqueado });
   } catch (e) {
     console.error('panel-accion.js', { name: e && e.name, message: e && e.message, code: e && e.code, details: e && e.details, hint: e && e.hint });
     return res.status(500).json({ error: 'No hemos podido guardar el cambio. Inténtalo de nuevo.' });
