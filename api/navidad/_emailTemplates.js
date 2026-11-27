@@ -106,10 +106,10 @@ function plantillaEntrega({ seudonimo, enlaceCarta, bloqueSiAprobada }) {
   };
 }
 
-function plantillaNotaReenviada({ seudonimo, textoNota, seudonimoDestinatario }) {
-  const nombre = esc(seudonimo);
+function plantillaNotaReenviada({ seudonimoAutor, textoNota, seudonimoFirma }) {
+  const nombre = esc(seudonimoAutor);
   const nota = esc(textoNota);
-  const firma = esc(seudonimoDestinatario);
+  const firma = esc(seudonimoFirma);
   const cuerpo = `<p style="margin:0 0 16px;text-align:center;color:#FFFFFF">Hola, ${nombre}: quien la recibió te ha dejado esto:</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:repeating-linear-gradient(-45deg,#6F9C3E 0 12px,#F7F1E3 12px 20px,#FFAA4D 20px 32px,#F7F1E3 32px 40px);border-radius:20px">
       <tr><td style="padding:10px">
