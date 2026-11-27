@@ -37,10 +37,20 @@ module.exports = async function handler(req, res) {
       ? { estado: 'aprobada' }
       : { estado: 'rechazada', texto: null, motivo };
 
-    let query = supabase.from('cartas').update(cambios).eq('id', id).is('recibe_carta_id', null).is('recibe_reserva_id', null);
-    query = accion === 'aprobar' ? query.eq('estado', 'pendiente') : query.in('estado', ['pendiente', 'aprobada']);
-    const { data, error } = await query.select('id, estado, correo, seudonimo').maybeSingle();
+    function construyeQuery(conReserva) {
+      let q = supabase.from('cartas').update(cambios).eq('id', id).is('recibe_carta_id', null);
+      if (conReserva) q = q.is('recibe_reserva_id', null);
+      q = accion === 'aprobar' ? q.eq('estado', 'pendiente') : q.in('estado', ['pendiente', 'aprobada']);
+      return q.select('id, estado, correo, seudonimo').maybeSingle();
+    }
 
+    let { data, error } = await construyeQuery(true);
+    // recibe_reserva_id es una columna nueva: si este proyecto de Supabase todavía no la tiene,
+    // no debe bloquear aprobar/rechazar — se repite sin esa comprobación extra.
+    if (error && String(error.message || '').includes('recibe_reserva_id')) {
+      console.error('panel-accion.js: recibe_reserva_id no disponible (¿falta aplicar schema.sql?)', error.message);
+      ({ data, error } = await construyeQuery(false));
+    }
     if (error) throw error;
     if (!data) {
       return res.status(409).json({
