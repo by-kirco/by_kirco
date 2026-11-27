@@ -35,12 +35,12 @@ module.exports = async function handler(req, res) {
     stage = 'carta';
     const { data: carta, error: errCarta } = await supabase
       .from('cartas')
-      .select('id, recibe_carta_id')
+      .select('id, recibe_carta_id, recibe_reserva_id')
       .eq('token', token)
       .maybeSingle();
     if (errCarta) throw errCarta;
     if (!carta) return res.status(404).json({ error: 'No encuentro esta carta.' });
-    if (!carta.recibe_carta_id) return res.status(409).json({ error: 'Todavía no has recibido ninguna carta a la que dar las gracias.' });
+    if (!carta.recibe_carta_id && !carta.recibe_reserva_id) return res.status(409).json({ error: 'Todavía no has recibido ninguna carta a la que dar las gracias.' });
 
     stage = 'insert';
     const { error: errInsert } = await supabase

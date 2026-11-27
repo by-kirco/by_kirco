@@ -50,6 +50,11 @@ create table if not exists cartas_reserva (
   creada_at timestamptz not null default now()
 );
 
+-- Añadida después de la primera entrega de cartas_reserva (seguro reaplicar).
+-- Permite asignar a mano una carta de reserva a alguien aprobado que se ha quedado sin pareja
+-- (en vez de esperar a que el reparto automático, todavía sin construir, decida por sí solo).
+alter table cartas add column if not exists recibe_reserva_id uuid references cartas_reserva(id);
+
 create table if not exists notas (
   id uuid primary key default gen_random_uuid(),
   carta_id uuid not null unique references cartas(id),
