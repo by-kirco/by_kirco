@@ -1,12 +1,16 @@
 /* POST /api/navidad/panel-notas-accion — solo con sesión de Sara.
    body: { id, accion: 'reenviar' | 'descartar' }
    Reenviar: manda el email "Alguien te da las gracias" a quien escribió la carta agradecida,
-   firmado con el seudónimo de quien la recibió (y escribió la nota), y marca la nota como reenviada.
+   firmado con el seudónimo de quien la recibió (y escribió la nota), y marca la nota como
+   reenviada. Si la carta agradecida era una carta de reserva (sin autor real, firmada "Kirco"),
+   se manda a by.kirco@gmail.com en su lugar, como si la hubiese escrito esa cuenta.
    Descartar: marca la nota como descartada, sin enviar nada. */
 const { requiereSesion } = require('./_auth');
 const { getSupabase } = require('./_supabase');
 const { enviaEmail } = require('./_resend');
 const { plantillaNotaReenviada } = require('./_emailTemplates');
+
+const CORREO_RESERVA = 'by.kirco@gmail.com';
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -50,27 +54,44 @@ module.exports = async function handler(req, res) {
     if (errNota) throw errNota;
     if (!nota || nota.estado !== 'pendiente') return res.status(409).json({ error: 'Esa nota ya no está pendiente.' });
 
-    const { data: cartaDe, error: errCarta } = await supabase
-      .from('cartas')
-      .select('id, correo, seudonimo, recibe_carta_id')
-      .eq('id', nota.carta_id)
-      .maybeSingle();
+    // cartaDe = quien escribió la nota de agradecimiento (quien recibió la carta original).
+    function construyeConsultaCartaDe(conReserva) {
+      const cols = 'id, seudonimo, recibe_carta_id' + (conReserva ? ', recibe_reserva_id' : '');
+      return supabase.from('cartas').select(cols).eq('id', nota.carta_id).maybeSingle();
+    }
+    let { data: cartaDe, error: errCarta } = await construyeConsultaCartaDe(true);
+    // recibe_reserva_id es una columna nueva: si este proyecto de Supabase todavía no la tiene,
+    // se repite la consulta sin ella en vez de romper el reenvío de notas.
+    if (errCarta && String(errCarta.message || '').includes('recibe_reserva_id')) {
+      console.error('panel-notas-accion.js: recibe_reserva_id no disponible (¿falta aplicar schema.sql?)', errCarta.message);
+      ({ data: cartaDe, error: errCarta } = await construyeConsultaCartaDe(false));
+      if (cartaDe) cartaDe.recibe_reserva_id = null;
+    }
     if (errCarta) throw errCarta;
     if (!cartaDe) return res.status(500).json({ error: 'No se encuentra la carta de esta nota.' });
 
-    let seudonimoFirma = 'alguien';
+    // correoAutor/seudonimoAutor = a quién se le manda el agradecimiento: quien escribió la
+    // carta original, o by.kirco@gmail.com si venía de la reserva (sin autor real, firma "Kirco").
+    let correoAutor, seudonimoAutor;
     if (cartaDe.recibe_carta_id) {
-      const { data: cartaFirma, error: errFirma } = await supabase
+      const { data: autor, error: errAutor } = await supabase
         .from('cartas')
-        .select('seudonimo')
+        .select('seudonimo, correo')
         .eq('id', cartaDe.recibe_carta_id)
         .maybeSingle();
-      if (errFirma) throw errFirma;
-      if (cartaFirma) seudonimoFirma = cartaFirma.seudonimo;
+      if (errAutor) throw errAutor;
+      if (!autor) return res.status(500).json({ error: 'No se encuentra quien escribió la carta original.' });
+      correoAutor = autor.correo;
+      seudonimoAutor = autor.seudonimo;
+    } else if (cartaDe.recibe_reserva_id) {
+      correoAutor = CORREO_RESERVA;
+      seudonimoAutor = 'Kirco';
+    } else {
+      return res.status(409).json({ error: 'Esta carta todavía no tiene una carta original asociada: no se puede reenviar.' });
     }
 
-    const plantilla = plantillaNotaReenviada({ seudonimo: cartaDe.seudonimo, textoNota: nota.texto, seudonimoDestinatario: seudonimoFirma });
-    const envio = await enviaEmail({ to: cartaDe.correo, subject: plantilla.subject, html: plantilla.html });
+    const plantilla = plantillaNotaReenviada({ seudonimoAutor, textoNota: nota.texto, seudonimoFirma: cartaDe.seudonimo });
+    const envio = await enviaEmail({ to: correoAutor, subject: plantilla.subject, html: plantilla.html });
     if (!envio.ok) return res.status(502).json({ error: 'No se pudo enviar el email: ' + envio.error });
 
     const { data: actualizada, error: errUpdate } = await supabase

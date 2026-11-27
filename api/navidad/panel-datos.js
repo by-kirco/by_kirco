@@ -134,12 +134,18 @@ module.exports = async function handler(req, res) {
     if (errNotas) throw errNotas;
 
     const notas = (notasPendientes || []).map((n) => {
-      const cartaDe = porId.get(n.carta_id); // la carta que se agradece (a quien le llega el email)
-      const cartaFirma = cartaDe && cartaDe.recibe_carta_id ? porId.get(cartaDe.recibe_carta_id) : null; // quien la escribe (firma la nota)
+      const cartaDe = porId.get(n.carta_id); // quien escribió la nota de agradecimiento (quien recibió la carta original)
+      let paraNombre = '—';
+      if (cartaDe && cartaDe.recibe_carta_id) {
+        const autor = porId.get(cartaDe.recibe_carta_id); // a quien le llega el agradecimiento: quien escribió la carta original
+        paraNombre = autor ? autor.seudonimo : '—';
+      } else if (cartaDe && cartaDe.recibe_reserva_id) {
+        paraNombre = 'Kirco (carta de reserva)'; // sin autor real: se reenvía a by.kirco@gmail.com
+      }
       return {
         id: n.id,
-        de: cartaFirma ? cartaFirma.seudonimo : '—',
-        para: cartaDe ? cartaDe.seudonimo : '—',
+        de: cartaDe ? cartaDe.seudonimo : '—',
+        para: paraNombre,
         fecha: fechaCorta(n.creada_at),
         texto: n.texto,
         tono: 'yellow',
