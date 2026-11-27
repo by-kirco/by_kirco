@@ -53,7 +53,8 @@ module.exports = async function handler(req, res) {
       .from('cartas')
       .select('id, token, seudonimo, correo, destino_carta_id, recibe_carta_id, estado')
       .eq('estado', 'aprobada')
-      .is('recibe_carta_id', null);
+      .is('recibe_carta_id', null)
+      .is('recibe_reserva_id', null);
     if (error) throw error;
 
     const pool = aprobadas || [];
@@ -94,6 +95,7 @@ module.exports = async function handler(req, res) {
         .update({ recibe_carta_id: pareja.sender.id, enviada_25_at: ahora })
         .eq('id', pareja.target.id)
         .is('recibe_carta_id', null)
+        .is('recibe_reserva_id', null)
         .select('id, token, seudonimo, correo, estado')
         .maybeSingle();
       if (errUpdate) { resultados.push({ id: pareja.target.id, ok: false, error: errUpdate.message }); continue; }

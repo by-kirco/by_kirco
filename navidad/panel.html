@@ -191,7 +191,19 @@
     host.querySelectorAll('article').forEach(wireAccionesCarta);
   }
 
-  function pintarAprobadas(aprobadas) {
+  function reservaBoxHtml(reservaDisponibles) {
+    if (!reservaDisponibles || !reservaDisponibles.length) {
+      return '<p style="margin:0;font-size:13px;color:var(--k-tinta-suave)">No hay cartas de reserva cargadas, o ya están todas usadas.</p>';
+    }
+    var opciones = reservaDisponibles.map(function (r) {
+      return '<option value="' + escapa(r.id) + '">' + escapa(r.tema) + '</option>';
+    }).join('');
+    return '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
+      '<select class="campo p-reserva-select" style="height:40px;flex:1 1 200px"><option value="">— elige una carta de reserva —</option>' + opciones + '</select>' +
+      '<button type="button" class="p-pill p-verde" data-accion="asignar-reserva">Mandarle esta</button></div>';
+  }
+
+  function pintarAprobadas(aprobadas, reservaDisponibles) {
     var host = document.getElementById('p-aprobadas');
     if (!aprobadas || !aprobadas.length) { host.innerHTML = '<div style="padding:20px 16px;text-align:center;border-radius:20px;background:var(--k-papel)"><p style="margin:0;font-size:14px;color:var(--k-tinta-suave)">No hay cartas aprobadas sin repartir.</p></div>'; return; }
     host.innerHTML = aprobadas.map(function (c) {
@@ -201,10 +213,37 @@
         (c.yaElegida ? '<span class="p-badge p-badge-orange">Ya elegida por ' + escapa(c.yaElegida) + '</span>' : '<span class="p-badge p-badge-green">En la bolsa</span>') + '</div>' +
         '<p class="manuscrita" style="margin:0;font-size:20px;line-height:1.4;white-space:pre-wrap">' + escapa(c.texto) + '</p>' +
         motivoBoxHtml() +
+        '<div style="padding:12px 14px;border-radius:13px;background:var(--k-verde-tint);border:1.5px solid var(--k-verde)">' +
+        '<p style="margin:0 0 8px;font-size:13px;font-weight:700">Si quieres, mándale ya una carta de reserva (sin esperar a que tenga pareja):</p>' +
+        reservaBoxHtml(reservaDisponibles) +
+        '</div>' +
         '<div class="p-botones" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end">' +
         '<button type="button" class="p-pill p-naranja" data-accion="rechazar">Rechazar</button></div></article>';
     }).join('');
     host.querySelectorAll('article').forEach(wireAccionesCarta);
+    host.querySelectorAll('article').forEach(function (art) {
+      var boton = art.querySelector('button[data-accion="asignar-reserva"]');
+      if (!boton) return;
+      boton.addEventListener('click', function () {
+        var select = art.querySelector('.p-reserva-select');
+        var reservaId = select ? select.value : '';
+        if (!reservaId) { alert('Elige primero qué carta de reserva quieres mandarle.'); return; }
+        if (!confirm('¿Mandar esta carta de reserva ahora mismo? Se envía el email de entrega de verdad.')) return;
+        var id = art.getAttribute('data-id');
+        art.querySelectorAll('button, select').forEach(function (x) { x.disabled = true; });
+        api('panel-asignar-reserva', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, reservaId: reservaId }) })
+          .then(function (res) {
+            if (res.status === 200) {
+              if (res.body && res.body.email === false) alert('Asignada, pero el email no se ha podido mandar. Revisa la configuración de Resend.');
+              cargarDatos();
+            } else {
+              alert((res.body && res.body.error) || 'No se pudo asignar.');
+              art.querySelectorAll('button, select').forEach(function (x) { x.disabled = false; });
+            }
+          })
+          .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button, select').forEach(function (x) { x.disabled = false; }); });
+      });
+    });
   }
 
   function pintarNotas(notas) {
@@ -248,7 +287,7 @@
       ultimoDatos = res.body;
       pintarKpis(res.body.kpis);
       pintarCola(res.body.cola, res.body.vacio);
-      pintarAprobadas(res.body.aprobadas);
+      pintarAprobadas(res.body.aprobadas, res.body.reservaDisponibles);
       pintarNotas(res.body.notas);
       pintarUltimas(res.body.ultimas);
     }).catch(function () { console.error('No se pudo cargar el panel.'); });

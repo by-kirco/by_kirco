@@ -26,25 +26,38 @@ module.exports = async function handler(req, res) {
 
     const { data: d, error } = await supabase
       .from('cartas')
-      .select('id, seudonimo, saludo, estado, recibe_carta_id, abierta_at')
+      .select('id, seudonimo, saludo, estado, recibe_carta_id, recibe_reserva_id, abierta_at')
       .eq('token', token)
       .maybeSingle();
     if (error) throw error;
     if (!d) return res.status(404).json({ estado: 'no_encontrada' });
 
-    if (!d.recibe_carta_id) {
+    if (!d.recibe_carta_id && !d.recibe_reserva_id) {
       res.setHeader('Cache-Control', 'no-store');
       if (Date.now() < OBJETIVO_25) return res.status(200).json({ estado: 'antes', objetivo: new Date(OBJETIVO_25).toISOString() });
       return res.status(200).json({ estado: 'camino' });
     }
 
-    const { data: autor, error: errAutor } = await supabase
-      .from('cartas')
-      .select('id, seudonimo, texto')
-      .eq('id', d.recibe_carta_id)
-      .maybeSingle();
-    if (errAutor) throw errAutor;
-    if (!autor || !autor.texto) {
+    let textoCarta = null;
+    let firmaCarta = 'Kirco';
+    if (d.recibe_carta_id) {
+      const { data: autor, error: errAutor } = await supabase
+        .from('cartas')
+        .select('id, seudonimo, texto')
+        .eq('id', d.recibe_carta_id)
+        .maybeSingle();
+      if (errAutor) throw errAutor;
+      if (autor && autor.texto) { textoCarta = autor.texto; firmaCarta = autor.seudonimo || 'Kirco'; }
+    } else if (d.recibe_reserva_id) {
+      const { data: reserva, error: errReserva } = await supabase
+        .from('cartas_reserva')
+        .select('id, texto')
+        .eq('id', d.recibe_reserva_id)
+        .maybeSingle();
+      if (errReserva) throw errReserva;
+      if (reserva && reserva.texto) textoCarta = reserva.texto;
+    }
+    if (!textoCarta) {
       res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ estado: 'camino' });
     }
@@ -65,8 +78,8 @@ module.exports = async function handler(req, res) {
       estado: 'abierta',
       seudonimo: d.seudonimo,
       saludoCarta: saludoCarta(d.saludo, d.seudonimo),
-      texto: autor.texto,
-      firma: autor.seudonimo || 'Kirco',
+      texto: textoCarta,
+      firma: firmaCarta,
       bloqueSiAprobada: d.estado === 'aprobada',
       notaYaEnviada: !!notaExistente
     });

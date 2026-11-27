@@ -56,14 +56,14 @@ function plantillaAprobada({ seudonimo }) {
   const nombre = esc(seudonimo);
   const cuerpo = tarjeta(`
       <p style="margin:0 0 12px">Hola, ${nombre}:</p>
-      <p style="margin:0 0 12px">Ya hemos leído tu carta y está lista para salir.</p>
+      <p style="margin:0 0 12px">Ya hemos leído tu carta y está lista para salir. 🎉</p>
       <p style="margin:0 0 12px">La guardo hasta el 25 de diciembre. Esa noche, a las 00:00, le llegará a alguien que no conoces, firmada con tu seudónimo.</p>
       <p style="margin:0 0 12px">Esa misma noche te llega la tuya, a este correo.</p>
       <p style="margin:0 0 4px">Kirco</p>
       <p style="margin:0;font-size:14px;color:#6b6557">Escribo para ti sin conocerte.</p>
     `) + `<div align="center">${boton(CALENDAR_URL, 'Añadir al calendario')}</div>`;
   return {
-    subject: `${seudonimo}, tu carta ya está en nuestro buzón navideño`,
+    subject: `${seudonimo}, tu carta ya está en nuestro buzón navideño 🎉`,
     html: envoltorio('Tu carta ya está<br>en el buzón', cuerpo)
   };
 }
@@ -101,15 +101,16 @@ function plantillaEntrega({ seudonimo, enlaceCarta, bloqueSiAprobada }) {
       <p style="margin:0;font-size:14px;color:#6b6557">Escribo para ti sin conocerte.</p>
     `);
   return {
-    subject: `Feliz Navidad, ${seudonimo}. Alguien te ha escrito esto para ti 💚`,
+    subject: `🎄 Feliz Navidad, ${seudonimo}. Alguien te ha escrito esto para ti 💌💚`,
     html: envoltorio('Alguien ha<br>pensado en ti', cuerpo)
   };
 }
 
-function plantillaNotaReenviada({ textoNota, seudonimoDestinatario }) {
+function plantillaNotaReenviada({ seudonimo, textoNota, seudonimoDestinatario }) {
+  const nombre = esc(seudonimo);
   const nota = esc(textoNota);
   const firma = esc(seudonimoDestinatario);
-  const cuerpo = `<p style="margin:0 0 16px;text-align:center;color:#FFFFFF">Quien la recibió te ha dejado esto:</p>
+  const cuerpo = `<p style="margin:0 0 16px;text-align:center;color:#FFFFFF">Hola, ${nombre}: quien la recibió te ha dejado esto:</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:repeating-linear-gradient(-45deg,#6F9C3E 0 12px,#F7F1E3 12px 20px,#FFAA4D 20px 32px,#F7F1E3 32px 40px);border-radius:20px">
       <tr><td style="padding:10px">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F1E3;border-radius:12px">

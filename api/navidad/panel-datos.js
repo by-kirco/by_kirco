@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
     const supabase = getSupabase();
     const { data: cartas, error } = await supabase
       .from('cartas')
-      .select('id, seudonimo, correo, idea, texto, destino_carta_id, estado, recibe_carta_id, creada_at')
+      .select('id, seudonimo, correo, idea, texto, destino_carta_id, estado, recibe_carta_id, recibe_reserva_id, creada_at')
       .order('creada_at', { ascending: true });
     if (error) throw error;
 
@@ -46,11 +46,13 @@ module.exports = async function handler(req, res) {
     // proyecto de Supabase, no debe tumbar el resto del panel — solo se omite ese KPI.
     let reservaTotal = null;
     let reservaUsadas = null;
+    let reservaDisponibles = [];
     try {
-      const { data: reserva, error: errReserva } = await supabase.from('cartas_reserva').select('id, usada');
+      const { data: reserva, error: errReserva } = await supabase.from('cartas_reserva').select('id, tema, usada');
       if (errReserva) throw errReserva;
       reservaTotal = (reserva || []).length;
       reservaUsadas = (reserva || []).filter((r) => r.usada).length;
+      reservaDisponibles = (reserva || []).filter((r) => !r.usada).map((r) => ({ id: r.id, tema: r.tema }));
     } catch (eReserva) {
       console.error('panel-datos.js: cartas_reserva no disponible (¿falta aplicar schema.sql?)', eReserva && eReserva.message);
     }
@@ -58,7 +60,7 @@ module.exports = async function handler(req, res) {
     const kpis = [
       { label: 'Escritas', valor: cartas.length, nota: 'Pendientes + aprobadas + rechazadas', clase: 'kpi' },
       { label: 'Por revisar', valor: pendientes.length, nota: 'Esperando a Sara', clase: 'kpi naranja' },
-      { label: 'En la bolsa', valor: aprobadas.filter((c) => !c.recibe_carta_id).length, nota: 'Aprobadas, sin repartir', clase: 'kpi' },
+      { label: 'En el buzón', valor: aprobadas.filter((c) => !c.recibe_carta_id && !c.recibe_reserva_id).length, nota: 'Aprobadas, sin repartir', clase: 'kpi' },
       { label: 'Rechazadas', valor: rechazadas.length, nota: 'No se enviaron', clase: 'kpi naranja' },
       { label: 'Con destino', valor: conDestino.length, nota: 'Eligieron a alguien', clase: 'kpi' },
       { label: 'Al azar', valor: alAzar.length, nota: 'Desconocido al azar', clase: 'kpi' }
@@ -81,7 +83,7 @@ module.exports = async function handler(req, res) {
     });
 
     const aprobadasRevisables = aprobadas
-      .filter((c) => !c.recibe_carta_id) // una vez repartida, ya es tarde para rechazarla
+      .filter((c) => !c.recibe_carta_id && !c.recibe_reserva_id) // una vez repartida, ya es tarde para rechazarla
       .map((c) => {
         const elegidaPorCarta = elegidaPor.get(c.id);
         return {
@@ -129,7 +131,7 @@ module.exports = async function handler(req, res) {
     });
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json({ kpis, cola, aprobadas: aprobadasRevisables, notas, ultimas, vacio: cola.length === 0 });
+    return res.status(200).json({ kpis, cola, aprobadas: aprobadasRevisables, reservaDisponibles, notas, ultimas, vacio: cola.length === 0 });
   } catch (e) {
     console.error('panel-datos.js', { name: e && e.name, message: e && e.message, code: e && e.code, details: e && e.details, hint: e && e.hint });
     return res.status(500).json({ error: 'No hemos podido cargar los datos del panel.' });
