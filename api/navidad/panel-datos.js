@@ -20,11 +20,28 @@ module.exports = async function handler(req, res) {
 
   try {
     const supabase = getSupabase();
-    const { data: cartas, error } = await supabase
-      .from('cartas')
-      .select('id, seudonimo, correo, idea, texto, destino_carta_id, estado, recibe_carta_id, recibe_reserva_id, creada_at')
-      .order('creada_at', { ascending: true });
-    if (error) throw error;
+    // recibe_reserva_id es una columna nueva (fase de reparto): si este proyecto de Supabase
+    // todavía no la tiene, no debe tumbar el panel entero — se repite la consulta sin ella y se
+    // rellena a null en cada carta (como si ninguna tuviera carta de reserva asignada todavía).
+    let cartas;
+    {
+      const r = await supabase
+        .from('cartas')
+        .select('id, seudonimo, correo, idea, texto, destino_carta_id, estado, recibe_carta_id, recibe_reserva_id, creada_at')
+        .order('creada_at', { ascending: true });
+      if (r.error && String(r.error.message || '').includes('recibe_reserva_id')) {
+        console.error('panel-datos.js: recibe_reserva_id no disponible (¿falta aplicar schema.sql?)', r.error.message);
+        const r2 = await supabase
+          .from('cartas')
+          .select('id, seudonimo, correo, idea, texto, destino_carta_id, estado, recibe_carta_id, creada_at')
+          .order('creada_at', { ascending: true });
+        if (r2.error) throw r2.error;
+        cartas = (r2.data || []).map((c) => Object.assign({ recibe_reserva_id: null }, c));
+      } else {
+        if (r.error) throw r.error;
+        cartas = r.data;
+      }
+    }
 
     const porId = new Map((cartas || []).map((c) => [c.id, c]));
     const nombrePara = (c) => {

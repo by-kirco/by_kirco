@@ -49,12 +49,18 @@ module.exports = async function handler(req, res) {
 
   try {
     const supabase = getSupabase();
-    const { data: aprobadas, error } = await supabase
-      .from('cartas')
-      .select('id, token, seudonimo, correo, destino_carta_id, recibe_carta_id, estado')
-      .eq('estado', 'aprobada')
-      .is('recibe_carta_id', null)
-      .is('recibe_reserva_id', null);
+    // recibe_reserva_id es una columna nueva: si este proyecto de Supabase todavía no la tiene,
+    // no debe bloquear el reparto — se repite la consulta sin esa comprobación extra.
+    function consultaPool(conReserva) {
+      let q = supabase.from('cartas').select('id, token, seudonimo, correo, destino_carta_id, recibe_carta_id, estado').eq('estado', 'aprobada').is('recibe_carta_id', null);
+      if (conReserva) q = q.is('recibe_reserva_id', null);
+      return q;
+    }
+    let { data: aprobadas, error } = await consultaPool(true);
+    if (error && String(error.message || '').includes('recibe_reserva_id')) {
+      console.error('panel-repartir.js: recibe_reserva_id no disponible (¿falta aplicar schema.sql?)', error.message);
+      ({ data: aprobadas, error } = await consultaPool(false));
+    }
     if (error) throw error;
 
     const pool = aprobadas || [];
@@ -90,14 +96,15 @@ module.exports = async function handler(req, res) {
     const ahora = new Date().toISOString();
     const resultados = [];
     for (const pareja of todasLasParejas) {
-      const { data: actualizada, error: errUpdate } = await supabase
-        .from('cartas')
-        .update({ recibe_carta_id: pareja.sender.id, enviada_25_at: ahora })
-        .eq('id', pareja.target.id)
-        .is('recibe_carta_id', null)
-        .is('recibe_reserva_id', null)
-        .select('id, token, seudonimo, correo, estado')
-        .maybeSingle();
+      function actualizaPareja(conReserva) {
+        let q = supabase.from('cartas').update({ recibe_carta_id: pareja.sender.id, enviada_25_at: ahora }).eq('id', pareja.target.id).is('recibe_carta_id', null);
+        if (conReserva) q = q.is('recibe_reserva_id', null);
+        return q.select('id, token, seudonimo, correo, estado').maybeSingle();
+      }
+      let { data: actualizada, error: errUpdate } = await actualizaPareja(true);
+      if (errUpdate && String(errUpdate.message || '').includes('recibe_reserva_id')) {
+        ({ data: actualizada, error: errUpdate } = await actualizaPareja(false));
+      }
       if (errUpdate) { resultados.push({ id: pareja.target.id, ok: false, error: errUpdate.message }); continue; }
       if (!actualizada) { resultados.push({ id: pareja.target.id, ok: false, error: 'Ya tenía una carta asignada.' }); continue; }
 
