@@ -7,7 +7,9 @@
    Bloquear: hace lo mismo que rechazar y, además, guarda el correo en correos_bloqueados
    para que esa cuenta no pueda volver a mandar otra carta (spam o incumplimiento repetido).
    La persona recibe el mismo email de rechazo de siempre: no se le avisa de que, además,
-   queda bloqueada. */
+   queda bloqueada.
+   Al rechazar o bloquear, si alguien había elegido esta carta como destino, esa elección se
+   limpia (vuelve a "al azar") en vez de quedarse apuntando a una carta que ya no es válida. */
 const { requiereSesion } = require('./_auth');
 const { getSupabase } = require('./_supabase');
 const { enviaEmail } = require('./_resend');
@@ -63,6 +65,14 @@ module.exports = async function handler(req, res) {
           ? 'Esa carta ya no está pendiente (puede que otra persona la haya gestionado ya).'
           : 'Esa carta ya no se puede gestionar (puede que ya se haya repartido, o que otra persona la haya gestionado ya).'
       });
+    }
+
+    // Si alguien había elegido esta carta como destino y ahora se rechaza (o se bloquea), esa
+    // elección deja de ser válida: se limpia para que esa persona caiga a "al azar" en vez de
+    // quedarse apuntando a un destino que ya no existe.
+    if (accion !== 'aprobar') {
+      const { error: errLimpia } = await supabase.from('cartas').update({ destino_carta_id: null }).eq('destino_carta_id', id);
+      if (errLimpia) console.error('panel-accion.js: no se pudo limpiar destino_carta_id huérfano', errLimpia.message);
     }
 
     let bloqueado;
