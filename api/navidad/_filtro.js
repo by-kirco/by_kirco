@@ -14,8 +14,11 @@ const DISCRIMINACION = ['sudaca', 'panchit', 'muerto de hambre', 'vete a tu pais
 const SEXUAL = ['polla', 'verga', 'coño', 'chupamela', 'follar', 'follame', 'pornografia', 'sexo oral', 'desnud', 'mandame fotos', 'tetas', 'pene', 'vagina'];
 
 const TODAS_UNA_PALABRA = [].concat(INSULTOS, DISCRIMINACION, SEXUAL).filter((p) => p.indexOf(' ') === -1 && p.length >= 4);
-/* para distancia de edición: solo 6+ letras, para no confundir "ruta"/"zorro" con insultos a 1 letra de distancia */
-const PARA_ERRORES = TODAS_UNA_PALABRA.filter((p) => p.length >= 6);
+/* para distancia de edición: solo 6+ letras, para no confundir "ruta"/"zorro" con insultos a 1 letra de distancia.
+   "anormal" se excluye aparte: a 1 letra de "normal", una palabra corriente ("una Navidad normal"),
+   así que solo se detecta si se escribe tal cual (buscaLista/buscaDifuso), nunca por distancia de edición. */
+const SIN_DISTANCIA = ['anormal'];
+const PARA_ERRORES = TODAS_UNA_PALABRA.filter((p) => p.length >= 6 && !SIN_DISTANCIA.includes(p));
 
 const LEET = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '$': 's', '@': 'a' };
 

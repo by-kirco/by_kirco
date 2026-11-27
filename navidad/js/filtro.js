@@ -20,8 +20,11 @@ var KFiltro = (function () {
   /* para la pasada difusa (separadores/leetspeak): cualquier raíz de una palabra basta, el patrón ya es poco casual */
   var TODAS_UNA_PALABRA = [].concat(INSULTOS, DISCRIMINACION, SEXUAL).filter(function (p) { return p.indexOf(' ') === -1 && p.length >= 4; });
   /* para la pasada por distancia de edición: solo palabras de 6+ letras — con menos, palabras normales
-     (p.ej. "ruta" o "zorro") quedan a 1 letra de distancia de un insulto y darían falsos positivos */
-  var PARA_ERRORES = TODAS_UNA_PALABRA.filter(function (p) { return p.length >= 6; });
+     (p.ej. "ruta" o "zorro") quedan a 1 letra de distancia de un insulto y darían falsos positivos.
+     "anormal" se excluye aparte: a 1 letra de "normal", una palabra corriente ("una Navidad normal"),
+     así que solo se detecta si se escribe tal cual (buscaLista/buscaDifuso), nunca por distancia de edición. */
+  var SIN_DISTANCIA = ['anormal'];
+  var PARA_ERRORES = TODAS_UNA_PALABRA.filter(function (p) { return p.length >= 6 && SIN_DISTANCIA.indexOf(p) === -1; });
 
   var LEET = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '$': 's', '@': 'a' };
 

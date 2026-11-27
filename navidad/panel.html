@@ -150,7 +150,10 @@
       art.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
       api('panel-accion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, accion: accion, motivo: motivo }) })
         .then(function (res) {
-          if (res.status === 200) { cargarDatos(); } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
+          if (res.status === 200) {
+            if (res.body && res.body.email === false) alert('Guardado, pero el email no se ha podido mandar. Revisa la configuración de Resend (API key, dominio verificado).');
+            cargarDatos();
+          } else { alert((res.body && res.body.error) || 'No se pudo guardar.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); }
         })
         .catch(function () { alert('No se pudo conectar. Inténtalo de nuevo.'); art.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); });
     }
@@ -297,7 +300,10 @@
     api('panel-repartir', { method: 'POST' }).then(function (res) {
       b.disabled = false;
       if (res.status === 200) {
-        alert('Repartidas ' + res.body.repartidas + ' de ' + res.body.total + ' cartas. Revisa el correo de cada una.');
+        var emailsFallidos = (res.body.resultados || []).filter(function (r) { return r.ok && r.email === false; }).length;
+        var mensaje = 'Repartidas ' + res.body.repartidas + ' de ' + res.body.total + ' cartas.';
+        if (emailsFallidos) mensaje += ' Ojo: a ' + emailsFallidos + ' no se les pudo mandar el email (revisa la configuración de Resend).';
+        alert(mensaje);
         cargarDatos();
       } else {
         alert((res.body && res.body.error) || 'No se pudo repartir.');
