@@ -4,3 +4,9 @@ design_file.gz
 .claude
 CLAUDE.md
 landing-page-brief.md
+.mcp.json
+navidad/supabase/
+navidad/README.md
+supabase/
+test/
+.claude/

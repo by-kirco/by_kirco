@@ -8,6 +8,17 @@ const COOKIE_AT = 'kirco_sb_at';
 const COOKIE_RT = 'kirco_sb_rt';
 const RT_MAX_AGE = 60 * 60 * 24 * 30; // 30 días (la caducidad real la controla Supabase)
 
+/* Solo dejan entrar los correos listados en PANEL_EMAILS (separados por comas), sin distinguir
+   mayúsculas/minúsculas. Si la variable está vacía o no existe, no entra nadie. */
+function correoPermitido(email) {
+  const lista = String(process.env.PANEL_EMAILS || '')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  if (!lista.length) return false;
+  return lista.includes(String(email || '').trim().toLowerCase());
+}
+
 function leeCookie(req, nombre) {
   const cabecera = req.headers.cookie || '';
   const partes = cabecera.split(';').map((s) => s.trim());
@@ -62,10 +73,17 @@ async function requiereSesion(req, res) {
     res.status(401).json({ error: 'No autorizada.' });
     return null;
   }
+  if (!correoPermitido(sesion.user && sesion.user.email)) {
+    res.status(403).json({ error: 'No autorizada.' });
+    return null;
+  }
   return sesion.user;
 }
 
 async function iniciarSesion(email, password) {
+  if (!correoPermitido(email)) {
+    return { data: null, error: { message: 'No autorizada.' } };
+  }
   const supabase = getSupabaseAnon();
   return supabase.auth.signInWithPassword({ email, password });
 }
